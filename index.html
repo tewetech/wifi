@@ -1,0 +1,1193 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#0f172a">
+    <title>Tagihan Wi-Fi</title>
+    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/tewetech/aset/main/Full%20Aset%20(Final)/Gambar/Favicon/Tagihan.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Segoe UI', 'Arial', 'sans-serif']
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        * {
+            -webkit-tap-highlight-color: transparent;
+        }
+        html {
+            scroll-behavior: smooth;
+        }
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f1f5f9;
+            color: #0f172a;
+        }
+        input, button, select, textarea {
+            font-family: inherit;
+        }
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            opacity: .7;
+        }
+        .modal {
+            transition: opacity .2s ease;
+        }
+        .modal-content {
+            transition: transform .2s ease;
+        }
+        .modal.hidden .modal-content {
+            transform: translateY(20px);
+        }
+        .toast {
+            animation: toastIn .25s ease forwards;
+        }
+        @keyframes toastIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .pulse-dot {
+            animation: pulseDot 1.5s infinite;
+        }
+        @keyframes pulseDot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: .4; }
+        }
+        .card {
+            box-shadow: 0 2px 12px rgba(15, 23, 42, .06);
+        }
+        .safe {
+            background: #ecfdf5;
+            color: #047857;
+        }
+        .warning {
+            background: #fffbeb;
+            color: #b45309;
+        }
+        .danger {
+            background: #fef2f2;
+            color: #dc2626;
+        }
+        .expired {
+            background: #f1f5f9;
+            color: #475569;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+
+<div id="app" class="max-w-md mx-auto min-h-screen bg-slate-100">
+    <header class="bg-slate-900 text-white px-5 pt-6 pb-5 sticky top-0 z-30 shadow-lg">
+        <div class="flex items-center justify-between">
+            <div>
+                <div class="flex items-center gap-2">
+                    <div class="w-9 h-9 rounded-xl bg-emerald-500 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M8.288 15.038a5.25 5.25 0 017.424 0M5.106 11.856a9.75 9.75 0 0113.788 0M1.924 8.674a14.25 14.25 0 0120.152 0M12 19.5h.008v.008H12V19.5z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="font-bold text-lg leading-tight">Tagihan Wi-Fi Pelanggan</h1>
+                        <p class="text-slate-400 text-xs">Pengingat pembayaran customer</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="px-4 pb-8">
+        <section class="grid grid-cols-2 gap-2 mt-4">
+            <div class="card bg-white rounded-2xl p-3">
+                <p class="text-[11px] text-slate-500">Customer</p>
+                <p id="totalCustomer" class="text-xl font-bold mt-1">0</p>
+            </div>
+            <div class="card bg-white rounded-2xl p-3">
+                <p class="text-[11px] text-slate-500">Lunas</p>
+                <p id="totalPaid" class="text-xl font-bold text-blue-500 mt-1">0</p>
+            </div>
+            <div class="card bg-white rounded-2xl p-3">
+                <p class="text-[11px] text-slate-500">Segera</p>
+                <p id="totalSoon" class="text-xl font-bold text-amber-500 mt-1">0</p>
+            </div>
+            <div class="card bg-white rounded-2xl p-3">
+                <p class="text-[11px] text-slate-500">Terlambat</p>
+                <p id="totalExpired" class="text-xl font-bold text-red-500 mt-1">0</p>
+            </div>
+        </section>
+
+        <section class="mt-5">
+            <div class="flex items-center justify-between mb-3">
+                <div>
+                    <h2 class="font-bold text-base">Daftar Customer</h2>
+                    <p class="text-xs text-slate-500">Pantau jatuh tempo pembayaran</p>
+                </div>
+                <button onclick="openModal()" class="text-emerald-600 text-sm font-semibold">+ Tambah</button>
+            </div>
+
+            <div class="relative mb-3">
+                <svg class="absolute left-3 top-3.5 text-slate-400" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m2.1-5.4a7.5 7.5 0 11-15 0 7.5 7.5 0 0115 0z"/>
+                </svg>
+                <input id="searchInput" type="text" placeholder="Cari nama atau nomor..." oninput="renderCustomers()" class="w-full bg-white border border-slate-200 rounded-xl pl-10 pr-4 py-3 text-sm outline-none focus:ring-2 focus:ring-emerald-500">
+            </div>
+
+            <div class="grid grid-cols-4 gap-2 mb-3">
+                <button onclick="setFilter('all')" id="filterAll" class="filter-btn bg-slate-900 text-white py-2 rounded-full text-[11px] font-semibold flex items-center justify-center">Semua</button>
+                <button onclick="setFilter('lunas')" id="filterLunas" class="filter-btn bg-white text-slate-600 py-2 rounded-full text-[11px] font-semibold flex items-center justify-center">Lunas</button>
+                <button onclick="setFilter('soon')" id="filterSoon" class="filter-btn bg-white text-slate-600 py-2 rounded-full text-[11px] font-semibold flex items-center justify-center">Segera</button>
+                <button onclick="setFilter('expired')" id="filterExpired" class="filter-btn bg-white text-slate-600 py-2 rounded-full text-[11px] font-semibold flex items-center justify-center">Terlambat</button>
+            </div>
+
+            <div id="customerList" class="space-y-3"></div>
+
+            <div id="emptyState" class="hidden text-center py-14">
+                <div class="w-16 h-16 mx-auto rounded-2xl bg-white flex items-center justify-center text-slate-300 mb-3">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M20 13V7a2 2 0 00-2-2h-3l-1-2H10L9 5H6a2 2 0 00-2 2v6m16 0v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4m16 0H4m8-3v4m-2-2h4"/>
+                    </svg>
+                </div>
+                <p class="font-semibold text-slate-700">Belum ada customer</p>
+                <p class="text-xs text-slate-400 mt-1">Tambahkan customer untuk mulai mengingatkan pembayaran.</p>
+                <button onclick="openModal()" class="mt-4 bg-emerald-500 text-white px-5 py-2.5 rounded-xl text-sm font-semibold">Tambah Customer</button>
+            </div>
+        </section>
+    </main>
+</div>
+
+<div id="modal" class="modal hidden fixed inset-0 z-50 bg-black/50 px-4 flex items-end justify-center">
+    <div class="modal-content bg-white w-full max-w-md rounded-t-3xl p-5 max-h-[92vh] overflow-y-auto">
+        <div class="flex items-center justify-between mb-5">
+            <div>
+                <h2 id="modalTitle" class="font-bold text-lg">Tambah Customer</h2>
+                <p class="text-xs text-slate-500">Masukkan data pembayaran WiFi</p>
+            </div>
+            <button onclick="closeModal()" class="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+        <form id="customerForm" onsubmit="saveCustomer(event)" class="space-y-4">
+            <input type="hidden" id="customerId">
+            <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1.5">Nama Customer</label>
+                <input id="customerName" required type="text" placeholder="Contoh: Budi Santoso" class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-emerald-500">
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1.5">Nomor WhatsApp</label>
+                <input id="customerPhone" required type="tel" placeholder="Contoh: 081234567890" class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-emerald-500">
+                <p class="text-[10px] text-slate-400 mt-1">Nomor otomatis diubah ke format WhatsApp Indonesia.</p>
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1.5">Paket WiFi</label>
+                <select id="customerPlan" required onchange="updatePlanFields()" class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-emerald-500">
+                    <option value="1 Perangkat (20k/bulan)">1 Perangkat - Rp 20.000 / bulan</option>
+                    <option value="2 Perangkat (30k/bulan)">2 Perangkat - Rp 30.000 / bulan</option>
+                    <option value="3 Perangkat (40k/bulan)">3 Perangkat - Rp 40.000 / bulan</option>
+                    <option value="4-8 Perangkat (50k/bulan)">4-8 Perangkat - Rp 50.000 / bulan</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1.5">Tanggal Daftar</label>
+                <input id="customerRegisterDate" required type="date" onchange="updateDueDate()" class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-emerald-500">
+            </div>
+            <div class="bg-emerald-50 border border-emerald-100 rounded-2xl p-4">
+                <div class="flex items-center justify-between gap-3">
+                    <div>
+                        <p class="text-[10px] text-emerald-600 uppercase tracking-wide font-semibold">Jatuh Tempo Otomatis</p>
+                        <p id="dueDatePreview" class="text-sm font-bold text-emerald-700 mt-1">-</p>
+                    </div>
+                    <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="4" width="18" height="18" rx="2"/>
+                            <path stroke-linecap="round" d="M16 2v4M8 2v4M3 10h18"/>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+            <input type="hidden" id="customerDueDate">
+            <input type="hidden" id="customerAmount">
+            <input type="hidden" id="customerService">
+            <div class="bg-slate-50 rounded-2xl p-4">
+                <p class="text-xs font-semibold text-slate-700 mb-2">Contoh pesan WhatsApp</p>
+                <div id="messagePreview" class="text-xs text-slate-500 leading-relaxed whitespace-pre-line">
+                    Pesan akan dibuat otomatis berdasarkan data customer.
+                </div>
+            </div>
+            <div class="flex gap-2 pt-1">
+                <button type="button" onclick="closeModal()" class="flex-1 bg-slate-100 text-slate-700 py-3.5 rounded-xl font-semibold text-sm">Batal</button>
+                <button type="submit" class="flex-[1.5] bg-emerald-500 text-white py-3.5 rounded-xl font-semibold text-sm shadow-lg shadow-emerald-500/20">Simpan Customer</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="detailModal" class="modal hidden fixed inset-0 z-50 bg-black/50 px-4 flex items-end justify-center">
+    <div class="modal-content bg-white w-full max-w-md rounded-t-3xl p-5 max-h-[92vh] overflow-y-auto">
+        <div class="flex items-center justify-between mb-5">
+            <div>
+                <h2 class="font-bold text-lg">Detail Pengingat</h2>
+                <p class="text-xs text-slate-500">Pesan yang akan dikirim</p>
+            </div>
+            <button onclick="closeDetail()" class="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+        <div id="detailContent"></div>
+    </div>
+</div>
+
+<div id="historyModal" class="modal hidden fixed inset-0 z-[70] bg-black/50 px-4 flex items-center justify-center">
+    <div class="modal-content bg-white w-full max-w-xs rounded-3xl p-5">
+        <h3 id="historyModalTitle" class="font-bold text-lg mb-4 text-center">Form Riwayat</h3>
+        <form id="historyForm" onsubmit="saveHistoryData(event)" class="space-y-3">
+            <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Tanggal Bayar</label>
+                <input id="historyDate" required type="date" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-emerald-500">
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Bulan Tagihan (Jatuh Tempo)</label>
+                <input id="historyDueDate" required type="date" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-emerald-500">
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Nominal</label>
+                <input id="historyAmount" required type="number" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-emerald-500">
+            </div>
+            <div>
+                <label class="block text-xs font-semibold text-slate-600 mb-1">Metode</label>
+                <select id="historyMethod" required class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-emerald-500">
+                    <option value="CASH">CASH</option>
+                    <option value="Transfer">Transfer</option>
+                </select>
+            </div>
+            <div class="flex gap-2 pt-2">
+                <button type="button" onclick="closeHistoryModal()" class="flex-1 bg-slate-100 text-slate-600 py-2.5 rounded-xl font-bold text-sm">Batal</button>
+                <button type="submit" class="flex-1 bg-emerald-500 text-white py-2.5 rounded-xl font-bold text-sm shadow-lg">Simpan</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="paymentModal" class="modal hidden fixed inset-0 z-50 bg-black/50 px-4 flex items-center justify-center">
+    <div class="modal-content bg-white w-full max-w-xs rounded-3xl p-5">
+        <h3 class="font-bold text-lg mb-1 text-center">Konfirmasi Pembayaran</h3>
+        <p class="text-xs text-slate-500 mb-5 text-center">Pilih metode pembayaran</p>
+        <div class="space-y-2">
+            <button onclick="confirmPayment('CASH')" class="w-full bg-emerald-500 text-white py-3 rounded-xl font-bold text-sm shadow-lg shadow-emerald-500/20">CASH</button>
+            <button onclick="confirmPayment('Transfer')" class="w-full bg-blue-500 text-white py-3 rounded-xl font-bold text-sm shadow-lg shadow-blue-500/20">TRANSFER</button>
+            <button onclick="closePaymentModal()" class="w-full bg-slate-100 text-slate-600 py-3 rounded-xl font-bold text-sm mt-2">Batal</button>
+        </div>
+    </div>
+</div>
+
+<div id="confirmModal" class="modal hidden fixed inset-0 z-[60] bg-black/50 px-4 flex items-center justify-center">
+    <div class="modal-content bg-white w-full max-w-xs rounded-3xl p-5">
+        <h3 id="confirmTitle" class="font-bold text-lg mb-1 text-center"></h3>
+        <p id="confirmMessage" class="text-sm text-slate-500 mb-5 text-center"></p>
+        <div class="flex gap-2">
+            <button onclick="closeConfirmModal()" class="flex-1 bg-slate-100 text-slate-600 py-3 rounded-xl font-bold text-sm">Batal</button>
+            <button id="confirmActionBtn" onclick="executeConfirm()" class="flex-1 bg-emerald-500 text-white py-3 rounded-xl font-bold text-sm shadow-lg">Yakin</button>
+        </div>
+    </div>
+</div>
+
+<div id="toastContainer" class="fixed bottom-5 left-4 right-4 z-[100] max-w-md mx-auto space-y-2"></div>
+
+<script>
+    let customers = [];
+    const SCRIPT_GAS_URL = "https://script.google.com/macros/s/AKfycbwhGJDhe-MiYwD0b3r6-YXspDg-cbvBac_vccgu31bGehA2XFtRWHCKkqT56uhV-uj7/exec";
+
+    let currentFilter = 'all';
+    let countdownTimer = null;
+    let currentPaymentId = null;
+    let confirmCallback = null;
+    let currentHistoryIndex = -1;
+    let currentHistoryCustomerId = null;
+
+    const todayString = () => {
+        const d = new Date();
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${y}-${m}-${day}`;
+    };
+
+    function getNextMonthDate(dateString) {
+        if (!dateString) return '';
+        const parts = dateString.split('-').map(Number);
+        const year = parts[0];
+        const month = parts[1];
+        const day = parts[2];
+        const nextMonth = month === 12 ? 1 : month + 1;
+        const nextYear = month === 12 ? year + 1 : year;
+        const lastDay = new Date(nextYear, nextMonth, 0).getDate();
+        const finalDay = Math.min(day, lastDay);
+        return `${nextYear}-${String(nextMonth).padStart(2, '0')}-${String(finalDay).padStart(2, '0')}`;
+    }
+
+    function saveData() {
+        fetch(SCRIPT_GAS_URL, {
+            method: 'POST',
+            body: JSON.stringify(customers),
+            headers: {
+                'Content-Type': 'text/plain;charset=utf-8'
+            }
+        }).catch(e => {
+            showToast('Terjadi kesalahan sinkronisasi', 'error');
+        });
+    }
+
+    async function loadData() {
+        document.getElementById('customerList').innerHTML = '<div class="text-center py-10 text-slate-500 font-semibold text-sm">Memuat data dari server...</div>';
+        try {
+            const response = await fetch(SCRIPT_GAS_URL);
+            customers = await response.json();
+            normalizeExistingCustomers();
+            renderCustomers();
+        } catch (error) {
+            showToast('Gagal memuat data', 'error');
+            document.getElementById('customerList').innerHTML = '';
+            document.getElementById('emptyState').classList.remove('hidden');
+        }
+    }
+
+    function normalizeExistingCustomers() {
+        let changed = false;
+        customers = customers.map(customer => {
+            const updated = { ...customer };
+            if (updated.isPaid === undefined) {
+                updated.isPaid = false;
+                updated.paymentMethod = null;
+                changed = true;
+            }
+            if (!updated.history) {
+                updated.history = [];
+                changed = true;
+            }
+            if (!updated.registerDate && updated.dueDate) {
+                const due = new Date(updated.dueDate + 'T00:00:00');
+                due.setMonth(due.getMonth() - 1);
+                const year = due.getFullYear();
+                const month = String(due.getMonth() + 1).padStart(2, '0');
+                const day = String(due.getDate()).padStart(2, '0');
+                updated.registerDate = `${year}-${month}-${day}`;
+                changed = true;
+            }
+            if (!updated.dueDate && updated.registerDate) {
+                updated.dueDate = getNextMonthDate(updated.registerDate);
+                changed = true;
+            }
+            return updated;
+        });
+        if (changed) {
+            saveData();
+        }
+    }
+
+    function normalizePhone(phone) {
+        let value = String(phone || '').replace(/\D/g, '');
+        if (value.startsWith('0')) {
+            value = '62' + value.substring(1);
+        }
+        if (!value.startsWith('62')) {
+            value = '62' + value;
+        }
+        return value;
+    }
+
+    function formatCurrency(value) {
+        return new Intl.NumberFormat('id-ID', {
+            style: 'currency',
+            currency: 'IDR',
+            minimumFractionDigits: 0
+        }).format(Number(value || 0));
+    }
+
+    function formatDate(dateString) {
+        if (!dateString) return '-';
+        const date = new Date(dateString + 'T00:00:00');
+        return date.toLocaleDateString('id-ID', {
+            day: '2-digit',
+            month: 'long',
+            year: 'numeric'
+        });
+    }
+
+    function getStatus(customer) {
+        const now = new Date();
+        const due = new Date(customer.dueDate + 'T23:59:59');
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        const dueDay = new Date(customer.dueDate + 'T00:00:00');
+        const diff = dueDay.getTime() - today.getTime();
+        const days = Math.round(diff / 86400000);
+
+        if (days < 0) {
+            return { type: 'expired', days, label: `Terlambat ${Math.abs(days)} hari`, className: 'expired' };
+        }
+        if (days === 0) {
+            return { type: 'danger', days, label: 'Jatuh tempo hari ini', className: 'danger' };
+        }
+        if (days <= 3) {
+            return { type: 'warning', days, label: `${days} hari lagi`, className: 'warning' };
+        }
+        return { type: 'safe', days, label: `${days} hari lagi`, className: 'safe' };
+    }
+
+    function getCountdown(dateString) {
+        const now = new Date();
+        const target = new Date(dateString + 'T23:59:59');
+        const diff = target.getTime() - now.getTime();
+        if (diff <= 0) {
+            return { expired: true, text: 'Sudah melewati jatuh tempo' };
+        }
+        const totalSeconds = Math.floor(diff / 1000);
+        const days = Math.floor(totalSeconds / 86400);
+        const hours = Math.floor((totalSeconds % 86400) / 3600);
+        const minutes = Math.floor((totalSeconds % 3600) / 60);
+        const seconds = totalSeconds % 60;
+        return {
+            expired: false,
+            days, hours, minutes, seconds,
+            text: `${days} hari ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
+        };
+    }
+
+    function createMessage(customer, type = 'reminder') {
+        if (customer.isPaid && type !== 'reminder') {
+            let pDate = todayString();
+            let pMethod = customer.paymentMethod || 'Transfer';
+            let pAmount = customer.amount;
+            let pDueDate = customer.dueDate;
+            
+            if (customer.history && customer.history.length > 0) {
+                const lastHistory = customer.history[customer.history.length - 1];
+                pDate = lastHistory.date || pDate;
+                pMethod = lastHistory.method || pMethod;
+                pAmount = lastHistory.amount || pAmount;
+                pDueDate = lastHistory.dueDate || pDueDate;
+            }
+            
+            const paymentMethodLabel = pMethod === 'CASH' ? 'CASH/TUNAI' : pMethod;
+
+            return `Halo, Kak ${customer.name}\n\nTerima kasih, pembayaran Wi-Fi melalui *${paymentMethodLabel}* telah kami terima.\n\n*Detail layanan Wi-Fi :*\nLayanan : ${customer.service || 'WiFi'}\nNominal : ${formatCurrency(pAmount)}\nPeriode : ${formatDate(customer.registerDate)} - ${formatDate(pDueDate)}\n\n*Detail pembayaran :*\nTanggal : ${formatDate(pDate)}\nStatus : *LUNAS*\n\n_Terima kasih telah menggunakan layanan kami._`;
+        }
+
+        let targetDueDate = customer.dueDate;
+        if (customer.isPaid) {
+            targetDueDate = getNextMonthDate(customer.dueDate);
+        }
+
+        const status = getStatus({ ...customer, dueDate: targetDueDate });
+        let reminderText = '';
+        if (status.type === 'expired') {
+            reminderText = `mengingatkan bahwa pembayaran Wi-Fi Anda telah melewati tanggal jatuh tempo pada *${formatDate(targetDueDate)}.*`;
+        } else if (status.days === 0) {
+            reminderText = `mengingatkan bahwa pembayaran Wi-Fi Anda jatuh tempo pada *hari ini.*`;
+        } else {
+            reminderText = `mengingatkan bahwa pembayaran Wi-Fi Anda akan jatuh tempo pada *${formatDate(targetDueDate)}.*`;
+        }
+
+        return `Halo, Kak ${customer.name}\n\nKami ingin ${reminderText}\n\nDetail pembayaran :\nLayanan : ${customer.service || 'WiFi'}\nNominal : ${formatCurrency(customer.amount)}\nJatuh tempo : ${formatDate(targetDueDate)}\n\n*UNTUK PEMBAYARAN, BISA MELALUI :*\nDANA/SHOPEEPAY/GOPAY/CASH\n082323624177\nTRI WANTORO\n\n_Mohon melakukan pembayaran sebelum atau pada tanggal jatuh tempo agar layanan tetap dapat digunakan dengan normal._\n\n_Abaikan pesan ini jika sudah melakukan pembayaran._\n_Terima kasih._`;
+    }
+
+    function renderCustomers() {
+        const list = document.getElementById('customerList');
+        const empty = document.getElementById('emptyState');
+        const search = document.getElementById('searchInput').value.toLowerCase().trim();
+
+        let filtered = customers.filter(customer => {
+            const status = getStatus(customer);
+            let matchesFilter = false;
+
+            if (currentFilter === 'all') {
+                matchesFilter = true;
+            } else if (currentFilter === 'lunas') {
+                matchesFilter = customer.isPaid;
+            } else if (currentFilter === 'soon') {
+                matchesFilter = !customer.isPaid && ['warning', 'danger'].includes(status.type);
+            } else if (currentFilter === 'expired') {
+                matchesFilter = !customer.isPaid && status.type === 'expired';
+            }
+
+            const matchesSearch = customer.name.toLowerCase().includes(search) || customer.phone.includes(search);
+            return matchesFilter && matchesSearch;
+        });
+
+        filtered.sort((a, b) => {
+            return new Date(a.dueDate) - new Date(b.dueDate);
+        });
+
+        list.innerHTML = '';
+
+        if (filtered.length === 0) {
+            empty.classList.remove('hidden');
+        } else {
+            empty.classList.add('hidden');
+            filtered.forEach(customer => {
+                list.appendChild(createCustomerCard(customer));
+            });
+        }
+        updateStats();
+    }
+
+    function createCustomerCard(customer) {
+        const status = getStatus(customer);
+        const countdown = getCountdown(customer.dueDate);
+        const card = document.createElement('div');
+        card.className = 'card bg-white rounded-2xl p-4';
+
+        let iconClass = 'bg-emerald-100 text-emerald-600';
+        let statusHtml = '';
+        let countdownHtml = '';
+        let actionButtonsHtml = '';
+
+        if (customer.isPaid) {
+            iconClass = 'bg-blue-100 text-blue-600';
+            statusHtml = `<span onclick="showDetail('${customer.id}')" class="cursor-pointer bg-blue-100 text-blue-600 px-2 py-1 rounded-full text-[10px] font-bold whitespace-nowrap">LUNAS (${customer.paymentMethod})</span>`;
+            countdownHtml = `<div class="mt-2.5 flex items-center gap-2 text-xs"><span class="text-blue-500 font-bold">Pembayaran Selesai</span></div>`;
+            actionButtonsHtml = `
+                <div class="flex gap-2 mt-3">
+                    <button onclick="sendWhatsApp('${customer.id}', 'reminder')" class="flex-1 bg-emerald-500 text-white rounded-xl py-2.5 text-xs font-bold flex items-center justify-center gap-1.5 active:scale-[.98] transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21l1.7-4.8A8.9 8.9 0 1112 21a8.9 8.9 0 01-3.9-.9L3 21z"/><path stroke-linecap="round" stroke-linejoin="round" d="M8.5 8.5c.2-.4.4-.4.7-.4h.5c.2 0 .4.1.5.4l.8 1.7c.1.2.1.4 0 .6l-.5.7c-.1.1-.1.4 0 .6.4.7 1.2 1.5 2 1.9.2.1.4.1.6-.1l.7-.6c.2-.1.4-.1.6 0l1.6.8c.3.1.4.3.4.6v.5c0 .3-.1.5-.4.7-.5.4-1.2.6-1.9.5-1.2-.2-2.5-.9-3.7-2.1-1.2-1.1-2-2.4-2.2-3.5-.2-.7 0-1.5.3-2.3z"/></svg>
+                        WA
+                    </button>
+                    <button onclick="sendWhatsApp('${customer.id}', 'receipt')" class="flex-1 bg-blue-500 text-white rounded-xl py-2.5 text-xs font-bold flex items-center justify-center gap-1.5 active:scale-[.98] transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21l1.7-4.8A8.9 8.9 0 1112 21a8.9 8.9 0 01-3.9-.9L3 21z"/><path stroke-linecap="round" stroke-linejoin="round" d="M8.5 8.5c.2-.4.4-.4.7-.4h.5c.2 0 .4.1.5.4l.8 1.7c.1.2.1.4 0 .6l-.5.7c-.1.1-.1.4 0 .6.4.7 1.2 1.5 2 1.9.2.1.4.1.6-.1l.7-.6c.2-.1.4-.1.6 0l1.6.8c.3.1.4.3.4.6v.5c0 .3-.1.5-.4.7-.5.4-1.2.6-1.9.5-1.2-.2-2.5-.9-3.7-2.1-1.2-1.1-2-2.4-2.2-3.5-.2-.7 0-1.5.3-2.3z"/></svg>
+                        Resi
+                    </button>
+                    <button onclick="nextBill('${customer.id}')" class="flex-1 bg-amber-500 text-white rounded-xl py-2.5 text-xs font-bold flex items-center justify-center gap-1.5 active:scale-[.98] transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 5l7 7-7 7M5 5l7 7-7 7"/></svg>
+                        Lanjut
+                    </button>
+                </div>
+                <div class="flex gap-2 mt-2">
+                    <button onclick="undoPayment('${customer.id}')" class="flex-1 bg-slate-100 text-slate-600 rounded-xl py-2 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
+                    </button>
+                    <button onclick="editCustomer('${customer.id}')" class="flex-1 bg-slate-100 text-slate-600 rounded-xl py-2 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 20h9"/><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 3.5a2.12 2.12 0 013 3L8 18l-4 1 1-4 11.5-11.5z"/></svg>
+                    </button>
+                    <button onclick="deleteCustomer('${customer.id}')" class="flex-1 bg-red-50 text-red-500 rounded-xl py-2 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M8 6V4h8v2m-9 0l1 14h8l1-14M10 11v6M14 11v6"/></svg>
+                    </button>
+                </div>
+            `;
+        } else {
+            if (status.type === 'warning') iconClass = 'bg-amber-100 text-amber-600';
+            if (status.type === 'danger') iconClass = 'bg-red-100 text-red-600';
+            if (status.type === 'expired') iconClass = 'bg-slate-100 text-slate-500';
+
+            statusHtml = `<span onclick="showDetail('${customer.id}')" class="cursor-pointer ${status.className} px-2 py-1 rounded-full text-[10px] font-bold whitespace-nowrap">${status.label}</span>`;
+            countdownHtml = `
+                <div class="mt-2.5 flex items-center gap-2 text-xs">
+                    <span class="pulse-dot w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                    <span class="text-slate-500">Countdown:</span>
+                    <span class="font-bold countdown-${customer.id}">${countdown.text}</span>
+                </div>
+            `;
+            actionButtonsHtml = `
+                <div class="flex gap-2 mt-3">
+                    <button onclick="sendWhatsApp('${customer.id}', 'reminder')" class="flex-[2] bg-emerald-500 text-white rounded-xl py-2.5 text-xs font-bold flex items-center justify-center gap-1.5 active:scale-[.98] transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21l1.7-4.8A8.9 8.9 0 1112 21a8.9 8.9 0 01-3.9-.9L3 21z"/><path stroke-linecap="round" stroke-linejoin="round" d="M8.5 8.5c.2-.4.4-.4.7-.4h.5c.2 0 .4.1.5.4l.8 1.7c.1.2.1.4 0 .6l-.5.7c-.1.1-.1.4 0 .6.4.7 1.2 1.5 2 1.9.2.1.4.1.6-.1l.7-.6c.2-.1.4-.1.6 0l1.6.8c.3.1.4.3.4.6v.5c0 .3-.1.5-.4.7-.5.4-1.2.6-1.9.5-1.2-.2-2.5-.9-3.7-2.1-1.2-1.1-2-2.4-2.2-3.5-.2-.7 0-1.5.3-2.3z"/></svg>
+                        WA
+                    </button>
+                    <button onclick="openPaymentModal('${customer.id}')" class="flex-1 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                    </button>
+                    <button onclick="editCustomer('${customer.id}')" class="flex-1 bg-slate-100 text-slate-600 rounded-xl flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 20h9"/><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 3.5a2.12 2.12 0 013 3L8 18l-4 1 1-4 11.5-11.5z"/></svg>
+                    </button>
+                    <button onclick="deleteCustomer('${customer.id}')" class="flex-1 bg-red-50 text-red-500 rounded-xl flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M8 6V4h8v2m-9 0l1 14h8l1-14M10 11v6M14 11v6"/></svg>
+                    </button>
+                </div>
+            `;
+        }
+
+        card.innerHTML = `
+            <div class="flex items-start gap-3">
+                <div onclick="showDetail('${customer.id}')" class="cursor-pointer w-11 h-11 rounded-xl ${iconClass} flex items-center justify-center flex-shrink-0 transition active:scale-95">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M16 11a4 4 0 10-8 0 4 4 0 008 0zM4 21a8 8 0 0116 0"/>
+                    </svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-start justify-between gap-2">
+                        <div onclick="showDetail('${customer.id}')" class="min-w-0 cursor-pointer">
+                            <h3 class="font-bold text-sm truncate">${escapeHtml(customer.name)}</h3>
+                            <p class="text-xs text-slate-500 mt-0.5">${escapeHtml(customer.phone)}</p>
+                        </div>
+                        ${statusHtml}
+                    </div>
+                    <div class="mt-3 grid grid-cols-2 gap-2">
+                        <div class="bg-slate-50 rounded-xl p-2.5">
+                            <p class="text-[9px] text-slate-400 uppercase tracking-wide">Jatuh Tempo</p>
+                            <p class="text-xs font-semibold mt-0.5">${formatDate(customer.dueDate)}</p>
+                        </div>
+                        <div class="bg-slate-50 rounded-xl p-2.5">
+                            <p class="text-[9px] text-slate-400 uppercase tracking-wide">Tagihan</p>
+                            <p class="text-xs font-semibold mt-0.5">${formatCurrency(customer.amount)}</p>
+                        </div>
+                    </div>
+                    ${countdownHtml}
+                    ${actionButtonsHtml}
+                </div>
+            </div>
+        `;
+        return card;
+    }
+
+    function updateCountdowns() {
+        customers.forEach(customer => {
+            if (customer.isPaid) return;
+            const element = document.querySelector(`.countdown-${customer.id}`);
+            if (element) {
+                const countdown = getCountdown(customer.dueDate);
+                element.textContent = countdown.text;
+            }
+        });
+    }
+
+    function updateStats() {
+        let soon = 0;
+        let expired = 0;
+        let paid = 0;
+
+        customers.forEach(customer => {
+            if (customer.isPaid) {
+                paid++;
+            } else {
+                const status = getStatus(customer);
+                if (['warning', 'danger'].includes(status.type)) soon++;
+                if (status.type === 'expired') expired++;
+            }
+        });
+
+        document.getElementById('totalCustomer').textContent = customers.length;
+        document.getElementById('totalPaid').textContent = paid;
+        document.getElementById('totalSoon').textContent = soon;
+        document.getElementById('totalExpired').textContent = expired;
+    }
+
+    function setFilter(filter) {
+        currentFilter = filter;
+        document.querySelectorAll('.filter-btn').forEach(button => {
+            button.classList.remove('bg-slate-900', 'text-white');
+            button.classList.add('bg-white', 'text-slate-600');
+        });
+        const active = {
+            all: 'filterAll',
+            lunas: 'filterLunas',
+            soon: 'filterSoon',
+            expired: 'filterExpired'
+        }[filter];
+        document.getElementById(active).classList.remove('bg-white', 'text-slate-600');
+        document.getElementById(active).classList.add('bg-slate-900', 'text-white');
+        renderCustomers();
+    }
+
+    const wifiPlans = {
+        '1 Perangkat (20k/bulan)': { amount: 20000, service: 'WiFi - 1 Perangkat' },
+        '2 Perangkat (30k/bulan)': { amount: 30000, service: 'WiFi - 2 Perangkat' },
+        '3 Perangkat (40k/bulan)': { amount: 40000, service: 'WiFi - 3 Perangkat' },
+        '4-8 Perangkat (50k/bulan)': { amount: 50000, service: 'WiFi - 4-8 Perangkat' }
+    };
+
+    function updatePlanFields() {
+        const plan = document.getElementById('customerPlan').value;
+        const data = wifiPlans[plan];
+        if (!data) return;
+        document.getElementById('customerAmount').value = data.amount;
+        document.getElementById('customerService').value = data.service;
+        updateDueDate();
+        updateMessagePreview();
+    }
+
+    function updateDueDate() {
+        const registerDate = document.getElementById('customerRegisterDate').value;
+        if (!registerDate) {
+            document.getElementById('customerDueDate').value = '';
+            document.getElementById('dueDatePreview').textContent = '-';
+            updateMessagePreview();
+            return;
+        }
+        const dueDate = getNextMonthDate(registerDate);
+        document.getElementById('customerDueDate').value = dueDate;
+        document.getElementById('dueDatePreview').textContent = formatDate(dueDate);
+        updateMessagePreview();
+    }
+
+    function getPlanByAmount(amount) {
+        return Object.entries(wifiPlans).map(([value, data]) => ({ value, ...data })).find(plan => plan.amount === Number(amount));
+    }
+
+    function openModal(id = null) {
+        const modal = document.getElementById('modal');
+        const form = document.getElementById('customerForm');
+        form.reset();
+        document.getElementById('customerId').value = '';
+        document.getElementById('customerPlan').value = '1 Perangkat (20k/bulan)';
+        document.getElementById('customerAmount').value = '20000';
+        document.getElementById('customerService').value = 'WiFi - 1 Perangkat';
+        document.getElementById('customerRegisterDate').value = todayString();
+        document.getElementById('modalTitle').textContent = 'Tambah Customer';
+        updateDueDate();
+
+        if (id) {
+            const customer = customers.find(item => item.id === id);
+            if (customer) {
+                document.getElementById('customerId').value = customer.id;
+                document.getElementById('customerName').value = customer.name;
+                document.getElementById('customerPhone').value = customer.phone;
+                document.getElementById('customerRegisterDate').value = customer.registerDate || '';
+                const matchingPlan = getPlanByAmount(customer.amount);
+                document.getElementById('customerPlan').value = matchingPlan ? matchingPlan.value : '1 Perangkat (20k/bulan)';
+                if (matchingPlan) {
+                    document.getElementById('customerAmount').value = matchingPlan.amount;
+                    document.getElementById('customerService').value = matchingPlan.service;
+                } else {
+                    document.getElementById('customerAmount').value = customer.amount || 20000;
+                    document.getElementById('customerService').value = customer.service || 'WiFi';
+                }
+                updateDueDate();
+                document.getElementById('modalTitle').textContent = 'Edit Customer';
+            }
+        }
+        modal.classList.remove('hidden');
+        setTimeout(() => { updateMessagePreview(); }, 50);
+    }
+
+    function closeModal() {
+        document.getElementById('modal').classList.add('hidden');
+    }
+
+    function openConfirmModal(title, message, callback, actionColor = 'bg-emerald-500', actionShadow = 'shadow-emerald-500/20') {
+        document.getElementById('confirmTitle').textContent = title;
+        document.getElementById('confirmMessage').textContent = message;
+        const btn = document.getElementById('confirmActionBtn');
+        btn.className = `flex-1 ${actionColor} text-white py-3 rounded-xl font-bold text-sm shadow-lg ${actionShadow}`;
+        confirmCallback = callback;
+        document.getElementById('confirmModal').classList.remove('hidden');
+    }
+
+    function closeConfirmModal() {
+        document.getElementById('confirmModal').classList.add('hidden');
+        confirmCallback = null;
+    }
+
+    function executeConfirm() {
+        if (confirmCallback) confirmCallback();
+        closeConfirmModal();
+    }
+
+    function openPaymentModal(id) {
+        currentPaymentId = id;
+        document.getElementById('paymentModal').classList.remove('hidden');
+    }
+
+    function closePaymentModal() {
+        currentPaymentId = null;
+        document.getElementById('paymentModal').classList.add('hidden');
+    }
+
+    function confirmPayment(method) {
+        if (!currentPaymentId) return;
+        const customer = customers.find(item => item.id === currentPaymentId);
+        if (customer) {
+            customer.isPaid = true;
+            customer.paymentMethod = method;
+            if (!customer.history) customer.history = [];
+            customer.history.push({
+                date: todayString(),
+                method: method,
+                amount: customer.amount,
+                dueDate: customer.dueDate
+            });
+            saveData();
+            renderCustomers();
+            showToast(`Pembayaran melalui ${method} dikonfirmasi.`);
+        }
+        closePaymentModal();
+    }
+
+    function undoPayment(id) {
+        openConfirmModal('Batal Lunas', 'Batalkan status lunas untuk customer ini?', () => {
+            const customer = customers.find(item => item.id === id);
+            if (customer) {
+                customer.isPaid = false;
+                customer.paymentMethod = null;
+                if (customer.history && customer.history.length > 0) {
+                    customer.history.pop();
+                }
+                saveData();
+                renderCustomers();
+                showToast('Status lunas dibatalkan.');
+            }
+        }, 'bg-amber-500', 'shadow-amber-500/20');
+    }
+
+    function nextBill(id) {
+        openConfirmModal('Lanjut Tagihan', 'Lanjutkan ke tagihan bulan berikutnya?', () => {
+            const customer = customers.find(item => item.id === id);
+            if (customer) {
+                customer.registerDate = customer.dueDate;
+                customer.dueDate = getNextMonthDate(customer.dueDate);
+                customer.isPaid = false;
+                customer.paymentMethod = null;
+                saveData();
+                renderCustomers();
+                showToast('Dilanjutkan ke tagihan berikutnya.');
+            }
+        }, 'bg-blue-500', 'shadow-blue-500/20');
+    }
+
+    function editCustomer(id) {
+        openModal(id);
+    }
+
+    function saveCustomer(event) {
+        event.preventDefault();
+        const id = document.getElementById('customerId').value;
+        const registerDate = document.getElementById('customerRegisterDate').value;
+        const dueDate = getNextMonthDate(registerDate);
+        const plan = document.getElementById('customerPlan').value;
+        const planData = wifiPlans[plan];
+
+        const existingCustomer = customers.find(c => c.id === id);
+
+        const data = {
+            id: id || crypto.randomUUID(),
+            name: document.getElementById('customerName').value.trim(),
+            phone: document.getElementById('customerPhone').value.trim(),
+            amount: planData ? planData.amount : Number(document.getElementById('customerAmount').value),
+            dueDate,
+            registerDate,
+            service: planData ? planData.service : document.getElementById('customerService').value.trim() || 'WiFi',
+            plan,
+            isPaid: existingCustomer ? existingCustomer.isPaid : false,
+            paymentMethod: existingCustomer ? existingCustomer.paymentMethod : null,
+            history: existingCustomer ? existingCustomer.history : []
+        };
+
+        if (!data.name || !data.phone || !data.registerDate || !data.dueDate) {
+            showToast('Lengkapi data customer.', 'error');
+            return;
+        }
+
+        if (id) {
+            const index = customers.findIndex(c => c.id === id);
+            if (index !== -1) customers[index] = data;
+        } else {
+            customers.push(data);
+        }
+
+        saveData();
+        closeModal();
+        renderCustomers();
+        showToast(id ? 'Data customer diperbarui.' : 'Customer berhasil ditambahkan.');
+    }
+
+    function deleteCustomer(id) {
+        const customer = customers.find(item => item.id === id);
+        if (!customer) return;
+        openConfirmModal('Hapus Customer', `Hapus customer "${customer.name}"?`, () => {
+            customers = customers.filter(item => item.id !== id);
+            saveData();
+            renderCustomers();
+            showToast('Customer berhasil dihapus.');
+        }, 'bg-red-500', 'shadow-red-500/20');
+    }
+
+    function sendWhatsApp(id, type = 'reminder') {
+        const customer = customers.find(item => item.id === id);
+        if (!customer) return;
+        const phone = normalizePhone(customer.phone);
+        const message = createMessage(customer, type);
+        window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`, '_blank');
+    }
+
+    function openAddHistory(id) {
+        currentHistoryCustomerId = id;
+        currentHistoryIndex = -1;
+        document.getElementById('historyModalTitle').textContent = 'Tambah Riwayat';
+        
+        const customer = customers.find(c => c.id === id);
+        document.getElementById('historyDate').value = todayString();
+        document.getElementById('historyDueDate').value = customer.dueDate || todayString();
+        document.getElementById('historyAmount').value = customer.amount || 0;
+        document.getElementById('historyMethod').value = 'CASH';
+        
+        document.getElementById('historyModal').classList.remove('hidden');
+    }
+
+    function openEditHistory(id, index) {
+        currentHistoryCustomerId = id;
+        currentHistoryIndex = index;
+        document.getElementById('historyModalTitle').textContent = 'Edit Riwayat';
+        
+        const customer = customers.find(c => c.id === id);
+        const h = customer.history[index];
+        
+        document.getElementById('historyDate').value = h.date;
+        document.getElementById('historyDueDate').value = h.dueDate;
+        document.getElementById('historyAmount').value = h.amount;
+        document.getElementById('historyMethod').value = h.method || 'CASH';
+        
+        document.getElementById('historyModal').classList.remove('hidden');
+    }
+
+    function closeHistoryModal() {
+        document.getElementById('historyModal').classList.add('hidden');
+    }
+
+    function saveHistoryData(event) {
+        event.preventDefault();
+        const customer = customers.find(c => c.id === currentHistoryCustomerId);
+        if (!customer) return;
+        
+        if (!customer.history) customer.history = [];
+        
+        const newData = {
+            date: document.getElementById('historyDate').value,
+            dueDate: document.getElementById('historyDueDate').value,
+            amount: Number(document.getElementById('historyAmount').value),
+            method: document.getElementById('historyMethod').value
+        };
+        
+        if (currentHistoryIndex === -1) {
+            customer.history.push(newData);
+        } else {
+            customer.history[currentHistoryIndex] = newData;
+        }
+        
+        saveData();
+        closeHistoryModal();
+        showDetail(currentHistoryCustomerId);
+        renderCustomers();
+        showToast('Riwayat berhasil disimpan.');
+    }
+
+    function deleteHistoryData(id, index) {
+        openConfirmModal('Hapus Riwayat', 'Yakin ingin menghapus riwayat pembayaran ini?', () => {
+            const customer = customers.find(c => c.id === id);
+            if (customer && customer.history) {
+                customer.history.splice(index, 1);
+                saveData();
+                showDetail(id);
+                renderCustomers();
+                showToast('Riwayat berhasil dihapus.');
+            }
+        }, 'bg-red-500', 'shadow-red-500/20');
+    }
+
+    function showDetail(id) {
+        const customer = customers.find(item => item.id === id);
+        if (!customer) return;
+
+        let targetDueDate = customer.isPaid ? getNextMonthDate(customer.dueDate) : customer.dueDate;
+        const status = getStatus({ ...customer, dueDate: targetDueDate });
+        
+        let badgeHtml = '';
+        if (customer.isPaid) {
+            badgeHtml = `<span class="bg-blue-100 text-blue-600 px-3 py-1.5 rounded-full text-xs font-bold">LUNAS</span>`;
+        } else {
+            badgeHtml = `<span class="${status.className} px-3 py-1.5 rounded-full text-xs font-bold">${status.label}</span>`;
+        }
+
+        let waButtonsHtml = '';
+        let messageText = '';
+
+        if (customer.isPaid) {
+            messageText = createMessage(customer, 'receipt');
+            waButtonsHtml = `
+                <div class="flex gap-2">
+                    <button onclick="sendWhatsApp('${customer.id}', 'reminder')" class="flex-1 bg-emerald-500 text-white py-3.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21l1.7-4.8A8.9 8.9 0 1112 21a8.9 8.9 0 01-3.9-.9L3 21z"/><path stroke-linecap="round" stroke-linejoin="round" d="M8.5 8.5c.2-.4.4-.4.7-.4h.5c.2 0 .4.1.5.4l.8 1.7c.1.2.1.4 0 .6l-.5.7c-.1.1-.1.4 0 .6.4.7 1.2 1.5 2 1.9.2.1.4.1.6-.1l.7-.6c.2-.1.4-.1.6 0l1.6.8c.3.1.4.3.4.6v.5c0 .3-.1.5-.4.7-.5.4-1.2.6-1.9.5-1.2-.2-2.5-.9-3.7-2.1-1.2-1.1-2-2.4-2.2-3.5-.2-.7 0-1.5.3-2.3z"/></svg>
+                        WA Pengingat
+                    </button>
+                    <button onclick="sendWhatsApp('${customer.id}', 'receipt')" class="flex-1 bg-blue-500 text-white py-3.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21l1.7-4.8A8.9 8.9 0 1112 21a8.9 8.9 0 01-3.9-.9L3 21z"/><path stroke-linecap="round" stroke-linejoin="round" d="M8.5 8.5c.2-.4.4-.4.7-.4h.5c.2 0 .4.1.5.4l.8 1.7c.1.2.1.4 0 .6l-.5.7c-.1.1-.1.4 0 .6.4.7 1.2 1.5 2 1.9.2.1.4.1.6-.1l.7-.6c.2-.1.4-.1.6 0l1.6.8c.3.1.4.3.4.6v.5c0 .3-.1.5-.4.7-.5.4-1.2.6-1.9.5-1.2-.2-2.5-.9-3.7-2.1-1.2-1.1-2-2.4-2.2-3.5-.2-.7 0-1.5.3-2.3z"/></svg>
+                        Resi WA
+                    </button>
+                </div>
+            `;
+        } else {
+            messageText = createMessage(customer, 'reminder');
+            waButtonsHtml = `
+                <button onclick="sendWhatsApp('${customer.id}', 'reminder')" class="w-full bg-emerald-500 text-white py-3.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21l1.7-4.8A8.9 8.9 0 1112 21a8.9 8.9 0 01-3.9-.9L3 21z"/><path stroke-linecap="round" stroke-linejoin="round" d="M8.5 8.5c.2-.4.4-.4.7-.4h.5c.2 0 .4.1.5.4l.8 1.7c.1.2.1.4 0 .6l-.5.7c-.1.1-.1.4 0 .6.4.7 1.2 1.5 2 1.9.2.1.4.1.6-.1l.7-.6c.2-.1.4-.1.6 0l1.6.8c.3.1.4.3.4.6v.5c0 .3-.1.5-.4.7-.5.4-1.2.6-1.9.5-1.2-.2-2.5-.9-3.7-2.1-1.2-1.1-2-2.4-2.2-3.5-.2-.7 0-1.5.3-2.3z"/></svg>
+                    Kirim ke WhatsApp
+                </button>
+            `;
+        }
+
+        let historyHtml = '';
+        if (customer.history && customer.history.length > 0) {
+            let historyList = customer.history.map((h, index) => `
+                <div class="flex flex-col bg-white p-3 rounded-xl border border-slate-100 mb-2 shadow-sm">
+                    <div class="flex justify-between items-center mb-2">
+                        <div>
+                            <p class="text-xs font-bold text-slate-700">${formatDate(h.date)}</p>
+                            <p class="text-[10px] text-slate-500">Tagihan: ${formatDate(h.dueDate)}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-xs font-bold text-emerald-600">${formatCurrency(h.amount)}</p>
+                            <p class="text-[10px] text-slate-500">${h.method}</p>
+                        </div>
+                    </div>
+                    <div class="flex justify-end gap-2 border-t border-slate-50 pt-2">
+                        <button onclick="openEditHistory('${customer.id}', ${index})" class="text-blue-500 text-[10px] font-bold px-3 py-1 bg-blue-50 rounded">Edit</button>
+                        <button onclick="deleteHistoryData('${customer.id}', ${index})" class="text-red-500 text-[10px] font-bold px-3 py-1 bg-red-50 rounded">Hapus</button>
+                    </div>
+                </div>
+            `).join('');
+            historyHtml = `
+                <div class="mb-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <p class="font-semibold text-sm">Riwayat Pembayaran</p>
+                        <button onclick="openAddHistory('${customer.id}')" class="text-emerald-600 text-xs font-semibold">+ Tambah</button>
+                    </div>
+                    <div class="bg-slate-50 rounded-2xl p-3 max-h-40 overflow-y-auto">
+                        ${historyList}
+                    </div>
+                </div>
+            `;
+        } else {
+            historyHtml = `
+                <div class="mb-4">
+                    <div class="flex items-center justify-between mb-2">
+                        <p class="font-semibold text-sm">Riwayat Pembayaran</p>
+                        <button onclick="openAddHistory('${customer.id}')" class="text-emerald-600 text-xs font-semibold">+ Tambah</button>
+                    </div>
+                    <div class="bg-slate-50 rounded-2xl p-4 text-center">
+                        <p class="text-xs text-slate-400">Belum ada riwayat pembayaran</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        document.getElementById('detailContent').innerHTML = `
+            <div class="bg-slate-50 rounded-2xl p-4 mb-4">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <p class="text-xs text-slate-400">Customer</p>
+                        <p class="font-bold mt-0.5">${escapeHtml(customer.name)}</p>
+                    </div>
+                    ${badgeHtml}
+                </div>
+                <div class="grid grid-cols-2 gap-2 mt-4">
+                    <div class="bg-white rounded-xl p-3">
+                        <p class="text-[10px] text-slate-400">Tanggal Daftar</p>
+                        <p class="font-bold text-sm mt-1">${formatDate(customer.registerDate)}</p>
+                    </div>
+                    <div class="bg-white rounded-xl p-3">
+                        <p class="text-[10px] text-slate-400">Jatuh Tempo</p>
+                        <p class="font-bold text-sm mt-1">${formatDate(customer.dueDate)}</p>
+                    </div>
+                </div>
+            </div>
+            ${historyHtml}
+            <div class="mb-4">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="font-semibold text-sm">Pesan WhatsApp</p>
+                    <div>
+                        ${customer.isPaid ? `<button onclick="copyMessage('${customer.id}', 'reminder')" class="text-emerald-600 text-xs font-semibold mr-3">Salin WA</button><button onclick="copyMessage('${customer.id}', 'receipt')" class="text-blue-600 text-xs font-semibold">Salin Resi</button>` : `<button onclick="copyMessage('${customer.id}', 'reminder')" class="text-emerald-600 text-xs font-semibold">Salin</button>`}
+                    </div>
+                </div>
+                <div class="bg-white border border-slate-200 rounded-2xl p-4">
+                    <p id="detailMessage" class="text-xs text-slate-600 whitespace-pre-line leading-relaxed">${escapeHtml(messageText)}</p>
+                </div>
+            </div>
+            ${waButtonsHtml}
+        `;
+        document.getElementById('detailModal').classList.remove('hidden');
+    }
+
+    function closeDetail() {
+        document.getElementById('detailModal').classList.add('hidden');
+    }
+
+    function copyMessage(id, type = 'reminder') {
+        const customer = customers.find(item => item.id === id);
+        if (!customer) return;
+        navigator.clipboard.writeText(createMessage(customer, type)).then(() => showToast('Pesan berhasil disalin.')).catch(() => showToast('Gagal menyalin pesan.', 'error'));
+    }
+
+    function updateMessagePreview() {
+        const name = document.getElementById('customerName').value.trim() || 'Nama Customer';
+        const amount = Number(document.getElementById('customerAmount').value || 0);
+        const dueDate = document.getElementById('customerDueDate').value || todayString();
+        const service = document.getElementById('customerService').value.trim() || 'WiFi';
+        const temporaryCustomer = { name, amount, dueDate, service, isPaid: false };
+        document.getElementById('messagePreview').textContent = createMessage(temporaryCustomer);
+    }
+
+    function escapeHtml(value) {
+        return String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+    }
+
+    function showToast(message, type = 'success') {
+        const container = document.getElementById('toastContainer');
+        const toast = document.createElement('div');
+        toast.className = `toast rounded-2xl px-4 py-3.5 shadow-xl flex items-center gap-3 ${type === 'error' ? 'bg-red-500 text-white' : 'bg-slate-900 text-white'}`;
+        toast.innerHTML = `
+            <div class="w-8 h-8 rounded-xl ${type === 'error' ? 'bg-white/15' : 'bg-emerald-500'} flex items-center justify-center flex-shrink-0">
+                ${type === 'error' ? '<svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>' : '<svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>'}
+            </div>
+            <p class="text-xs font-semibold">${escapeHtml(message)}</p>
+        `;
+        container.appendChild(toast);
+        setTimeout(() => { toast.remove(); }, 3000);
+    }
+
+    document.getElementById('customerName').addEventListener('input', updateMessagePreview);
+    document.getElementById('customerRegisterDate').addEventListener('input', updateDueDate);
+    document.getElementById('customerPlan').addEventListener('change', updatePlanFields);
+
+    document.getElementById('modal').addEventListener('click', function(event) {
+        if (event.target === this) closeModal();
+    });
+
+    document.getElementById('detailModal').addEventListener('click', function(event) {
+        if (event.target === this) closeDetail();
+    });
+    
+    document.getElementById('historyModal').addEventListener('click', function(event) {
+        if (event.target === this) closeHistoryModal();
+    });
+
+    document.getElementById('paymentModal').addEventListener('click', function(event) {
+        if (event.target === this) closePaymentModal();
+    });
+
+    document.getElementById('confirmModal').addEventListener('click', function(event) {
+        if (event.target === this) closeConfirmModal();
+    });
+
+    updatePlanFields();
+    loadData();
+
+    countdownTimer = setInterval(() => {
+        updateCountdowns();
+        updateStats();
+        if (customers.length > 0) renderCustomers();
+    }, 1000);
+</script>
+</body>
+</html>
