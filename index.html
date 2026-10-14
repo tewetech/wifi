@@ -2,8 +2,8 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#0f172a">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#090d16">
     <title>Tagihan Wi-Fi</title>
     <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/tewetech/aset/main/Full%20Aset%20(Final)/Gambar/Favicon/Tagihan.png">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -12,7 +12,8 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['Segoe UI', 'Arial', 'sans-serif']
+                        sans: ['Segoe UI', 'system-ui', '-apple-system', 'sans-serif'],
+                        mono: ['Consolas', 'Monaco', 'monospace']
                     }
                 }
             }
@@ -21,62 +22,96 @@
     <style>
         * {
             -webkit-tap-highlight-color: transparent;
+            box-sizing: border-box;
         }
         html {
-            scroll-behavior: smooth;
+            scroll-behavior: auto;
         }
         body {
-            font-family: 'Segoe UI', Arial, sans-serif;
-            background: #f1f5f9;
+            min-height: 100svh;
+            min-height: 100dvh;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #f8fafc;
+            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
+            background-size: 24px 24px;
             color: #0f172a;
+            overflow-x: hidden;
+        }
+        #app {
+            min-height: 100svh;
+            min-height: 100dvh;
         }
         input, button, select, textarea {
             font-family: inherit;
         }
         input[type="date"]::-webkit-calendar-picker-indicator {
-            opacity: .7;
+            opacity: .65;
+            cursor: pointer;
         }
         .modal {
-            transition: opacity .2s ease;
+            transition: opacity .18s ease;
+            will-change: opacity;
         }
         .modal-content {
-            transition: transform .2s ease;
+            transition: transform .18s ease;
+            will-change: transform;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior: contain;
         }
         .modal.hidden .modal-content {
-            transform: translateY(20px);
+            transform: translateY(16px);
         }
         .toast {
-            animation: toastIn .25s ease forwards;
+            animation: toastIn .2s ease forwards;
+            will-change: transform, opacity;
         }
         @keyframes toastIn {
-            from { opacity: 0; transform: translateY(20px); }
+            from { opacity: 0; transform: translateY(16px); }
             to { opacity: 1; transform: translateY(0); }
         }
         .pulse-dot {
-            animation: pulseDot 1.5s infinite;
-        }
-        @keyframes pulseDot {
-            0%, 100% { opacity: 1; }
-            50% { opacity: .4; }
+            opacity: 1;
         }
         .card {
-            box-shadow: 0 2px 12px rgba(15, 23, 42, .06);
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 1px 2px rgba(15, 23, 42, .03);
+        }
+        @media (min-width: 1024px) {
+            .card {
+                transition: border-color .15s ease, transform .15s ease;
+            }
+            .card:hover {
+                border-color: #cbd5e1;
+            }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after {
+                animation-duration: .01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: .01ms !important;
+                scroll-behavior: auto !important;
+            }
         }
         .safe {
             background: #ecfdf5;
-            color: #047857;
+            color: #059669;
+            border: 1px solid #a7f3d0;
         }
         .warning {
             background: #fffbeb;
-            color: #b45309;
+            color: #d97706;
+            border: 1px solid #fde68a;
         }
         .danger {
             background: #fef2f2;
             color: #dc2626;
+            border: 1px solid #fecaca;
         }
         .expired {
             background: #f1f5f9;
             color: #475569;
+            border: 1px solid #cbd5e1;
         }
         .scrollbar-hide::-webkit-scrollbar {
             display: none;
@@ -87,163 +122,215 @@
         }
     </style>
 </head>
-<body class="min-h-screen">
+<body class="min-h-screen antialiased selection:bg-emerald-500 selection:text-white">
 
-<div id="app" class="max-w-md mx-auto min-h-screen bg-slate-100">
-    <header class="bg-slate-900 text-white px-5 pt-6 pb-5 sticky top-0 z-30 shadow-lg">
-        <div class="flex items-center justify-between">
-            <div>
-                <div class="flex items-center gap-2">
-                    <div class="w-9 h-9 rounded-xl bg-emerald-500 flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M8.288 15.038a5.25 5.25 0 017.424 0M5.106 11.856a9.75 9.75 0 0113.788 0M1.924 8.674a14.25 14.25 0 0120.152 0M12 19.5h.008v.008H12V19.5z"/>
-                        </svg>
-                    </div>
-                    <div>
-                        <h1 class="font-bold text-lg leading-tight">Tagihan Wi-Fi Pelanggan</h1>
-                        <p class="text-slate-400 text-xs">Join Wi-Fi Tewe Tech - 082323624177</p>
-                    </div>
+<div id="app" class="w-full min-h-screen flex flex-col">
+    <header class="bg-[#090d16] text-white border-b border-slate-800 sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center justify-center flex-shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M8.288 15.038a5.25 5.25 0 017.424 0M5.106 11.856a9.75 9.75 0 0113.788 0M1.924 8.674a14.25 14.25 0 0120.152 0M12 19.5h.008v.008H12V19.5z"/>
+                    </svg>
                 </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h1 class="font-bold text-base sm:text-lg tracking-tight text-white leading-tight">Tagihan Wi-Fi Pelanggan</h1>
+                        <span class="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-mono uppercase tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">System Active</span>
+                    </div>
+                    <p class="text-slate-400 text-xs font-mono mt-0.5">Join Wi-Fi Tewe Tech - 082323624177</p>
+                </div>
+            </div>
+            <div class="flex items-center gap-3">
+                <button onclick="openModal()" class="bg-emerald-500 hover:bg-emerald-600 active:scale-[.98] text-slate-950 font-bold text-xs sm:text-sm px-3.5 py-2.5 rounded-xl flex items-center gap-1.5 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    <span>Tambah<span class="hidden sm:inline"> Customer</span></span>
+                </button>
             </div>
         </div>
     </header>
 
-    <main class="px-4 pb-8">
-        <section class="grid grid-cols-2 gap-2 mt-4">
-            <div class="card bg-white rounded-2xl p-3">
-                <p class="text-[11px] text-slate-500">Customer</p>
-                <p id="totalCustomer" class="text-xl font-bold mt-1">0</p>
-            </div>
-            <div class="card bg-white rounded-2xl p-3">
-                <p class="text-[11px] text-slate-500">Lunas</p>
-                <p id="totalPaid" class="text-xl font-bold text-blue-500 mt-1">0</p>
-            </div>
-            <div class="card bg-white rounded-2xl p-3">
-                <p class="text-[11px] text-slate-500">Segera</p>
-                <p id="totalSoon" class="text-xl font-bold text-amber-500 mt-1">0</p>
-            </div>
-            <div class="card bg-white rounded-2xl p-3">
-                <p class="text-[11px] text-slate-500">Terlambat</p>
-                <p id="totalExpired" class="text-xl font-bold text-red-500 mt-1">0</p>
-            </div>
-        </section>
-
-        <section class="mt-5">
-            <div class="flex items-center justify-between mb-3">
-                <div>
-                    <h2 class="font-bold text-base">Daftar Customer</h2>
-                    <p class="text-xs text-slate-500">Pantau jatuh tempo pembayaran</p>
+    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-8">
+        <div class="lg:grid lg:grid-cols-12 lg:gap-8 items-start">
+            
+            <aside class="lg:col-span-4 xl:col-span-3 lg:sticky lg:top-28 space-y-4">
+                <div class="hidden lg:flex items-center justify-between px-1">
+                    <span class="text-xs font-mono uppercase tracking-wider text-slate-400 font-semibold">Telemetry Overview</span>
+                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
                 </div>
-                <button onclick="openModal()" class="text-emerald-600 text-sm font-semibold">+ Tambah</button>
-            </div>
 
-            <div class="relative mb-3">
-                <svg class="absolute left-3 top-3.5 text-slate-400" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m2.1-5.4a7.5 7.5 0 11-15 0 7.5 7.5 0 0115 0z"/>
-                </svg>
-                <input id="searchInput" type="text" placeholder="Cari nama atau nomor..." oninput="renderCustomers()" class="w-full bg-white border border-slate-200 rounded-xl pl-10 pr-4 py-3 text-sm outline-none focus:ring-2 focus:ring-emerald-500">
-            </div>
+                <section class="grid grid-cols-2 gap-2.5 sm:gap-3">
+                    <div class="card rounded-2xl p-3.5 sm:p-4 relative overflow-hidden">
+                        <div class="w-1 h-8 bg-slate-800 rounded-r absolute left-0 top-3.5"></div>
+                        <p class="text-[11px] font-mono uppercase tracking-wider text-slate-500">Customer</p>
+                        <p id="totalCustomer" class="text-2xl font-bold font-mono text-slate-900 mt-1">0</p>
+                    </div>
+                    <div class="card rounded-2xl p-3.5 sm:p-4 relative overflow-hidden">
+                        <div class="w-1 h-8 bg-blue-500 rounded-r absolute left-0 top-3.5"></div>
+                        <p class="text-[11px] font-mono uppercase tracking-wider text-slate-500">Lunas</p>
+                        <p id="totalPaid" class="text-2xl font-bold font-mono text-blue-600 mt-1">0</p>
+                    </div>
+                    <div class="card rounded-2xl p-3.5 sm:p-4 relative overflow-hidden">
+                        <div class="w-1 h-8 bg-amber-500 rounded-r absolute left-0 top-3.5"></div>
+                        <p class="text-[11px] font-mono uppercase tracking-wider text-slate-500">Segera</p>
+                        <p id="totalSoon" class="text-2xl font-bold font-mono text-amber-500 mt-1">0</p>
+                    </div>
+                    <div class="card rounded-2xl p-3.5 sm:p-4 relative overflow-hidden">
+                        <div class="w-1 h-8 bg-red-500 rounded-r absolute left-0 top-3.5"></div>
+                        <p class="text-[11px] font-mono uppercase tracking-wider text-slate-500">Terlambat</p>
+                        <p id="totalExpired" class="text-2xl font-bold font-mono text-red-500 mt-1">0</p>
+                    </div>
+                </section>
 
-            <div class="grid grid-cols-4 gap-2 mb-3">
-                <button onclick="setFilter('all')" id="filterAll" class="filter-btn bg-slate-900 text-white py-2 rounded-full text-[11px] font-semibold flex items-center justify-center">Semua</button>
-                <button onclick="setFilter('lunas')" id="filterLunas" class="filter-btn bg-white text-slate-600 py-2 rounded-full text-[11px] font-semibold flex items-center justify-center">Lunas</button>
-                <button onclick="setFilter('soon')" id="filterSoon" class="filter-btn bg-white text-slate-600 py-2 rounded-full text-[11px] font-semibold flex items-center justify-center">Segera</button>
-                <button onclick="setFilter('expired')" id="filterExpired" class="filter-btn bg-white text-slate-600 py-2 rounded-full text-[11px] font-semibold flex items-center justify-center">Terlambat</button>
-            </div>
-
-            <div id="customerList" class="space-y-3"></div>
-
-            <div id="emptyState" class="hidden text-center py-14">
-                <div class="w-16 h-16 mx-auto rounded-2xl bg-white flex items-center justify-center text-slate-300 mb-3">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M20 13V7a2 2 0 00-2-2h-3l-1-2H10L9 5H6a2 2 0 00-2 2v6m16 0v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4m16 0H4m8-3v4m-2-2h4"/>
-                    </svg>
+                <div class="hidden lg:block card rounded-2xl p-5 bg-slate-900 text-white border-slate-800">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="text-[11px] font-mono uppercase tracking-wider text-emerald-400">Network Billing Hub</span>
+                        <span class="text-[11px] font-mono text-slate-400">v2.0</span>
+                    </div>
+                    <p class="text-xs text-slate-300 leading-relaxed mb-4">Kelola jatuh tempo tagihan bulanan, kirim pengingat otomatis, dan cetak resi pembayaran WhatsApp secara instan.</p>
+                    <button onclick="openModal()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-2.5 rounded-xl text-xs transition flex items-center justify-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
+                        </svg>
+                        Registrasi Pelanggan Baru
+                    </button>
                 </div>
-                <p class="font-semibold text-slate-700">Belum ada customer</p>
-                <p class="text-xs text-slate-400 mt-1">Tambahkan customer untuk mulai mengingatkan pembayaran.</p>
-                <button onclick="openModal()" class="mt-4 bg-emerald-500 text-white px-5 py-2.5 rounded-xl text-sm font-semibold">Tambah Customer</button>
-            </div>
-        </section>
+            </aside>
+
+            <section class="mt-5 lg:mt-0 lg:col-span-8 xl:col-span-9">
+                <div class="card rounded-2xl p-3.5 sm:p-4 mb-4">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3.5">
+                        <div>
+                            <h2 class="font-bold text-base sm:text-lg text-slate-900 tracking-tight">Daftar Customer</h2>
+                            <p class="text-xs text-slate-500">Pantau jatuh tempo pembayaran & status langganan</p>
+                        </div>
+                        <button onclick="openModal()" class="sm:hidden self-start text-emerald-600 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-lg text-xs font-bold">+ Tambah Customer</button>
+                    </div>
+
+                    <div class="flex flex-col md:flex-row gap-2.5">
+                        <div class="relative flex-1">
+                            <svg class="absolute left-3.5 top-3 text-slate-400 pointer-events-none" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m2.1-5.4a7.5 7.5 0 11-15 0 7.5 7.5 0 0115 0z"/>
+                            </svg>
+                            <input id="searchInput" type="text" placeholder="Cari nama atau nomor WhatsApp..." oninput="renderCustomers()" class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-sm text-slate-800 placeholder-slate-400 outline-none focus:bg-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/15 transition">
+                        </div>
+
+                        <div class="grid grid-cols-4 gap-1.5 sm:flex sm:items-center bg-slate-100 p-1 rounded-xl border border-slate-200/70">
+                            <button onclick="setFilter('all')" id="filterAll" class="filter-btn bg-slate-900 text-white px-3 py-2 rounded-lg text-[11px] font-bold flex items-center justify-center transition">Semua</button>
+                            <button onclick="setFilter('lunas')" id="filterLunas" class="filter-btn bg-white text-slate-600 px-3 py-2 rounded-lg text-[11px] font-bold flex items-center justify-center transition">Lunas</button>
+                            <button onclick="setFilter('soon')" id="filterSoon" class="filter-btn bg-white text-slate-600 px-3 py-2 rounded-lg text-[11px] font-bold flex items-center justify-center transition">Segera</button>
+                            <button onclick="setFilter('expired')" id="filterExpired" class="filter-btn bg-white text-slate-600 px-3 py-2 rounded-lg text-[11px] font-bold flex items-center justify-center transition">Terlambat</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="customerList" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-3 sm:gap-4"></div>
+
+                <div id="emptyState" class="hidden card rounded-2xl text-center py-14 px-4">
+                    <div class="w-16 h-16 mx-auto rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-400 mb-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M20 13V7a2 2 0 00-2-2h-3l-1-2H10L9 5H6a2 2 0 00-2 2v6m16 0v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4m16 0H4m8-3v4m-2-2h4"/>
+                        </svg>
+                    </div>
+                    <p class="font-bold text-slate-800 text-base">Belum ada data customer</p>
+                    <p class="text-xs text-slate-500 mt-1 max-w-xs mx-auto">Tambahkan data pelanggan Wi-Fi untuk mulai memantau jatuh tempo pembayaran.</p>
+                    <button onclick="openModal()" class="mt-4 bg-emerald-500 hover:bg-emerald-600 text-slate-950 px-5 py-2.5 rounded-xl text-xs font-bold transition">+ Tambah Customer</button>
+                </div>
+            </section>
+
+        </div>
     </main>
 </div>
 
-<div id="modal" class="modal hidden fixed inset-0 z-50 bg-black/50 px-4 flex items-end justify-center">
-    <div class="modal-content bg-white w-full max-w-md rounded-t-3xl p-5 max-h-[92vh] overflow-y-auto">
-        <div class="flex items-center justify-between mb-5">
+<div id="modal" class="modal hidden fixed inset-0 z-50 bg-slate-950/60 px-0 sm:px-4 flex items-end sm:items-center justify-center">
+    <div class="modal-content bg-white w-full max-w-lg rounded-t-3xl sm:rounded-2xl border border-slate-200 p-5 sm:p-6 max-h-[92dvh] overflow-y-auto">
+        <div class="flex items-center justify-between pb-4 mb-4 border-b border-slate-100">
             <div>
-                <h2 id="modalTitle" class="font-bold text-lg">Tambah Customer</h2>
-                <p class="text-xs text-slate-500">Masukkan data pembayaran WiFi</p>
+                <h2 id="modalTitle" class="font-bold text-lg text-slate-900">Tambah Customer</h2>
+                <p class="text-xs text-slate-500">Konfigurasi parameter langganan Wi-Fi</p>
             </div>
-            <button onclick="closeModal()" class="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <button onclick="closeModal()" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
                 </svg>
             </button>
         </div>
         <form id="customerForm" onsubmit="saveCustomer(event)" class="space-y-4">
             <input type="hidden" id="customerId">
-            <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1.5">Nama Customer</label>
-                <input id="customerName" required type="text" placeholder="Contoh: Budi Santoso" class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-emerald-500">
-            </div>
-            <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1.5">Nomor WhatsApp</label>
-                <input id="customerPhone" required type="tel" placeholder="Contoh: 081234567890" class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-emerald-500">
-                <p class="text-[10px] text-slate-400 mt-1">Nomor otomatis diubah ke format WhatsApp Indonesia.</p>
-            </div>
-            <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1.5">Paket WiFi</label>
-                <select id="customerPlan" required onchange="updatePlanFields()" class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-emerald-500">
-                    <option value="1 Perangkat (20k/bulan)">1 Perangkat - Rp 20.000 / bulan</option>
-                    <option value="2 Perangkat (30k/bulan)">2 Perangkat - Rp 30.000 / bulan</option>
-                    <option value="3 Perangkat (40k/bulan)">3 Perangkat - Rp 40.000 / bulan</option>
-                    <option value="4-8 Perangkat (50k/bulan)">4-8 Perangkat - Rp 50.000 / bulan</option>
-                </select>
-            </div>
-            <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1.5">Tanggal Daftar</label>
-                <input id="customerRegisterDate" required type="date" onchange="updateDueDate()" class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm outline-none focus:ring-2 focus:ring-emerald-500">
-            </div>
-            <div class="bg-emerald-50 border border-emerald-100 rounded-2xl p-4">
-                <div class="flex items-center justify-between gap-3">
-                    <div>
-                        <p class="text-[10px] text-emerald-600 uppercase tracking-wide font-semibold">Jatuh Tempo Otomatis</p>
-                        <p id="dueDatePreview" class="text-sm font-bold text-emerald-700 mt-1">-</p>
-                    </div>
-                    <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <rect x="3" y="4" width="18" height="18" rx="2"/>
-                            <path stroke-linecap="round" d="M16 2v4M8 2v4M3 10h18"/>
-                        </svg>
-                    </div>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1.5">Nama Customer</label>
+                    <input id="customerName" required type="text" placeholder="Contoh: Budi Santoso" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:bg-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/15">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1.5">Nomor WhatsApp</label>
+                    <input id="customerPhone" required type="tel" placeholder="Contoh: 081234567890" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm font-mono outline-none focus:bg-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/15">
                 </div>
             </div>
+            <p class="text-[11px] text-slate-400 -mt-2">Nomor otomatis diformat ke kode negara WhatsApp Indonesia (62).</p>
+            
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1.5">Paket WiFi</label>
+                    <select id="customerPlan" required onchange="updatePlanFields()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:bg-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/15">
+                        <option value="1 Perangkat (20k/bulan)">1 Perangkat - Rp 20.000 / bln</option>
+                        <option value="2 Perangkat (30k/bulan)">2 Perangkat - Rp 30.000 / bln</option>
+                        <option value="3 Perangkat (40k/bulan)">3 Perangkat - Rp 40.000 / bln</option>
+                        <option value="4-8 Perangkat (50k/bulan)">4-8 Perangkat - Rp 50.000 / bln</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1.5">Tanggal Daftar / Aktif</label>
+                    <input id="customerRegisterDate" required type="date" onchange="updateDueDate()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm font-mono outline-none focus:bg-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/15">
+                </div>
+            </div>
+
+            <div class="bg-emerald-500/5 border border-emerald-500/20 rounded-xl p-3.5 flex items-center justify-between gap-3">
+                <div>
+                    <p class="text-[10px] font-mono text-emerald-700 uppercase tracking-wider font-bold">Kalkulasi Jatuh Tempo Otomatis</p>
+                    <p id="dueDatePreview" class="text-sm font-bold text-emerald-800 mt-0.5 font-mono">-</p>
+                </div>
+                <div class="w-9 h-9 rounded-lg bg-emerald-500/10 text-emerald-600 flex items-center justify-center flex-shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="4" width="18" height="18" rx="2"/>
+                        <path stroke-linecap="round" d="M16 2v4M8 2v4M3 10h18"/>
+                    </svg>
+                </div>
+            </div>
+
             <input type="hidden" id="customerDueDate">
             <input type="hidden" id="customerAmount">
             <input type="hidden" id="customerService">
-            <div class="bg-slate-50 rounded-2xl p-4">
-                <p class="text-xs font-semibold text-slate-700 mb-2">Contoh pesan WhatsApp</p>
-                <div id="messagePreview" class="text-xs text-slate-500 leading-relaxed whitespace-pre-line">
+
+            <div class="bg-slate-900 text-slate-200 rounded-xl p-3.5 border border-slate-800">
+                <div class="flex items-center justify-between mb-2">
+                    <p class="text-[11px] font-mono uppercase tracking-wider text-emerald-400 font-semibold">Preview Output WhatsApp</p>
+                    <span class="text-[10px] font-mono text-slate-500">Auto-Generated</span>
+                </div>
+                <div id="messagePreview" class="text-xs text-slate-300 font-mono leading-relaxed whitespace-pre-line max-h-36 overflow-y-auto pr-1">
                     Pesan akan dibuat otomatis berdasarkan data customer.
                 </div>
             </div>
-            <div class="flex gap-2 pt-1">
-                <button type="button" onclick="closeModal()" class="flex-1 bg-slate-100 text-slate-700 py-3.5 rounded-xl font-semibold text-sm">Batal</button>
-                <button type="submit" class="flex-[1.5] bg-emerald-500 text-white py-3.5 rounded-xl font-semibold text-sm shadow-lg shadow-emerald-500/20">Simpan Customer</button>
+
+            <div class="flex gap-2.5 pt-2">
+                <button type="button" onclick="closeModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 py-3 rounded-xl font-bold text-xs sm:text-sm transition">Batal</button>
+                <button type="submit" class="flex-[1.5] bg-emerald-500 hover:bg-emerald-600 text-slate-950 py-3 rounded-xl font-bold text-xs sm:text-sm transition">Simpan Customer</button>
             </div>
         </form>
     </div>
 </div>
 
-<div id="detailModal" class="modal hidden fixed inset-0 z-50 bg-black/50 px-4 flex items-end justify-center">
-    <div class="modal-content bg-white w-full max-w-md rounded-t-3xl p-5 max-h-[92vh] overflow-y-auto">
-        <div class="flex items-center justify-between mb-5">
+<div id="detailModal" class="modal hidden fixed inset-0 z-50 bg-slate-950/60 px-0 sm:px-4 flex items-end sm:items-center justify-center">
+    <div class="modal-content bg-white w-full max-w-lg rounded-t-3xl sm:rounded-2xl border border-slate-200 p-5 sm:p-6 max-h-[92dvh] overflow-y-auto">
+        <div class="flex items-center justify-between pb-4 mb-4 border-b border-slate-100">
             <div>
-                <h2 class="font-bold text-lg">Detail Pengingat</h2>
-                <p class="text-xs text-slate-500">Pesan yang akan dikirim</p>
+                <h2 class="font-bold text-lg text-slate-900">Detail & Riwayat Pelanggan</h2>
+                <p class="text-xs text-slate-500">Log transaksi & generator pesan</p>
             </div>
-            <button onclick="closeDetail()" class="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center">
-                <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <button onclick="closeDetail()" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
                 </svg>
             </button>
@@ -252,65 +339,89 @@
     </div>
 </div>
 
-<div id="historyModal" class="modal hidden fixed inset-0 z-[70] bg-black/50 px-4 flex items-center justify-center">
-    <div class="modal-content bg-white w-full max-w-xs rounded-3xl p-5">
-        <h3 id="historyModalTitle" class="font-bold text-lg mb-4 text-center">Form Riwayat</h3>
+<div id="historyModal" class="modal hidden fixed inset-0 z-[70] bg-slate-950/60 px-4 flex items-center justify-center">
+    <div class="modal-content bg-white w-full max-w-sm rounded-2xl border border-slate-200 p-5">
+        <h3 id="historyModalTitle" class="font-bold text-base text-slate-900 mb-4 text-center">Form Riwayat Pembayaran</h3>
         <form id="historyForm" onsubmit="saveHistoryData(event)" class="space-y-3">
             <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Tanggal Bayar</label>
-                <input id="historyDate" required type="date" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-emerald-500">
+                <label class="block text-xs font-bold text-slate-700 mb-1">Tanggal Bayar</label>
+                <input id="historyDate" required type="date" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-mono outline-none focus:bg-white focus:border-emerald-500">
             </div>
             <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Bulan Tagihan (Jatuh Tempo)</label>
-                <input id="historyDueDate" required type="date" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-emerald-500">
+                <label class="block text-xs font-bold text-slate-700 mb-1">Bulan Tagihan (Jatuh Tempo)</label>
+                <input id="historyDueDate" required type="date" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-mono outline-none focus:bg-white focus:border-emerald-500">
             </div>
             <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Nominal</label>
-                <input id="historyAmount" required type="text" oninput="this.value = formatInputRupiah(this.value)" class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-emerald-500">
+                <label class="block text-xs font-bold text-slate-700 mb-1">Nominal (Rp)</label>
+                <input id="historyAmount" required type="text" oninput="this.value = formatInputRupiah(this.value)" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-mono outline-none focus:bg-white focus:border-emerald-500">
             </div>
             <div>
-                <label class="block text-xs font-semibold text-slate-600 mb-1">Metode</label>
-                <select id="historyMethod" required class="w-full border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-emerald-500">
+                <label class="block text-xs font-bold text-slate-700 mb-1">Metode</label>
+                <select id="historyMethod" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:bg-white focus:border-emerald-500">
                     <option value="CASH">CASH</option>
                     <option value="Transfer">Transfer</option>
                 </select>
             </div>
             <div class="flex gap-2 pt-2">
-                <button type="button" onclick="closeHistoryModal()" class="flex-1 bg-slate-100 text-slate-600 py-2.5 rounded-xl font-bold text-sm">Batal</button>
-                <button type="submit" class="flex-1 bg-emerald-500 text-white py-2.5 rounded-xl font-bold text-sm shadow-lg">Simpan</button>
+                <button type="button" onclick="closeHistoryModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 py-2.5 rounded-xl font-bold text-xs transition">Batal</button>
+                <button type="submit" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-slate-950 py-2.5 rounded-xl font-bold text-xs transition">Simpan</button>
             </div>
         </form>
     </div>
 </div>
 
-<div id="paymentModal" class="modal hidden fixed inset-0 z-50 bg-black/50 px-4 flex items-center justify-center">
-    <div class="modal-content bg-white w-full max-w-xs rounded-3xl p-5">
-        <h3 class="font-bold text-lg mb-1 text-center">Konfirmasi Pembayaran</h3>
-        <p class="text-xs text-slate-500 mb-5 text-center">Pilih metode pembayaran</p>
-        <div class="space-y-2">
-            <button onclick="confirmPayment('CASH')" class="w-full bg-emerald-500 text-white py-3 rounded-xl font-bold text-sm shadow-lg shadow-emerald-500/20">CASH</button>
-            <button onclick="confirmPayment('Transfer')" class="w-full bg-blue-500 text-white py-3 rounded-xl font-bold text-sm shadow-lg shadow-blue-500/20">TRANSFER</button>
-            <button onclick="closePaymentModal()" class="w-full bg-slate-100 text-slate-600 py-3 rounded-xl font-bold text-sm mt-2">Batal</button>
+<div id="paymentModal" class="modal hidden fixed inset-0 z-50 bg-slate-950/60 px-4 flex items-center justify-center">
+    <div class="modal-content bg-white w-full max-w-sm rounded-2xl border border-slate-200 p-5">
+        <h3 class="font-bold text-base text-slate-900 mb-1 text-center">Konfirmasi Pembayaran</h3>
+        <p class="text-xs text-slate-500 mb-4 text-center">Pilih durasi bulan & metode transaksi</p>
+        <div class="mb-4">
+            <label class="block text-xs font-bold text-slate-700 mb-1.5">Jumlah Bulan Bayar</label>
+            <select id="paymentMonths" onchange="updatePaymentPreview()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-semibold outline-none focus:bg-white focus:border-emerald-500">
+                <option value="1">1 Bulan</option>
+                <option value="2">2 Bulan</option>
+                <option value="3">3 Bulan</option>
+                <option value="4">4 Bulan</option>
+                <option value="5">5 Bulan</option>
+                <option value="6">6 Bulan</option>
+                <option value="12">12 Bulan (1 Tahun)</option>
+            </select>
+            <div class="mt-3 bg-slate-900 text-white rounded-xl p-3.5 space-y-1.5">
+                <div class="flex justify-between items-center text-xs">
+                    <span class="text-slate-400">Total Tagihan:</span>
+                    <span id="paymentTotalPreview" class="font-bold font-mono text-emerald-400">Rp 0</span>
+                </div>
+                <div class="flex justify-between items-center text-xs">
+                    <span class="text-slate-400">Jatuh Tempo Baru:</span>
+                    <span id="paymentDuePreview" class="font-bold font-mono text-slate-200">-</span>
+                </div>
+            </div>
         </div>
+        <div class="grid grid-cols-2 gap-2">
+            <button onclick="confirmPayment('CASH')" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 py-3 rounded-xl font-bold text-xs transition">CASH / TUNAI</button>
+            <button onclick="confirmPayment('Transfer')" class="bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-bold text-xs transition">TRANSFER</button>
+        </div>
+        <button onclick="closePaymentModal()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-600 py-2.5 rounded-xl font-bold text-xs mt-2 transition">Batal</button>
     </div>
 </div>
 
-<div id="confirmModal" class="modal hidden fixed inset-0 z-[60] bg-black/50 px-4 flex items-center justify-center">
-    <div class="modal-content bg-white w-full max-w-xs rounded-3xl p-5">
-        <h3 id="confirmTitle" class="font-bold text-lg mb-1 text-center"></h3>
-        <p id="confirmMessage" class="text-sm text-slate-500 mb-5 text-center"></p>
+<div id="confirmModal" class="modal hidden fixed inset-0 z-[60] bg-slate-950/60 px-4 flex items-center justify-center">
+    <div class="modal-content bg-white w-full max-w-xs rounded-2xl border border-slate-200 p-5">
+        <h3 id="confirmTitle" class="font-bold text-base text-slate-900 mb-1 text-center"></h3>
+        <p id="confirmMessage" class="text-xs text-slate-500 mb-5 text-center leading-relaxed"></p>
         <div class="flex gap-2">
-            <button onclick="closeConfirmModal()" class="flex-1 bg-slate-100 text-slate-600 py-3 rounded-xl font-bold text-sm">Batal</button>
-            <button id="confirmActionBtn" onclick="executeConfirm()" class="flex-1 bg-emerald-500 text-white py-3 rounded-xl font-bold text-sm shadow-lg">Yakin</button>
+            <button onclick="closeConfirmModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 py-2.5 rounded-xl font-bold text-xs transition">Batal</button>
+            <button id="confirmActionBtn" onclick="executeConfirm()" class="flex-1 bg-emerald-500 text-white py-2.5 rounded-xl font-bold text-xs transition">Yakin</button>
         </div>
     </div>
 </div>
 
-<div id="toastContainer" class="fixed bottom-5 left-4 right-4 z-[100] max-w-md mx-auto space-y-2"></div>
+<div id="toastContainer" class="fixed bottom-5 right-4 left-4 sm:left-auto sm:w-80 z-[100] space-y-2 pointer-events-none"></div>
 
 <script>
     let customers = [];
-    
+    let saveQueue = Promise.resolve();
+    let lastBillingCheckDate = '';
+
     function formatInputRupiah(value) {
         let val = String(value).toLowerCase();
         val = val.replace(/rb/g, '000').replace(/ribu/g, '000');
@@ -318,7 +429,7 @@
         if (!val) return '';
         return new Intl.NumberFormat('id-ID').format(val);
     }
-    const SCRIPT_GAS_URL = "https://script.google.com/macros/s/AKfycbzzxm-iGHAD8QCjkSx7YyxC1vGhj1SZLRDxe2N89Y2xQa0q6CzVPhfnyzMPCVs3hR_x/exec";
+    const SCRIPT_GAS_URL = "https://script.google.com/macros/s/AKfycbx75dnWoYMWJOB5slDuP7PCXOyj_-6WsOCI529Ke2JGeMeqHfPY0m5vD37_KqMtGqar/exec";
 
     let currentFilter = 'all';
     let countdownTimer = null;
@@ -348,24 +459,49 @@
         return `${nextYear}-${String(nextMonth).padStart(2, '0')}-${String(finalDay).padStart(2, '0')}`;
     }
 
+    function addMonthsToDate(dateString, count = 1) {
+        let result = dateString;
+        const total = Math.max(1, Number(count) || 1);
+        for (let i = 0; i < total; i++) {
+            result = getNextMonthDate(result);
+        }
+        return result;
+    }
+
     function saveData() {
-        fetch(SCRIPT_GAS_URL, {
-            method: 'POST',
-            body: JSON.stringify(customers),
-            headers: {
-                'Content-Type': 'text/plain;charset=utf-8'
+        const payload = JSON.stringify(customers);
+        saveQueue = saveQueue.catch(() => false).then(async () => {
+            const response = await fetch(SCRIPT_GAS_URL, {
+                method: 'POST',
+                body: payload,
+                headers: {
+                    'Content-Type': 'text/plain;charset=utf-8'
+                }
+            });
+            const result = await response.json();
+            if (!response.ok || !result || result.status !== 'success') {
+                throw new Error(result && result.message ? result.message : 'Sinkronisasi gagal');
             }
-        }).catch(e => {
+            return true;
+        }).catch(() => {
             showToast('Terjadi kesalahan sinkronisasi', 'error');
+            return false;
         });
+        return saveQueue;
     }
 
     async function loadData() {
-        document.getElementById('customerList').innerHTML = '<div class="text-center py-10 text-slate-500 font-semibold text-sm">Memuat data dari server...</div>';
+        document.getElementById('customerList').innerHTML = '<div class="col-span-full card rounded-2xl text-center py-12 text-slate-500 font-mono text-xs">MEMUAT DATA DARI SERVER...</div>';
         try {
-            const response = await fetch(SCRIPT_GAS_URL);
-            customers = await response.json();
+            const response = await fetch(SCRIPT_GAS_URL, { cache: 'no-store' });
+            const data = await response.json();
+            if (!response.ok || !Array.isArray(data)) {
+                throw new Error(data && data.message ? data.message : 'Format database tidak valid');
+            }
+            customers = data;
             normalizeExistingCustomers();
+            lastBillingCheckDate = todayString();
+            if (refreshPaidCycles()) saveData();
             renderCustomers();
         } catch (error) {
             showToast('Gagal memuat data', 'error');
@@ -376,14 +512,14 @@
 
     function normalizeExistingCustomers() {
         let changed = false;
-        customers = customers.map(customer => {
+        customers = (Array.isArray(customers) ? customers : []).map(customer => {
             const updated = { ...customer };
             if (updated.isPaid === undefined) {
                 updated.isPaid = false;
                 updated.paymentMethod = null;
                 changed = true;
             }
-            if (!updated.history) {
+            if (!Array.isArray(updated.history)) {
                 updated.history = [];
                 changed = true;
             }
@@ -400,11 +536,32 @@
                 updated.dueDate = getNextMonthDate(updated.registerDate);
                 changed = true;
             }
+            if (updated.isPaid && updated.history.length > 0) {
+                const lastHistory = updated.history[updated.history.length - 1];
+                if (lastHistory.dueDate && lastHistory.dueDate === updated.dueDate) {
+                    if (!lastHistory.periodStart) lastHistory.periodStart = updated.registerDate || updated.dueDate;
+                    const paidDueDate = updated.dueDate;
+                    updated.registerDate = paidDueDate;
+                    updated.dueDate = getNextMonthDate(paidDueDate);
+                    changed = true;
+                }
+            }
             return updated;
         });
-        if (changed) {
-            saveData();
-        }
+        if (changed) saveData();
+    }
+
+    function refreshPaidCycles() {
+        const today = todayString();
+        let changed = false;
+        customers.forEach(customer => {
+            if (customer.isPaid && customer.dueDate && customer.dueDate <= today) {
+                customer.isPaid = false;
+                customer.paymentMethod = null;
+                changed = true;
+            }
+        });
+        return changed;
     }
 
     function normalizePhone(phone) {
@@ -437,8 +594,6 @@
     }
 
     function getStatus(customer) {
-        const now = new Date();
-        const due = new Date(customer.dueDate + 'T23:59:59');
         const today = new Date();
         today.setHours(0, 0, 0, 0);
         const dueDay = new Date(customer.dueDate + 'T00:00:00');
@@ -472,7 +627,7 @@
         return {
             expired: false,
             days, hours, minutes, seconds,
-            text: `${days} hari ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
+            text: `${days}h ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}`
         };
     }
 
@@ -482,25 +637,34 @@
             let pMethod = customer.paymentMethod || 'Transfer';
             let pAmount = customer.amount;
             let pDueDate = customer.dueDate;
-            
+            let pRegisterDate = customer.registerDate;
+            let pMonths = 1;
+
             if (customer.history && customer.history.length > 0) {
                 const lastHistory = customer.history[customer.history.length - 1];
                 pDate = lastHistory.date || pDate;
                 pMethod = lastHistory.method || pMethod;
-                pAmount = lastHistory.amount || pAmount;
                 pDueDate = lastHistory.dueDate || pDueDate;
+                pRegisterDate = lastHistory.periodStart || pRegisterDate;
+                if (lastHistory.batchId) {
+                    const batchItems = customer.history.filter(h => h.batchId === lastHistory.batchId);
+                    pMonths = batchItems.length;
+                    pAmount = batchItems.reduce((sum, item) => sum + Number(item.amount || 0), 0);
+                    pRegisterDate = batchItems[0].periodStart || pRegisterDate;
+                    pDueDate = batchItems[batchItems.length - 1].dueDate || pDueDate;
+                } else {
+                    pAmount = lastHistory.amount || pAmount;
+                    pMonths = lastHistory.monthsPaid || 1;
+                }
             }
-            
+
             const paymentMethodLabel = pMethod === 'CASH' ? 'CASH/TUNAI' : pMethod;
+            const durationText = pMonths > 1 ? ` (${pMonths} Bulan)` : '';
 
-            return `Halo, Kak ${customer.name}\n\nTerima kasih, pembayaran Wi-Fi melalui *${paymentMethodLabel}* telah kami terima.\n\n*Detail layanan Wi-Fi :*\nLayanan : ${customer.service || 'WiFi'}\nNominal : ${formatCurrency(pAmount)}\nPeriode : ${formatDate(customer.registerDate)} - ${formatDate(pDueDate)}\n\n*Detail pembayaran :*\nTanggal : ${formatDate(pDate)}\nStatus : *LUNAS*\n\n_Terima kasih telah menggunakan layanan kami._`;
+            return `Halo, Kak ${customer.name}\n\nTerima kasih, pembayaran Wi-Fi melalui *${paymentMethodLabel}* telah kami terima.\n\n*Detail layanan Wi-Fi :*\nLayanan : ${customer.service || 'WiFi'}${durationText}\nNominal : ${formatCurrency(pAmount)}\nPeriode : ${formatDate(pRegisterDate)} - ${formatDate(pDueDate)}\nJatuh Tempo Berikutnya : ${formatDate(customer.dueDate)}\n\n*Detail pembayaran :*\nTanggal : ${formatDate(pDate)}\nStatus : *LUNAS*\n\n_Terima kasih telah menggunakan layanan kami._`;
         }
 
-        let targetDueDate = customer.dueDate;
-        if (customer.isPaid) {
-            targetDueDate = getNextMonthDate(customer.dueDate);
-        }
-
+        const targetDueDate = customer.dueDate;
         const status = getStatus({ ...customer, dueDate: targetDueDate });
         let reminderText = '';
         if (status.type === 'expired') {
@@ -547,9 +711,11 @@
             empty.classList.remove('hidden');
         } else {
             empty.classList.add('hidden');
+            const fragment = document.createDocumentFragment();
             filtered.forEach(customer => {
-                list.appendChild(createCustomerCard(customer));
+                fragment.appendChild(createCustomerCard(customer));
             });
+            list.appendChild(fragment);
         }
         updateStats();
     }
@@ -558,116 +724,131 @@
         const status = getStatus(customer);
         const countdown = getCountdown(customer.dueDate);
         const card = document.createElement('div');
-        card.className = 'card bg-white rounded-2xl p-4';
+        card.className = 'card rounded-2xl p-4 flex flex-col justify-between';
 
-        let iconClass = 'bg-emerald-100 text-emerald-600';
+        let iconClass = 'bg-emerald-500/10 text-emerald-600 border border-emerald-500/20';
         let statusHtml = '';
         let countdownHtml = '';
         let actionButtonsHtml = '';
 
         if (customer.isPaid) {
-            iconClass = 'bg-blue-100 text-blue-600';
-            statusHtml = `<span onclick="showDetail('${customer.id}')" class="cursor-pointer bg-blue-100 text-blue-600 px-2 py-1 rounded-full text-[10px] font-bold whitespace-nowrap">LUNAS (${customer.paymentMethod})</span>`;
-            countdownHtml = `<div class="mt-2.5 flex items-center gap-2 text-xs"><span class="text-blue-500 font-bold">Pembayaran Selesai</span></div>`;
-            actionButtonsHtml = `
-                <div class="flex gap-2 mt-3">
-                    <button onclick="sendWhatsApp('${customer.id}', 'reminder')" class="flex-1 bg-emerald-500 text-white rounded-xl py-2.5 text-xs font-bold flex items-center justify-center gap-1.5 active:scale-[.98] transition">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21l1.7-4.8A8.9 8.9 0 1112 21a8.9 8.9 0 01-3.9-.9L3 21z"/><path stroke-linecap="round" stroke-linejoin="round" d="M8.5 8.5c.2-.4.4-.4.7-.4h.5c.2 0 .4.1.5.4l.8 1.7c.1.2.1.4 0 .6l-.5.7c-.1.1-.1.4 0 .6.4.7 1.2 1.5 2 1.9.2.1.4.1.6-.1l.7-.6c.2-.1.4-.1.6 0l1.6.8c.3.1.4.3.4.6v.5c0 .3-.1.5-.4.7-.5.4-1.2.6-1.9.5-1.2-.2-2.5-.9-3.7-2.1-1.2-1.1-2-2.4-2.2-3.5-.2-.7 0-1.5.3-2.3z"/></svg>
-                        WA
-                    </button>
-                    <button onclick="sendWhatsApp('${customer.id}', 'receipt')" class="flex-1 bg-blue-500 text-white rounded-xl py-2.5 text-xs font-bold flex items-center justify-center gap-1.5 active:scale-[.98] transition">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21l1.7-4.8A8.9 8.9 0 1112 21a8.9 8.9 0 01-3.9-.9L3 21z"/><path stroke-linecap="round" stroke-linejoin="round" d="M8.5 8.5c.2-.4.4-.4.7-.4h.5c.2 0 .4.1.5.4l.8 1.7c.1.2.1.4 0 .6l-.5.7c-.1.1-.1.4 0 .6.4.7 1.2 1.5 2 1.9.2.1.4.1.6-.1l.7-.6c.2-.1.4-.1.6 0l1.6.8c.3.1.4.3.4.6v.5c0 .3-.1.5-.4.7-.5.4-1.2.6-1.9.5-1.2-.2-2.5-.9-3.7-2.1-1.2-1.1-2-2.4-2.2-3.5-.2-.7 0-1.5.3-2.3z"/></svg>
-                        Resi
-                    </button>
-                    <button onclick="nextBill('${customer.id}')" class="flex-1 bg-amber-500 text-white rounded-xl py-2.5 text-xs font-bold flex items-center justify-center gap-1.5 active:scale-[.98] transition">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 5l7 7-7 7M5 5l7 7-7 7"/></svg>
-                        Lanjut
-                    </button>
+            iconClass = 'bg-blue-500/10 text-blue-600 border border-blue-500/20';
+            statusHtml = `<span onclick="showDetail('${customer.id}')" class="cursor-pointer bg-blue-50 text-blue-600 border border-blue-200 px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold whitespace-nowrap">LUNAS • ${escapeHtml(customer.paymentMethod)}</span>`;
+            countdownHtml = `
+                <div class="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between gap-2 text-xs">
+                    <span class="text-blue-600 font-semibold text-[11px]">Siklus Aktif</span>
+                    <div class="flex items-center gap-1.5">
+                        <span class="pulse-dot w-1.5 h-1.5 rounded-full bg-blue-500"></span>
+                        <span class="font-mono font-bold text-slate-700 text-[11px] countdown-${customer.id}">${countdown.text}</span>
+                    </div>
                 </div>
-                <div class="flex gap-2 mt-2">
-                    <button onclick="undoPayment('${customer.id}')" class="flex-1 bg-slate-100 text-slate-600 rounded-xl py-2 flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
-                    </button>
-                    <button onclick="editCustomer('${customer.id}')" class="flex-1 bg-slate-100 text-slate-600 rounded-xl py-2 flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 20h9"/><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 3.5a2.12 2.12 0 013 3L8 18l-4 1 1-4 11.5-11.5z"/></svg>
-                    </button>
-                    <button onclick="deleteCustomer('${customer.id}')" class="flex-1 bg-red-50 text-red-500 rounded-xl py-2 flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M8 6V4h8v2m-9 0l1 14h8l1-14M10 11v6M14 11v6"/></svg>
-                    </button>
+            `;
+            actionButtonsHtml = `
+                <div class="mt-3 pt-2 space-y-1.5">
+                    <div class="grid grid-cols-2 gap-1.5">
+                        <button onclick="sendWhatsApp('${customer.id}', 'reminder')" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 rounded-xl py-2 text-xs font-bold flex items-center justify-center gap-1.5 active:scale-[.98] transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21l1.7-4.8A8.9 8.9 0 1112 21a8.9 8.9 0 01-3.9-.9L3 21z"/><path stroke-linecap="round" stroke-linejoin="round" d="M8.5 8.5c.2-.4.4-.4.7-.4h.5c.2 0 .4.1.5.4l.8 1.7c.1.2.1.4 0 .6l-.5.7c-.1.1-.1.4 0 .6.4.7 1.2 1.5 2 1.9.2.1.4.1.6-.1l.7-.6c.2-.1.4-.1.6 0l1.6.8c.3.1.4.3.4.6v.5c0 .3-.1.5-.4.7-.5.4-1.2.6-1.9.5-1.2-.2-2.5-.9-3.7-2.1-1.2-1.1-2-2.4-2.2-3.5-.2-.7 0-1.5.3-2.3z"/></svg>
+                            WA
+                        </button>
+                        <button onclick="sendWhatsApp('${customer.id}', 'receipt')" class="bg-blue-600 hover:bg-blue-700 text-white rounded-xl py-2 text-xs font-bold flex items-center justify-center gap-1.5 active:scale-[.98] transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            Resi
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-4 gap-1.5">
+                        <button onclick="openPaymentModal('${customer.id}')" title="Tambah Bulan Berikutnya" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200/70 rounded-xl py-2 flex items-center justify-center gap-1 text-[11px] font-bold transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                            Bulan
+                        </button>
+                        <button onclick="undoPayment('${customer.id}')" title="Batal Lunas" class="bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl py-2 flex items-center justify-center transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
+                        </button>
+                        <button onclick="editCustomer('${customer.id}')" title="Edit Data" class="bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl py-2 flex items-center justify-center transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 20h9"/><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 3.5a2.12 2.12 0 013 3L8 18l-4 1 1-4 11.5-11.5z"/></svg>
+                        </button>
+                        <button onclick="deleteCustomer('${customer.id}')" title="Hapus Customer" class="bg-red-50 hover:bg-red-100 text-red-500 rounded-xl py-2 flex items-center justify-center transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M8 6V4h8v2m-9 0l1 14h8l1-14M10 11v6M14 11v6"/></svg>
+                        </button>
+                    </div>
                 </div>
             `;
         } else {
-            if (status.type === 'warning') iconClass = 'bg-amber-100 text-amber-600';
-            if (status.type === 'danger') iconClass = 'bg-red-100 text-red-600';
-            if (status.type === 'expired') iconClass = 'bg-slate-100 text-slate-500';
+            if (status.type === 'warning') iconClass = 'bg-amber-500/10 text-amber-600 border border-amber-500/20';
+            if (status.type === 'danger') iconClass = 'bg-red-500/10 text-red-600 border border-red-500/20';
+            if (status.type === 'expired') iconClass = 'bg-slate-100 text-slate-500 border border-slate-200';
 
-            statusHtml = `<span onclick="showDetail('${customer.id}')" class="cursor-pointer ${status.className} px-2 py-1 rounded-full text-[10px] font-bold whitespace-nowrap">${status.label}</span>`;
+            statusHtml = `<span onclick="showDetail('${customer.id}')" class="cursor-pointer ${status.className} px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold whitespace-nowrap">${status.label}</span>`;
             countdownHtml = `
-                <div class="mt-2.5 flex items-center gap-2 text-xs">
-                    <span class="pulse-dot w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                    <span class="text-slate-500">Countdown:</span>
-                    <span class="font-bold countdown-${customer.id}">${countdown.text}</span>
+                <div class="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between gap-2 text-xs">
+                    <div class="flex items-center gap-1.5">
+                        <span class="pulse-dot w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                        <span class="text-slate-500 text-[11px]">Countdown:</span>
+                    </div>
+                    <span class="font-mono font-bold text-slate-800 text-[11px] countdown-${customer.id}">${countdown.text}</span>
                 </div>
             `;
             actionButtonsHtml = `
-                <div class="flex gap-2 mt-3">
-                    <button onclick="sendWhatsApp('${customer.id}', 'reminder')" class="flex-[2] bg-emerald-500 text-white rounded-xl py-2.5 text-xs font-bold flex items-center justify-center gap-1.5 active:scale-[.98] transition">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21l1.7-4.8A8.9 8.9 0 1112 21a8.9 8.9 0 01-3.9-.9L3 21z"/><path stroke-linecap="round" stroke-linejoin="round" d="M8.5 8.5c.2-.4.4-.4.7-.4h.5c.2 0 .4.1.5.4l.8 1.7c.1.2.1.4 0 .6l-.5.7c-.1.1-.1.4 0 .6.4.7 1.2 1.5 2 1.9.2.1.4.1.6-.1l.7-.6c.2-.1.4-.1.6 0l1.6.8c.3.1.4.3.4.6v.5c0 .3-.1.5-.4.7-.5.4-1.2.6-1.9.5-1.2-.2-2.5-.9-3.7-2.1-1.2-1.1-2-2.4-2.2-3.5-.2-.7 0-1.5.3-2.3z"/></svg>
+                <div class="grid grid-cols-5 gap-1.5 mt-3 pt-2">
+                    <button onclick="sendWhatsApp('${customer.id}', 'reminder')" class="col-span-2 bg-emerald-500 hover:bg-emerald-600 text-slate-950 rounded-xl py-2.5 text-xs font-bold flex items-center justify-center gap-1.5 active:scale-[.98] transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21l1.7-4.8A8.9 8.9 0 1112 21a8.9 8.9 0 01-3.9-.9L3 21z"/><path stroke-linecap="round" stroke-linejoin="round" d="M8.5 8.5c.2-.4.4-.4.7-.4h.5c.2 0 .4.1.5.4l.8 1.7c.1.2.1.4 0 .6l-.5.7c-.1.1-.1.4 0 .6.4.7 1.2 1.5 2 1.9.2.1.4.1.6-.1l.7-.6c.2-.1.4-.1.6 0l1.6.8c.3.1.4.3.4.6v.5c0 .3-.1.5-.4.7-.5.4-1.2.6-1.9.5-1.2-.2-2.5-.9-3.7-2.1-1.2-1.1-2-2.4-2.2-3.5-.2-.7 0-1.5.3-2.3z"/></svg>
                         WA
                     </button>
-                    <button onclick="openPaymentModal('${customer.id}')" class="flex-1 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                    <button onclick="openPaymentModal('${customer.id}')" title="Konfirmasi Lunas" class="bg-blue-50 hover:bg-blue-100 text-blue-600 border border-blue-200/60 rounded-xl flex items-center justify-center transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
                     </button>
-                    <button onclick="editCustomer('${customer.id}')" class="flex-1 bg-slate-100 text-slate-600 rounded-xl flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 20h9"/><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 3.5a2.12 2.12 0 013 3L8 18l-4 1 1-4 11.5-11.5z"/></svg>
+                    <button onclick="editCustomer('${customer.id}')" title="Edit Customer" class="bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl flex items-center justify-center transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 20h9"/><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 3.5a2.12 2.12 0 013 3L8 18l-4 1 1-4 11.5-11.5z"/></svg>
                     </button>
-                    <button onclick="deleteCustomer('${customer.id}')" class="flex-1 bg-red-50 text-red-500 rounded-xl flex items-center justify-center">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M8 6V4h8v2m-9 0l1 14h8l1-14M10 11v6M14 11v6"/></svg>
+                    <button onclick="deleteCustomer('${customer.id}')" title="Hapus Customer" class="bg-red-50 hover:bg-red-100 text-red-500 rounded-xl flex items-center justify-center transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M8 6V4h8v2m-9 0l1 14h8l1-14M10 11v6M14 11v6"/></svg>
                     </button>
                 </div>
             `;
         }
 
         card.innerHTML = `
-            <div class="flex items-start gap-3">
-                <div onclick="showDetail('${customer.id}')" class="cursor-pointer w-11 h-11 rounded-xl ${iconClass} flex items-center justify-center flex-shrink-0 transition active:scale-95">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round" d="M16 11a4 4 0 10-8 0 4 4 0 008 0zM4 21a8 8 0 0116 0"/>
-                    </svg>
-                </div>
-                <div class="flex-1 min-w-0">
-                    <div class="flex items-start justify-between gap-2">
-                        <div onclick="showDetail('${customer.id}')" class="min-w-0 cursor-pointer">
-                            <h3 class="font-bold text-sm truncate">${escapeHtml(customer.name)}</h3>
-                            <p class="text-xs text-slate-500 mt-0.5">${escapeHtml(customer.phone)}</p>
-                        </div>
-                        ${statusHtml}
+            <div>
+                <div class="flex items-start gap-3">
+                    <div onclick="showDetail('${customer.id}')" class="cursor-pointer w-10 h-10 rounded-xl ${iconClass} flex items-center justify-center flex-shrink-0 transition active:scale-95">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M16 11a4 4 0 10-8 0 4 4 0 008 0zM4 21a8 8 0 0116 0"/>
+                        </svg>
                     </div>
-                    <div class="mt-3 grid grid-cols-2 gap-2">
-                        <div class="bg-slate-50 rounded-xl p-2.5">
-                            <p class="text-[9px] text-slate-400 uppercase tracking-wide">Jatuh Tempo</p>
-                            <p class="text-xs font-semibold mt-0.5">${formatDate(customer.dueDate)}</p>
-                        </div>
-                        <div class="bg-slate-50 rounded-xl p-2.5">
-                            <p class="text-[9px] text-slate-400 uppercase tracking-wide">Tagihan</p>
-                            <p class="text-xs font-semibold mt-0.5">${formatCurrency(customer.amount)}</p>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-start justify-between gap-2">
+                            <div onclick="showDetail('${customer.id}')" class="min-w-0 cursor-pointer">
+                                <h3 class="font-bold text-sm text-slate-900 truncate hover:text-emerald-600 transition">${escapeHtml(customer.name)}</h3>
+                                <p class="text-xs font-mono text-slate-500 mt-0.5">${escapeHtml(customer.phone)}</p>
+                            </div>
+                            ${statusHtml}
                         </div>
                     </div>
-                    ${countdownHtml}
-                    ${actionButtonsHtml}
                 </div>
+                <div class="mt-3.5 grid grid-cols-2 gap-2">
+                    <div class="bg-slate-50 border border-slate-100 rounded-xl p-2.5">
+                        <p class="text-[9px] font-mono text-slate-400 uppercase tracking-wider">Jatuh Tempo</p>
+                        <p class="text-xs font-bold text-slate-800 mt-0.5 truncate">${formatDate(customer.dueDate)}</p>
+                    </div>
+                    <div class="bg-slate-50 border border-slate-100 rounded-xl p-2.5">
+                        <p class="text-[9px] font-mono text-slate-400 uppercase tracking-wider">Tagihan</p>
+                        <p class="text-xs font-bold font-mono text-slate-800 mt-0.5">${formatCurrency(customer.amount)}</p>
+                    </div>
+                </div>
+                ${countdownHtml}
             </div>
+            ${actionButtonsHtml}
         `;
         return card;
     }
 
     function updateCountdowns() {
         customers.forEach(customer => {
-            if (customer.isPaid) return;
             const element = document.querySelector(`.countdown-${customer.id}`);
             if (element) {
                 const countdown = getCountdown(customer.dueDate);
-                element.textContent = countdown.text;
+                if (element.textContent !== countdown.text) {
+                    element.textContent = countdown.text;
+                }
             }
         });
     }
@@ -785,11 +966,11 @@
         document.getElementById('modal').classList.add('hidden');
     }
 
-    function openConfirmModal(title, message, callback, actionColor = 'bg-emerald-500', actionShadow = 'shadow-emerald-500/20') {
+    function openConfirmModal(title, message, callback, actionColor = 'bg-emerald-500', actionShadow = '') {
         document.getElementById('confirmTitle').textContent = title;
         document.getElementById('confirmMessage').textContent = message;
         const btn = document.getElementById('confirmActionBtn');
-        btn.className = `flex-1 ${actionColor} text-white py-3 rounded-xl font-bold text-sm shadow-lg ${actionShadow}`;
+        btn.className = `flex-1 ${actionColor} text-white py-2.5 rounded-xl font-bold text-xs transition ${actionShadow}`;
         confirmCallback = callback;
         document.getElementById('confirmModal').classList.remove('hidden');
     }
@@ -804,8 +985,22 @@
         closeConfirmModal();
     }
 
+    function updatePaymentPreview() {
+        if (!currentPaymentId) return;
+        const customer = customers.find(item => item.id === currentPaymentId);
+        if (!customer) return;
+        const months = Math.max(1, Number(document.getElementById('paymentMonths').value) || 1);
+        const totalAmount = Number(customer.amount || 0) * months;
+        const newDueDate = addMonthsToDate(customer.dueDate, months);
+        document.getElementById('paymentTotalPreview').textContent = formatCurrency(totalAmount);
+        document.getElementById('paymentDuePreview').textContent = formatDate(newDueDate);
+    }
+
     function openPaymentModal(id) {
         currentPaymentId = id;
+        const monthsSelect = document.getElementById('paymentMonths');
+        if (monthsSelect) monthsSelect.value = '1';
+        updatePaymentPreview();
         document.getElementById('paymentModal').classList.remove('hidden');
     }
 
@@ -818,51 +1013,78 @@
         if (!currentPaymentId) return;
         const customer = customers.find(item => item.id === currentPaymentId);
         if (customer) {
+            if (!customer.history) customer.history = [];
+            const months = Math.max(1, Number(document.getElementById('paymentMonths').value) || 1);
+            const payDate = todayString();
+            const batchId = Date.now().toString();
+
+            let currentStart = customer.registerDate;
+            let currentDue = customer.dueDate;
+
+            for (let i = 0; i < months; i++) {
+                customer.history.push({
+                    date: payDate,
+                    method: method,
+                    amount: customer.amount,
+                    dueDate: currentDue,
+                    periodStart: currentStart,
+                    monthsPaid: months,
+                    batchId: batchId
+                });
+                currentStart = currentDue;
+                currentDue = getNextMonthDate(currentDue);
+            }
+
+            customer.registerDate = currentStart;
+            customer.dueDate = currentDue;
             customer.isPaid = true;
             customer.paymentMethod = method;
-            if (!customer.history) customer.history = [];
-            customer.history.push({
-                date: todayString(),
-                method: method,
-                amount: customer.amount,
-                dueDate: customer.dueDate
-            });
             saveData();
             renderCustomers();
-            showToast(`Pembayaran melalui ${method} dikonfirmasi.`);
+            if (!document.getElementById('detailModal').classList.contains('hidden')) {
+                showDetail(customer.id);
+            }
+            showToast(`Pembayaran ${months} bulan (${method}) dikonfirmasi. Jatuh tempo: ${formatDate(customer.dueDate)}.`);
         }
         closePaymentModal();
     }
 
     function undoPayment(id) {
-        openConfirmModal('Batal Lunas', 'Batalkan status lunas untuk customer ini?', () => {
+        openConfirmModal('Batal Lunas', 'Batalkan pembayaran terakhir untuk customer ini?', () => {
             const customer = customers.find(item => item.id === id);
             if (customer) {
-                customer.isPaid = false;
-                customer.paymentMethod = null;
                 if (customer.history && customer.history.length > 0) {
-                    customer.history.pop();
+                    const lastHistory = customer.history[customer.history.length - 1];
+                    if (lastHistory.batchId) {
+                        const targetBatchId = lastHistory.batchId;
+                        let firstRemoved = null;
+                        while (customer.history.length > 0 && customer.history[customer.history.length - 1].batchId === targetBatchId) {
+                            firstRemoved = customer.history.pop();
+                        }
+                        if (firstRemoved) {
+                            if (firstRemoved.dueDate) customer.dueDate = firstRemoved.dueDate;
+                            if (firstRemoved.periodStart) customer.registerDate = firstRemoved.periodStart;
+                        }
+                    } else {
+                        if (lastHistory.dueDate) customer.dueDate = lastHistory.dueDate;
+                        if (lastHistory.periodStart) customer.registerDate = lastHistory.periodStart;
+                        customer.history.pop();
+                    }
+                }
+                const today = todayString();
+                if (customer.history && customer.history.length > 0 && customer.dueDate > today) {
+                    const prevHistory = customer.history[customer.history.length - 1];
+                    customer.isPaid = true;
+                    customer.paymentMethod = prevHistory.method || customer.paymentMethod;
+                } else {
+                    customer.isPaid = false;
+                    customer.paymentMethod = null;
                 }
                 saveData();
                 renderCustomers();
-                showToast('Status lunas dibatalkan.');
+                showToast('Pembayaran terakhir dibatalkan.');
             }
-        }, 'bg-amber-500', 'shadow-amber-500/20');
-    }
-
-    function nextBill(id) {
-        openConfirmModal('Lanjut Tagihan', 'Lanjutkan ke tagihan bulan berikutnya?', () => {
-            const customer = customers.find(item => item.id === id);
-            if (customer) {
-                customer.registerDate = customer.dueDate;
-                customer.dueDate = getNextMonthDate(customer.dueDate);
-                customer.isPaid = false;
-                customer.paymentMethod = null;
-                saveData();
-                renderCustomers();
-                showToast('Dilanjutkan ke tagihan berikutnya.');
-            }
-        }, 'bg-blue-500', 'shadow-blue-500/20');
+        }, 'bg-amber-500', '');
     }
 
     function editCustomer(id) {
@@ -919,7 +1141,7 @@
             saveData();
             renderCustomers();
             showToast('Customer berhasil dihapus.');
-        }, 'bg-red-500', 'shadow-red-500/20');
+        }, 'bg-red-500', '');
     }
 
     function sendWhatsApp(id, type = 'reminder') {
@@ -975,11 +1197,18 @@
             date: document.getElementById('historyDate').value,
             dueDate: document.getElementById('historyDueDate').value,
             amount: Number(document.getElementById('historyAmount').value.replace(/\./g, '')),
-            method: document.getElementById('historyMethod').value
+            method: document.getElementById('historyMethod').value,
+            periodStart: currentHistoryIndex === -1 ? customer.registerDate : customer.history[currentHistoryIndex].periodStart
         };
         
         if (currentHistoryIndex === -1) {
             customer.history.push(newData);
+            if (newData.dueDate >= customer.dueDate) {
+                customer.registerDate = newData.dueDate;
+                customer.dueDate = getNextMonthDate(newData.dueDate);
+                customer.isPaid = true;
+                customer.paymentMethod = newData.method;
+            }
         } else {
             customer.history[currentHistoryIndex] = newData;
         }
@@ -1001,21 +1230,21 @@
                 renderCustomers();
                 showToast('Riwayat berhasil dihapus.');
             }
-        }, 'bg-red-500', 'shadow-red-500/20');
+        }, 'bg-red-500', '');
     }
 
     function showDetail(id) {
         const customer = customers.find(item => item.id === id);
         if (!customer) return;
 
-        let targetDueDate = customer.isPaid ? getNextMonthDate(customer.dueDate) : customer.dueDate;
+        const targetDueDate = customer.dueDate;
         const status = getStatus({ ...customer, dueDate: targetDueDate });
         
         let badgeHtml = '';
         if (customer.isPaid) {
-            badgeHtml = `<span class="bg-blue-100 text-blue-600 px-3 py-1.5 rounded-full text-xs font-bold">LUNAS</span>`;
+            badgeHtml = `<span class="bg-blue-50 text-blue-600 border border-blue-200 px-3 py-1 rounded-lg text-xs font-mono font-bold">LUNAS</span>`;
         } else {
-            badgeHtml = `<span class="${status.className} px-3 py-1.5 rounded-full text-xs font-bold">${status.label}</span>`;
+            badgeHtml = `<span class="${status.className} px-3 py-1 rounded-lg text-xs font-mono font-bold">${status.label}</span>`;
         }
 
         let waButtonsHtml = '';
@@ -1024,23 +1253,29 @@
         if (customer.isPaid) {
             messageText = createMessage(customer, 'receipt');
             waButtonsHtml = `
-                <div class="flex gap-2">
-                    <button onclick="sendWhatsApp('${customer.id}', 'reminder')" class="flex-1 bg-emerald-500 text-white py-3.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21l1.7-4.8A8.9 8.9 0 1112 21a8.9 8.9 0 01-3.9-.9L3 21z"/><path stroke-linecap="round" stroke-linejoin="round" d="M8.5 8.5c.2-.4.4-.4.7-.4h.5c.2 0 .4.1.5.4l.8 1.7c.1.2.1.4 0 .6l-.5.7c-.1.1-.1.4 0 .6.4.7 1.2 1.5 2 1.9.2.1.4.1.6-.1l.7-.6c.2-.1.4-.1.6 0l1.6.8c.3.1.4.3.4.6v.5c0 .3-.1.5-.4.7-.5.4-1.2.6-1.9.5-1.2-.2-2.5-.9-3.7-2.1-1.2-1.1-2-2.4-2.2-3.5-.2-.7 0-1.5.3-2.3z"/></svg>
-                        WA Pengingat
+                <div class="space-y-2">
+                    <button onclick="openPaymentModal('${customer.id}')" class="w-full bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                        Lanjut Bayar Bulan Berikutnya
                     </button>
-                    <button onclick="sendWhatsApp('${customer.id}', 'receipt')" class="flex-1 bg-blue-500 text-white py-3.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21l1.7-4.8A8.9 8.9 0 1112 21a8.9 8.9 0 01-3.9-.9L3 21z"/><path stroke-linecap="round" stroke-linejoin="round" d="M8.5 8.5c.2-.4.4-.4.7-.4h.5c.2 0 .4.1.5.4l.8 1.7c.1.2.1.4 0 .6l-.5.7c-.1.1-.1.4 0 .6.4.7 1.2 1.5 2 1.9.2.1.4.1.6-.1l.7-.6c.2-.1.4-.1.6 0l1.6.8c.3.1.4.3.4.6v.5c0 .3-.1.5-.4.7-.5.4-1.2.6-1.9.5-1.2-.2-2.5-.9-3.7-2.1-1.2-1.1-2-2.4-2.2-3.5-.2-.7 0-1.5.3-2.3z"/></svg>
-                        Resi WA
-                    </button>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="sendWhatsApp('${customer.id}', 'reminder')" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 py-3 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21l1.7-4.8A8.9 8.9 0 1112 21a8.9 8.9 0 01-3.9-.9L3 21z"/><path stroke-linecap="round" stroke-linejoin="round" d="M8.5 8.5c.2-.4.4-.4.7-.4h.5c.2 0 .4.1.5.4l.8 1.7c.1.2.1.4 0 .6l-.5.7c-.1.1-.1.4 0 .6.4.7 1.2 1.5 2 1.9.2.1.4.1.6-.1l.7-.6c.2-.1.4-.1.6 0l1.6.8c.3.1.4.3.4.6v.5c0 .3-.1.5-.4.7-.5.4-1.2.6-1.9.5-1.2-.2-2.5-.9-3.7-2.1-1.2-1.1-2-2.4-2.2-3.5-.2-.7 0-1.5.3-2.3z"/></svg>
+                            WA Pengingat
+                        </button>
+                        <button onclick="sendWhatsApp('${customer.id}', 'receipt')" class="bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            Resi WA
+                        </button>
+                    </div>
                 </div>
             `;
         } else {
             messageText = createMessage(customer, 'reminder');
             waButtonsHtml = `
-                <button onclick="sendWhatsApp('${customer.id}', 'reminder')" class="w-full bg-emerald-500 text-white py-3.5 rounded-xl font-bold text-sm flex items-center justify-center gap-2">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21l1.7-4.8A8.9 8.9 0 1112 21a8.9 8.9 0 01-3.9-.9L3 21z"/><path stroke-linecap="round" stroke-linejoin="round" d="M8.5 8.5c.2-.4.4-.4.7-.4h.5c.2 0 .4.1.5.4l.8 1.7c.1.2.1.4 0 .6l-.5.7c-.1.1-.1.4 0 .6.4.7 1.2 1.5 2 1.9.2.1.4.1.6-.1l.7-.6c.2-.1.4-.1.6 0l1.6.8c.3.1.4.3.4.6v.5c0 .3-.1.5-.4.7-.5.4-1.2.6-1.9.5-1.2-.2-2.5-.9-3.7-2.1-1.2-1.1-2-2.4-2.2-3.5-.2-.7 0-1.5.3-2.3z"/></svg>
-                    Kirim ke WhatsApp
+                <button onclick="sendWhatsApp('${customer.id}', 'reminder')" class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 py-3 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21l1.7-4.8A8.9 8.9 0 1112 21a8.9 8.9 0 01-3.9-.9L3 21z"/><path stroke-linecap="round" stroke-linejoin="round" d="M8.5 8.5c.2-.4.4-.4.7-.4h.5c.2 0 .4.1.5.4l.8 1.7c.1.2.1.4 0 .6l-.5.7c-.1.1-.1.4 0 .6.4.7 1.2 1.5 2 1.9.2.1.4.1.6-.1l.7-.6c.2-.1.4-.1.6 0l1.6.8c.3.1.4.3.4.6v.5c0 .3-.1.5-.4.7-.5.4-1.2.6-1.9.5-1.2-.2-2.5-.9-3.7-2.1-1.2-1.1-2-2.4-2.2-3.5-.2-.7 0-1.5.3-2.3z"/></svg>
+                    Kirim Pengingat ke WhatsApp
                 </button>
             `;
         }
@@ -1048,30 +1283,30 @@
         let historyHtml = '';
         if (customer.history && customer.history.length > 0) {
             let historyList = customer.history.map((h, index) => `
-                <div class="flex flex-col bg-white p-3 rounded-xl border border-slate-100 mb-2 shadow-sm">
+                <div class="flex flex-col bg-white p-3 rounded-xl border border-slate-200/80 mb-2">
                     <div class="flex justify-between items-center mb-2">
                         <div>
-                            <p class="text-xs font-bold text-slate-700">${formatDate(h.date)}</p>
-                            <p class="text-[10px] text-slate-500">Tagihan: ${formatDate(h.dueDate)}</p>
+                            <p class="text-xs font-bold text-slate-800">${formatDate(h.date)}</p>
+                            <p class="text-[10px] font-mono text-slate-500">Tagihan: ${formatDate(h.dueDate)}</p>
                         </div>
                         <div class="text-right">
-                            <p class="text-xs font-bold text-emerald-600">${formatCurrency(h.amount)}</p>
-                            <p class="text-[10px] text-slate-500">${h.method}</p>
+                            <p class="text-xs font-bold font-mono text-emerald-600">${formatCurrency(h.amount)}</p>
+                            <p class="text-[10px] font-mono text-slate-500">${h.method}</p>
                         </div>
                     </div>
-                    <div class="flex justify-end gap-2 border-t border-slate-50 pt-2">
-                        <button onclick="openEditHistory('${customer.id}', ${index})" class="text-blue-500 text-[10px] font-bold px-3 py-1 bg-blue-50 rounded">Edit</button>
-                        <button onclick="deleteHistoryData('${customer.id}', ${index})" class="text-red-500 text-[10px] font-bold px-3 py-1 bg-red-50 rounded">Hapus</button>
+                    <div class="flex justify-end gap-1.5 border-t border-slate-100 pt-2">
+                        <button onclick="openEditHistory('${customer.id}', ${index})" class="text-blue-600 text-[10px] font-bold px-2.5 py-1 bg-blue-50 hover:bg-blue-100 rounded-md transition">Edit</button>
+                        <button onclick="deleteHistoryData('${customer.id}', ${index})" class="text-red-600 text-[10px] font-bold px-2.5 py-1 bg-red-50 hover:bg-red-100 rounded-md transition">Hapus</button>
                     </div>
                 </div>
             `).join('');
             historyHtml = `
                 <div class="mb-4">
                     <div class="flex items-center justify-between mb-2">
-                        <p class="font-semibold text-sm">Riwayat Pembayaran</p>
-                        <button onclick="openAddHistory('${customer.id}')" class="text-emerald-600 text-xs font-semibold">+ Tambah</button>
+                        <p class="font-bold text-xs uppercase font-mono tracking-wider text-slate-600">Riwayat Pembayaran</p>
+                        <button onclick="openAddHistory('${customer.id}')" class="text-emerald-600 text-xs font-bold">+ Tambah</button>
                     </div>
-                    <div class="bg-slate-50 rounded-2xl p-3 max-h-40 overflow-y-auto">
+                    <div class="bg-slate-50 border border-slate-200/70 rounded-xl p-2.5 max-h-44 overflow-y-auto">
                         ${historyList}
                     </div>
                 </div>
@@ -1080,10 +1315,10 @@
             historyHtml = `
                 <div class="mb-4">
                     <div class="flex items-center justify-between mb-2">
-                        <p class="font-semibold text-sm">Riwayat Pembayaran</p>
-                        <button onclick="openAddHistory('${customer.id}')" class="text-emerald-600 text-xs font-semibold">+ Tambah</button>
+                        <p class="font-bold text-xs uppercase font-mono tracking-wider text-slate-600">Riwayat Pembayaran</p>
+                        <button onclick="openAddHistory('${customer.id}')" class="text-emerald-600 text-xs font-bold">+ Tambah</button>
                     </div>
-                    <div class="bg-slate-50 rounded-2xl p-4 text-center">
+                    <div class="bg-slate-50 border border-slate-200/70 rounded-xl p-4 text-center">
                         <p class="text-xs text-slate-400">Belum ada riwayat pembayaran</p>
                     </div>
                 </div>
@@ -1091,35 +1326,35 @@
         }
 
         document.getElementById('detailContent').innerHTML = `
-            <div class="bg-slate-50 rounded-2xl p-4 mb-4">
+            <div class="bg-slate-50 border border-slate-200/70 rounded-xl p-3.5 mb-4">
                 <div class="flex items-center justify-between">
                     <div>
-                        <p class="text-xs text-slate-400">Customer</p>
-                        <p class="font-bold mt-0.5">${escapeHtml(customer.name)}</p>
+                        <p class="text-[10px] font-mono uppercase tracking-wider text-slate-400">Customer</p>
+                        <p class="font-bold text-slate-900 mt-0.5">${escapeHtml(customer.name)}</p>
                     </div>
                     ${badgeHtml}
                 </div>
-                <div class="grid grid-cols-2 gap-2 mt-4">
-                    <div class="bg-white rounded-xl p-3">
-                        <p class="text-[10px] text-slate-400">Tanggal Daftar</p>
-                        <p class="font-bold text-sm mt-1">${formatDate(customer.registerDate)}</p>
+                <div class="grid grid-cols-2 gap-2 mt-3">
+                    <div class="bg-white border border-slate-200/60 rounded-lg p-2.5">
+                        <p class="text-[10px] font-mono text-slate-400 uppercase">Tanggal Daftar</p>
+                        <p class="font-bold text-xs text-slate-800 mt-1">${formatDate(customer.registerDate)}</p>
                     </div>
-                    <div class="bg-white rounded-xl p-3">
-                        <p class="text-[10px] text-slate-400">Jatuh Tempo</p>
-                        <p class="font-bold text-sm mt-1">${formatDate(customer.dueDate)}</p>
+                    <div class="bg-white border border-slate-200/60 rounded-lg p-2.5">
+                        <p class="text-[10px] font-mono text-slate-400 uppercase">Jatuh Tempo</p>
+                        <p class="font-bold text-xs text-slate-800 mt-1">${formatDate(customer.dueDate)}</p>
                     </div>
                 </div>
             </div>
             ${historyHtml}
             <div class="mb-4">
                 <div class="flex items-center justify-between mb-2">
-                    <p class="font-semibold text-sm">Pesan WhatsApp</p>
-                    <div>
-                        ${customer.isPaid ? `<button onclick="copyMessage('${customer.id}', 'reminder')" class="text-emerald-600 text-xs font-semibold mr-3">Salin WA</button><button onclick="copyMessage('${customer.id}', 'receipt')" class="text-blue-600 text-xs font-semibold">Salin Resi</button>` : `<button onclick="copyMessage('${customer.id}', 'reminder')" class="text-emerald-600 text-xs font-semibold">Salin</button>`}
+                    <p class="font-bold text-xs uppercase font-mono tracking-wider text-slate-600">Pesan WhatsApp</p>
+                    <div class="space-x-2">
+                        ${customer.isPaid ? `<button onclick="copyMessage('${customer.id}', 'reminder')" class="text-emerald-600 text-xs font-bold">Salin WA</button><button onclick="copyMessage('${customer.id}', 'receipt')" class="text-blue-600 text-xs font-bold">Salin Resi</button>` : `<button onclick="copyMessage('${customer.id}', 'reminder')" class="text-emerald-600 text-xs font-bold">Salin Pesan</button>`}
                     </div>
                 </div>
-                <div class="bg-white border border-slate-200 rounded-2xl p-4">
-                    <p id="detailMessage" class="text-xs text-slate-600 whitespace-pre-line leading-relaxed">${escapeHtml(messageText)}</p>
+                <div class="bg-slate-900 text-slate-200 rounded-xl p-3.5 border border-slate-800 max-h-48 overflow-y-auto">
+                    <p id="detailMessage" class="text-xs font-mono text-slate-300 whitespace-pre-line leading-relaxed">${escapeHtml(messageText)}</p>
                 </div>
             </div>
             ${waButtonsHtml}
@@ -1153,12 +1388,12 @@
     function showToast(message, type = 'success') {
         const container = document.getElementById('toastContainer');
         const toast = document.createElement('div');
-        toast.className = `toast rounded-2xl px-4 py-3.5 shadow-xl flex items-center gap-3 ${type === 'error' ? 'bg-red-500 text-white' : 'bg-slate-900 text-white'}`;
+        toast.className = `toast pointer-events-auto rounded-xl px-4 py-3 border flex items-center gap-3 ${type === 'error' ? 'bg-red-600 border-red-500 text-white' : 'bg-[#090d16] border-slate-800 text-white'}`;
         toast.innerHTML = `
-            <div class="w-8 h-8 rounded-xl ${type === 'error' ? 'bg-white/15' : 'bg-emerald-500'} flex items-center justify-center flex-shrink-0">
-                ${type === 'error' ? '<svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>' : '<svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>'}
+            <div class="w-7 h-7 rounded-lg ${type === 'error' ? 'bg-white/20 text-white' : 'bg-emerald-500/20 text-emerald-400'} flex items-center justify-center flex-shrink-0">
+                ${type === 'error' ? '<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>' : '<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>'}
             </div>
-            <p class="text-xs font-semibold">${escapeHtml(message)}</p>
+            <p class="text-xs font-semibold leading-snug">${escapeHtml(message)}</p>
         `;
         container.appendChild(toast);
         setTimeout(() => { toast.remove(); }, 3000);
@@ -1192,9 +1427,17 @@
     loadData();
 
     countdownTimer = setInterval(() => {
-        updateCountdowns();
-        updateStats();
-        if (customers.length > 0) renderCustomers();
+        requestAnimationFrame(() => {
+            updateCountdowns();
+            const currentDate = todayString();
+            if (!lastBillingCheckDate) {
+                lastBillingCheckDate = currentDate;
+            } else if (currentDate !== lastBillingCheckDate) {
+                lastBillingCheckDate = currentDate;
+                if (refreshPaidCycles()) saveData();
+                renderCustomers();
+            }
+        });
     }, 1000);
 </script>
 </body>
