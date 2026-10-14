@@ -1,41 +1,67 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-    <meta name="theme-color" content="#090d16">
-    <title>Tagihan Wi-Fi</title>
-    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/tewetech/aset/main/Full%20Aset%20(Final)/Gambar/Favicon/Tagihan.png">
+    <meta name="theme-color" id="themeColorMeta" content="#f1f5f9">
+    <title id="pageTitle">Tagihan Wi-Fi</title>
+    <link id="pageFavicon" rel="icon" type="image/png" href="https://raw.githubusercontent.com/tewetech/aset/main/Full%20Aset%20(Final)/Gambar/Favicon/Tagihan.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
+            darkMode: 'class',
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['Segoe UI', 'system-ui', '-apple-system', 'sans-serif'],
-                        mono: ['Consolas', 'Monaco', 'monospace']
+                        sans: ['Inter', 'Segoe UI', 'system-ui', '-apple-system', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'Consolas', 'Monaco', 'monospace']
                     }
                 }
             }
         }
     </script>
     <style>
+        :root {
+            --bg-main: #f1f5f9;
+            --bg-glass: rgba(255, 255, 255, 0.88);
+            --bg-glass-strong: rgba(255, 255, 255, 0.95);
+            --bg-subtle: rgba(241, 245, 249, 0.75);
+            --border-glass: rgba(226, 232, 240, 0.95);
+            --border-highlight: rgba(255, 255, 255, 0.8);
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --shadow-card: 0 2px 10px -2px rgba(15, 23, 42, 0.04), 0 1px 3px -1px rgba(15, 23, 42, 0.02);
+        }
+        html.dark {
+            --bg-main: #090d16;
+            --bg-glass: rgba(17, 24, 39, 0.84);
+            --bg-glass-strong: rgba(15, 23, 42, 0.94);
+            --bg-subtle: rgba(30, 41, 59, 0.55);
+            --border-glass: rgba(51, 65, 85, 0.65);
+            --border-highlight: rgba(255, 255, 255, 0.04);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --shadow-card: 0 4px 14px -2px rgba(0, 0, 0, 0.28);
+        }
         * {
             -webkit-tap-highlight-color: transparent;
             box-sizing: border-box;
         }
         html {
             scroll-behavior: auto;
+            text-size-adjust: 100%;
         }
         body {
             min-height: 100svh;
             min-height: 100dvh;
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background-color: #f8fafc;
-            background-image: radial-gradient(#cbd5e1 1px, transparent 1px);
-            background-size: 24px 24px;
-            color: #0f172a;
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-main);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.07) 0px, transparent 45%),
+                radial-gradient(at 100% 0%, rgba(59, 130, 246, 0.06) 0px, transparent 45%);
+            color: var(--text-main);
             overflow-x: hidden;
+            margin: 0;
         }
         #app {
             min-height: 100svh;
@@ -48,42 +74,92 @@
             opacity: .65;
             cursor: pointer;
         }
+        html.dark input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(1);
+        }
+        .card {
+            background-color: var(--bg-glass);
+            border: 1px solid var(--border-glass);
+            box-shadow: var(--shadow-card);
+            box-sizing: border-box;
+        }
+        .glass-header {
+            background-color: var(--bg-glass-strong);
+            border-bottom: 1px solid var(--border-glass);
+        }
+        .glass-subtle {
+            background-color: var(--bg-subtle);
+            border: 1px solid var(--border-glass);
+        }
+        @media (min-width: 768px) {
+            .glass-header {
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+            }
+        }
         .modal {
-            transition: opacity .18s ease;
+            transition: opacity .15s ease;
             will-change: opacity;
         }
         .modal-content {
-            transition: transform .18s ease;
+            background-color: var(--bg-glass-strong);
+            border: 1px solid var(--border-glass);
+            box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.22);
+            transition: transform .15s ease;
             will-change: transform;
             -webkit-overflow-scrolling: touch;
             overscroll-behavior: contain;
         }
         .modal.hidden .modal-content {
-            transform: translateY(16px);
+            transform: translateY(12px);
         }
         .toast {
-            animation: toastIn .2s ease forwards;
+            animation: toastIn .18s ease forwards;
             will-change: transform, opacity;
         }
         @keyframes toastIn {
-            from { opacity: 0; transform: translateY(16px); }
+            from { opacity: 0; transform: translateY(12px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .pulse-dot {
-            opacity: 1;
+        .safe {
+            background: rgba(16, 185, 129, 0.1);
+            color: #059669;
+            border: 1px solid rgba(16, 185, 129, 0.28);
         }
-        .card {
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
-            box-shadow: 0 1px 2px rgba(15, 23, 42, .03);
+        html.dark .safe {
+            background: rgba(16, 185, 129, 0.14);
+            color: #34d399;
+            border-color: rgba(16, 185, 129, 0.28);
         }
-        @media (min-width: 1024px) {
-            .card {
-                transition: border-color .15s ease, transform .15s ease;
-            }
-            .card:hover {
-                border-color: #cbd5e1;
-            }
+        .warning {
+            background: rgba(245, 158, 11, 0.1);
+            color: #d97706;
+            border: 1px solid rgba(245, 158, 11, 0.28);
+        }
+        html.dark .warning {
+            background: rgba(245, 158, 11, 0.14);
+            color: #fbbf24;
+            border-color: rgba(245, 158, 11, 0.28);
+        }
+        .danger {
+            background: rgba(239, 68, 68, 0.1);
+            color: #dc2626;
+            border: 1px solid rgba(239, 68, 68, 0.28);
+        }
+        html.dark .danger {
+            background: rgba(239, 68, 68, 0.14);
+            color: #f87171;
+            border-color: rgba(239, 68, 68, 0.28);
+        }
+        .expired {
+            background: rgba(100, 116, 139, 0.12);
+            color: #475569;
+            border: 1px solid rgba(100, 116, 139, 0.28);
+        }
+        html.dark .expired {
+            background: rgba(51, 65, 85, 0.45);
+            color: #cbd5e1;
+            border-color: rgba(100, 116, 139, 0.35);
         }
         @media (prefers-reduced-motion: reduce) {
             *, *::before, *::after {
@@ -93,244 +169,283 @@
                 scroll-behavior: auto !important;
             }
         }
-        .safe {
-            background: #ecfdf5;
-            color: #059669;
-            border: 1px solid #a7f3d0;
-        }
-        .warning {
-            background: #fffbeb;
-            color: #d97706;
-            border: 1px solid #fde68a;
-        }
-        .danger {
-            background: #fef2f2;
-            color: #dc2626;
-            border: 1px solid #fecaca;
-        }
-        .expired {
-            background: #f1f5f9;
-            color: #475569;
-            border: 1px solid #cbd5e1;
-        }
-        .scrollbar-hide::-webkit-scrollbar {
-            display: none;
-        }
-        .scrollbar-hide {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
-        }
     </style>
 </head>
-<body class="min-h-screen antialiased selection:bg-emerald-500 selection:text-white">
+<body class="antialiased selection:bg-emerald-500 selection:text-white">
 
-<div id="app" class="w-full min-h-screen flex flex-col">
-    <header class="bg-[#090d16] text-white border-b border-slate-800 sticky top-0 z-30">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-4">
-            <div class="flex items-center gap-3">
-                <div class="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center justify-center flex-shrink-0">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+<div id="loginOverlay" class="fixed inset-0 z-[90] bg-slate-100/95 dark:bg-[#090d16]/95 flex items-center justify-center p-4">
+    <div class="card w-full max-w-sm rounded-3xl p-6 sm:p-7">
+        <div class="flex flex-col items-center text-center mb-6">
+            <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 border border-emerald-500/25 text-emerald-600 dark:text-emerald-400 flex items-center justify-center mb-3">
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/>
+                </svg>
+            </div>
+            <h2 id="loginAppTitle" class="font-extrabold text-lg text-slate-900 dark:text-white tracking-tight">Login Panel Tagihan</h2>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Masuk untuk mengelola tagihan & resi pelanggan</p>
+        </div>
+        <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-4">
+            <div>
+                <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">Username</label>
+                <input id="loginUsername" type="text" required autocomplete="username" placeholder="Masukkan username" class="w-full glass-subtle rounded-xl px-3.5 py-2.5 text-sm text-slate-900 dark:text-white outline-none focus:border-emerald-500 transition">
+            </div>
+            <div>
+                <label class="block text-[11px] font-bold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">Password</label>
+                <input id="loginPassword" type="password" required autocomplete="current-password" placeholder="Masukkan password" class="w-full glass-subtle rounded-xl px-3.5 py-2.5 text-sm text-slate-900 dark:text-white outline-none focus:border-emerald-500 transition">
+            </div>
+            <button type="submit" class="w-full bg-emerald-500 hover:bg-emerald-600 active:scale-[.99] text-slate-950 font-extrabold py-3 rounded-xl text-sm transition">Masuk ke Dashboard</button>
+        </form>
+    </div>
+</div>
+
+<div id="app" class="w-full flex flex-col">
+    <header class="glass-header sticky top-0 z-30">
+        <div class="max-w-7xl mx-auto px-3.5 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
+            <div class="flex items-center gap-3 min-w-0">
+                <div class="w-10 h-10 rounded-2xl bg-emerald-500/10 border border-emerald-500/25 text-emerald-600 dark:text-emerald-400 flex items-center justify-center flex-shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M8.288 15.038a5.25 5.25 0 017.424 0M5.106 11.856a9.75 9.75 0 0113.788 0M1.924 8.674a14.25 14.25 0 0120.152 0M12 19.5h.008v.008H12V19.5z"/>
                     </svg>
                 </div>
-                <div>
+                <div class="min-w-0">
                     <div class="flex items-center gap-2">
-                        <h1 class="font-bold text-base sm:text-lg tracking-tight text-white leading-tight">Tagihan Wi-Fi Pelanggan</h1>
-                        <span class="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-mono uppercase tracking-wider bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">System Active</span>
+                        <h1 id="guiAppTitle" class="font-extrabold text-sm sm:text-base tracking-tight text-slate-900 dark:text-white truncate">Tagihan Wi-Fi Pelanggan</h1>
+                        <span id="guiStatusBadge" class="hidden md:inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-mono font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                            System Active
+                        </span>
                     </div>
-                    <p class="text-slate-400 text-xs font-mono mt-0.5">Join Wi-Fi Tewe Tech - 082323624177</p>
+                    <p id="guiAppSubtitle" class="text-slate-500 dark:text-slate-400 text-[11px] font-mono truncate">Join Wi-Fi Tewe Tech - 082323624177</p>
                 </div>
             </div>
-            <div class="flex items-center gap-3">
-                <button onclick="openModal()" class="bg-emerald-500 hover:bg-emerald-600 active:scale-[.98] text-slate-950 font-bold text-xs sm:text-sm px-3.5 py-2.5 rounded-xl flex items-center gap-1.5 transition">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+
+            <div class="flex items-center gap-1.5 sm:gap-2 flex-shrink-0">
+                <button onclick="openModal()" class="h-9 sm:h-10 bg-emerald-500 hover:bg-emerald-600 active:scale-[.98] text-slate-950 font-extrabold text-xs px-3 sm:px-4 rounded-xl flex items-center gap-1.5 transition">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
                     </svg>
-                    <span>Tambah<span class="hidden sm:inline"> Customer</span></span>
+                    <span>Tambah<span class="hidden sm:inline"> Pelanggan</span></span>
                 </button>
+
+                <div class="flex items-center gap-1 p-1 rounded-xl glass-subtle">
+                    <button onclick="openAdminModal()" title="Panel Admin & Pengaturan" class="h-7 sm:h-8 px-2.5 rounded-lg hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 text-xs font-bold flex items-center gap-1.5 transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
+                        </svg>
+                        <span class="hidden md:inline">Menu Admin</span>
+                    </button>
+
+                    <button onclick="toggleTheme()" id="themeToggleBtn" title="Ganti Tema" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg hover:bg-white dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 flex items-center justify-center transition">
+                        <svg id="themeIconSun" class="hidden w-4 h-4 text-amber-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"/>
+                        </svg>
+                        <svg id="themeIconMoon" class="w-4 h-4 text-slate-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/>
+                        </svg>
+                    </button>
+
+                    <button onclick="handleLogout()" title="Keluar" class="w-7 h-7 sm:w-8 sm:h-8 rounded-lg hover:bg-red-500/15 text-red-600 dark:text-red-400 flex items-center justify-center transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                        </svg>
+                    </button>
+                </div>
             </div>
         </div>
     </header>
 
-    <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-5 sm:py-8">
-        <div class="lg:grid lg:grid-cols-12 lg:gap-8 items-start">
-            
-            <aside class="lg:col-span-4 xl:col-span-3 lg:sticky lg:top-28 space-y-4">
-                <div class="hidden lg:flex items-center justify-between px-1">
-                    <span class="text-xs font-mono uppercase tracking-wider text-slate-400 font-semibold">Telemetry Overview</span>
-                    <span class="w-2 h-2 rounded-full bg-emerald-500"></span>
+    <main class="flex-1 max-w-7xl w-full mx-auto px-3.5 sm:px-6 lg:px-8 py-4 sm:py-6 space-y-4 sm:space-y-6">
+        <section class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-3.5">
+            <div onclick="setFilter('all')" class="card rounded-2xl p-3.5 sm:p-4 cursor-pointer hover:border-emerald-500/40 transition flex items-center justify-between">
+                <div>
+                    <p id="guiStatLabelTotal" class="text-[10px] sm:text-[11px] font-mono font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Customer</p>
+                    <p id="totalCustomer" class="text-2xl sm:text-3xl font-extrabold font-mono text-slate-900 dark:text-white mt-1">0</p>
                 </div>
+                <div class="w-10 h-10 rounded-xl bg-slate-500/10 border border-slate-500/20 text-slate-700 dark:text-slate-300 flex items-center justify-center flex-shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/>
+                    </svg>
+                </div>
+            </div>
 
-                <section class="grid grid-cols-2 gap-2.5 sm:gap-3">
-                    <div class="card rounded-2xl p-3.5 sm:p-4 relative overflow-hidden">
-                        <div class="w-1 h-8 bg-slate-800 rounded-r absolute left-0 top-3.5"></div>
-                        <p class="text-[11px] font-mono uppercase tracking-wider text-slate-500">Customer</p>
-                        <p id="totalCustomer" class="text-2xl font-bold font-mono text-slate-900 mt-1">0</p>
-                    </div>
-                    <div class="card rounded-2xl p-3.5 sm:p-4 relative overflow-hidden">
-                        <div class="w-1 h-8 bg-blue-500 rounded-r absolute left-0 top-3.5"></div>
-                        <p class="text-[11px] font-mono uppercase tracking-wider text-slate-500">Lunas</p>
-                        <p id="totalPaid" class="text-2xl font-bold font-mono text-blue-600 mt-1">0</p>
-                    </div>
-                    <div class="card rounded-2xl p-3.5 sm:p-4 relative overflow-hidden">
-                        <div class="w-1 h-8 bg-amber-500 rounded-r absolute left-0 top-3.5"></div>
-                        <p class="text-[11px] font-mono uppercase tracking-wider text-slate-500">Segera</p>
-                        <p id="totalSoon" class="text-2xl font-bold font-mono text-amber-500 mt-1">0</p>
-                    </div>
-                    <div class="card rounded-2xl p-3.5 sm:p-4 relative overflow-hidden">
-                        <div class="w-1 h-8 bg-red-500 rounded-r absolute left-0 top-3.5"></div>
-                        <p class="text-[11px] font-mono uppercase tracking-wider text-slate-500">Terlambat</p>
-                        <p id="totalExpired" class="text-2xl font-bold font-mono text-red-500 mt-1">0</p>
-                    </div>
-                </section>
+            <div onclick="setFilter('lunas')" class="card rounded-2xl p-3.5 sm:p-4 cursor-pointer hover:border-blue-500/40 transition flex items-center justify-between">
+                <div>
+                    <p id="guiStatLabelPaid" class="text-[10px] sm:text-[11px] font-mono font-bold uppercase tracking-wider text-blue-600 dark:text-blue-400">Lunas</p>
+                    <p id="totalPaid" class="text-2xl sm:text-3xl font-extrabold font-mono text-blue-600 dark:text-blue-400 mt-1">0</p>
+                </div>
+                <div class="w-10 h-10 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 flex items-center justify-center flex-shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+            </div>
 
-                <div class="hidden lg:block card rounded-2xl p-5 bg-slate-900 text-white border-slate-800">
-                    <div class="flex items-center justify-between mb-3">
-                        <span class="text-[11px] font-mono uppercase tracking-wider text-emerald-400">Network Billing Hub</span>
-                        <span class="text-[11px] font-mono text-slate-400">v2.0</span>
+            <div onclick="setFilter('soon')" class="card rounded-2xl p-3.5 sm:p-4 cursor-pointer hover:border-amber-500/40 transition flex items-center justify-between">
+                <div>
+                    <p id="guiStatLabelSoon" class="text-[10px] sm:text-[11px] font-mono font-bold uppercase tracking-wider text-amber-600 dark:text-amber-400">Segera</p>
+                    <p id="totalSoon" class="text-2xl sm:text-3xl font-extrabold font-mono text-amber-500 dark:text-amber-400 mt-1">0</p>
+                </div>
+                <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-500 dark:text-amber-400 flex items-center justify-center flex-shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                </div>
+            </div>
+
+            <div onclick="setFilter('expired')" class="card rounded-2xl p-3.5 sm:p-4 cursor-pointer hover:border-red-500/40 transition flex items-center justify-between">
+                <div>
+                    <p id="guiStatLabelExpired" class="text-[10px] sm:text-[11px] font-mono font-bold uppercase tracking-wider text-red-600 dark:text-red-400">Terlambat</p>
+                    <p id="totalExpired" class="text-2xl sm:text-3xl font-extrabold font-mono text-red-500 dark:text-red-400 mt-1">0</p>
+                </div>
+                <div class="w-10 h-10 rounded-xl bg-red-500/10 border border-red-500/20 text-red-500 dark:text-red-400 flex items-center justify-center flex-shrink-0">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/>
+                    </svg>
+                </div>
+            </div>
+        </section>
+
+        <div class="lg:grid lg:grid-cols-12 lg:gap-6 items-start">
+            <aside class="hidden lg:block lg:col-span-3 lg:sticky lg:top-20 space-y-4">
+                <div class="card rounded-2xl p-4 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <span id="guiSidebarTitle" class="text-[11px] font-mono uppercase tracking-wider text-emerald-600 dark:text-emerald-400 font-bold">Network Billing Hub</span>
+                        <span id="guiSidebarVersion" class="text-[10px] font-mono px-2 py-0.5 rounded-md glass-subtle text-slate-500 dark:text-slate-400">v2.0</span>
                     </div>
-                    <p class="text-xs text-slate-300 leading-relaxed mb-4">Kelola jatuh tempo tagihan bulanan, kirim pengingat otomatis, dan cetak resi pembayaran WhatsApp secara instan.</p>
-                    <button onclick="openModal()" class="w-full bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-bold py-2.5 rounded-xl text-xs transition flex items-center justify-center gap-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
-                        </svg>
-                        Registrasi Pelanggan Baru
-                    </button>
+                    <p id="guiSidebarDesc" class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">Kelola jatuh tempo tagihan bulanan, kirim pengingat otomatis, dan cetak resi pembayaran WhatsApp secara instan.</p>
+                    <div class="pt-2 border-t border-slate-200/70 dark:border-slate-800 space-y-2">
+                        <button onclick="openModal()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-extrabold py-2.5 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+                            Tambah Customer Baru
+                        </button>
+                        <button onclick="openAdminModal()" class="w-full glass-subtle hover:border-emerald-500/40 text-slate-700 dark:text-slate-200 font-bold py-2 px-3 rounded-xl text-xs flex items-center justify-center gap-1.5 transition">
+                            Pengaturan & Master Data
+                        </button>
+                    </div>
                 </div>
             </aside>
 
-            <section class="mt-5 lg:mt-0 lg:col-span-8 xl:col-span-9">
-                <div class="card rounded-2xl p-3.5 sm:p-4 mb-4">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3.5">
-                        <div>
-                            <h2 class="font-bold text-base sm:text-lg text-slate-900 tracking-tight">Daftar Customer</h2>
-                            <p class="text-xs text-slate-500">Pantau jatuh tempo pembayaran & status langganan</p>
-                        </div>
-                        <button onclick="openModal()" class="sm:hidden self-start text-emerald-600 bg-emerald-50 border border-emerald-200 px-3 py-1.5 rounded-lg text-xs font-bold">+ Tambah Customer</button>
-                    </div>
-
-                    <div class="flex flex-col md:flex-row gap-2.5">
+            <section class="lg:col-span-9 space-y-4">
+                <div class="card rounded-2xl p-3 sm:p-4">
+                    <div class="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-2.5">
                         <div class="relative flex-1">
-                            <svg class="absolute left-3.5 top-3 text-slate-400 pointer-events-none" xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <svg class="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m2.1-5.4a7.5 7.5 0 11-15 0 7.5 7.5 0 0115 0z"/>
                             </svg>
-                            <input id="searchInput" type="text" placeholder="Cari nama atau nomor WhatsApp..." oninput="renderCustomers()" class="w-full bg-slate-50 border border-slate-200 rounded-xl pl-10 pr-4 py-2.5 text-sm text-slate-800 placeholder-slate-400 outline-none focus:bg-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/15 transition">
+                            <input id="searchInput" type="text" placeholder="Cari nama pelanggan, paket layanan, atau nomor WA..." oninput="renderCustomers()" class="w-full glass-subtle rounded-xl pl-10 pr-4 py-2.5 text-xs sm:text-sm text-slate-800 dark:text-slate-100 placeholder-slate-400 outline-none focus:border-emerald-500 transition">
                         </div>
 
-                        <div class="grid grid-cols-4 gap-1.5 sm:flex sm:items-center bg-slate-100 p-1 rounded-xl border border-slate-200/70">
-                            <button onclick="setFilter('all')" id="filterAll" class="filter-btn bg-slate-900 text-white px-3 py-2 rounded-lg text-[11px] font-bold flex items-center justify-center transition">Semua</button>
-                            <button onclick="setFilter('lunas')" id="filterLunas" class="filter-btn bg-white text-slate-600 px-3 py-2 rounded-lg text-[11px] font-bold flex items-center justify-center transition">Lunas</button>
-                            <button onclick="setFilter('soon')" id="filterSoon" class="filter-btn bg-white text-slate-600 px-3 py-2 rounded-lg text-[11px] font-bold flex items-center justify-center transition">Segera</button>
-                            <button onclick="setFilter('expired')" id="filterExpired" class="filter-btn bg-white text-slate-600 px-3 py-2 rounded-lg text-[11px] font-bold flex items-center justify-center transition">Terlambat</button>
+                        <div class="grid grid-cols-4 gap-1 glass-subtle p-1 rounded-xl">
+                            <button onclick="setFilter('all')" id="filterAll" class="filter-btn bg-slate-900 dark:bg-emerald-500 text-white dark:text-slate-950 px-2.5 py-2 rounded-lg text-[11px] font-extrabold flex items-center justify-center transition">Semua</button>
+                            <button onclick="setFilter('lunas')" id="filterLunas" class="filter-btn bg-transparent text-slate-600 dark:text-slate-300 px-2.5 py-2 rounded-lg text-[11px] font-bold flex items-center justify-center transition">Lunas</button>
+                            <button onclick="setFilter('soon')" id="filterSoon" class="filter-btn bg-transparent text-slate-600 dark:text-slate-300 px-2.5 py-2 rounded-lg text-[11px] font-bold flex items-center justify-center transition">Segera</button>
+                            <button onclick="setFilter('expired')" id="filterExpired" class="filter-btn bg-transparent text-slate-600 dark:text-slate-300 px-2.5 py-2 rounded-lg text-[11px] font-bold flex items-center justify-center transition">Terlambat</button>
                         </div>
                     </div>
                 </div>
 
-                <div id="customerList" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-2 gap-3 sm:gap-4"></div>
+                <div id="customerList" class="grid grid-cols-1 md:grid-cols-2 gap-3.5"></div>
 
-                <div id="emptyState" class="hidden card rounded-2xl text-center py-14 px-4">
-                    <div class="w-16 h-16 mx-auto rounded-2xl bg-slate-100 border border-slate-200 flex items-center justify-center text-slate-400 mb-3">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                <div id="emptyState" class="hidden card rounded-2xl text-center py-12 px-4">
+                    <div class="w-14 h-14 mx-auto rounded-2xl glass-subtle flex items-center justify-center text-slate-400 mb-3">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M20 13V7a2 2 0 00-2-2h-3l-1-2H10L9 5H6a2 2 0 00-2 2v6m16 0v4a2 2 0 01-2 2H6a2 2 0 01-2-2v-4m16 0H4m8-3v4m-2-2h4"/>
                         </svg>
                     </div>
-                    <p class="font-bold text-slate-800 text-base">Belum ada data customer</p>
-                    <p class="text-xs text-slate-500 mt-1 max-w-xs mx-auto">Tambahkan data pelanggan Wi-Fi untuk mulai memantau jatuh tempo pembayaran.</p>
-                    <button onclick="openModal()" class="mt-4 bg-emerald-500 hover:bg-emerald-600 text-slate-950 px-5 py-2.5 rounded-xl text-xs font-bold transition">+ Tambah Customer</button>
+                    <p class="font-bold text-slate-800 dark:text-slate-100 text-sm">Belum ada data customer</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1 max-w-xs mx-auto">Tambahkan data pelanggan Wi-Fi untuk mulai memantau jatuh tempo pembayaran.</p>
+                    <button onclick="openModal()" class="mt-4 bg-emerald-500 hover:bg-emerald-600 text-slate-950 px-4 py-2.5 rounded-xl text-xs font-extrabold transition">+ Tambah Customer</button>
                 </div>
             </section>
-
         </div>
     </main>
 </div>
 
 <div id="modal" class="modal hidden fixed inset-0 z-50 bg-slate-950/60 px-0 sm:px-4 flex items-end sm:items-center justify-center">
-    <div class="modal-content bg-white w-full max-w-lg rounded-t-3xl sm:rounded-2xl border border-slate-200 p-5 sm:p-6 max-h-[92dvh] overflow-y-auto">
-        <div class="flex items-center justify-between pb-4 mb-4 border-b border-slate-100">
+    <div class="modal-content w-full max-w-lg rounded-t-3xl sm:rounded-2xl p-5 sm:p-6 max-h-[92dvh] overflow-y-auto">
+        <div class="flex items-center justify-between pb-3.5 mb-4 border-b border-slate-200/70 dark:border-slate-800">
             <div>
-                <h2 id="modalTitle" class="font-bold text-lg text-slate-900">Tambah Customer</h2>
-                <p class="text-xs text-slate-500">Konfigurasi parameter langganan Wi-Fi</p>
+                <h2 id="modalTitle" class="font-extrabold text-base sm:text-lg text-slate-900 dark:text-white">Tambah Customer</h2>
+                <p class="text-xs text-slate-500 dark:text-slate-400">Konfigurasi parameter langganan Wi-Fi</p>
             </div>
-            <button onclick="closeModal()" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <button onclick="closeModal()" class="w-8 h-8 rounded-xl glass-subtle text-slate-600 dark:text-slate-300 flex items-center justify-center transition">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
                 </svg>
             </button>
         </div>
-        <form id="customerForm" onsubmit="saveCustomer(event)" class="space-y-4">
+        <form id="customerForm" onsubmit="saveCustomer(event)" class="space-y-3.5">
             <input type="hidden" id="customerId">
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1.5">Nama Customer</label>
-                    <input id="customerName" required type="text" placeholder="Contoh: Budi Santoso" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:bg-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/15">
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Nama Customer</label>
+                    <input id="customerName" required type="text" placeholder="Contoh: Budi Santoso" class="w-full glass-subtle rounded-xl px-3.5 py-2.5 text-sm text-slate-900 dark:text-white outline-none focus:border-emerald-500">
                 </div>
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1.5">Nomor WhatsApp</label>
-                    <input id="customerPhone" required type="tel" placeholder="Contoh: 081234567890" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm font-mono outline-none focus:bg-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/15">
-                </div>
-            </div>
-            <p class="text-[11px] text-slate-400 -mt-2">Nomor otomatis diformat ke kode negara WhatsApp Indonesia (62).</p>
-            
-            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1.5">Paket WiFi</label>
-                    <select id="customerPlan" required onchange="updatePlanFields()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm outline-none focus:bg-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/15">
-                        <option value="1 Perangkat (20k/bulan)">1 Perangkat - Rp 20.000 / bln</option>
-                        <option value="2 Perangkat (30k/bulan)">2 Perangkat - Rp 30.000 / bln</option>
-                        <option value="3 Perangkat (40k/bulan)">3 Perangkat - Rp 40.000 / bln</option>
-                        <option value="4-8 Perangkat (50k/bulan)">4-8 Perangkat - Rp 50.000 / bln</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-xs font-bold text-slate-700 mb-1.5">Tanggal Daftar / Aktif</label>
-                    <input id="customerRegisterDate" required type="date" onchange="updateDueDate()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm font-mono outline-none focus:bg-white focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/15">
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Nomor WhatsApp</label>
+                    <input id="customerPhone" required type="tel" placeholder="Contoh: 081234567890" class="w-full glass-subtle rounded-xl px-3.5 py-2.5 text-sm font-mono text-slate-900 dark:text-white outline-none focus:border-emerald-500">
                 </div>
             </div>
 
-            <div class="bg-emerald-500/5 border border-emerald-500/20 rounded-xl p-3.5 flex items-center justify-between gap-3">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                    <p class="text-[10px] font-mono text-emerald-700 uppercase tracking-wider font-bold">Kalkulasi Jatuh Tempo Otomatis</p>
-                    <p id="dueDatePreview" class="text-sm font-bold text-emerald-800 mt-0.5 font-mono">-</p>
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Paket WiFi</label>
+                    <select id="customerPlan" required class="w-full glass-subtle rounded-xl px-3.5 py-2.5 text-sm text-slate-900 dark:text-white outline-none focus:border-emerald-500"></select>
                 </div>
-                <div class="w-9 h-9 rounded-lg bg-emerald-500/10 text-emerald-600 flex items-center justify-center flex-shrink-0">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <rect x="3" y="4" width="18" height="18" rx="2"/>
-                        <path stroke-linecap="round" d="M16 2v4M8 2v4M3 10h18"/>
-                    </svg>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Tanggal Mulai / Daftar</label>
+                    <input id="customerRegisterDate" required type="date" class="w-full glass-subtle rounded-xl px-3.5 py-2.5 text-sm font-mono text-slate-900 dark:text-white outline-none focus:border-emerald-500">
                 </div>
             </div>
 
-            <input type="hidden" id="customerDueDate">
-            <input type="hidden" id="customerAmount">
-            <input type="hidden" id="customerService">
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Nama Layanan (Tampil di WA)</label>
+                    <input id="customerService" required type="text" placeholder="WiFi - 1 Perangkat" class="w-full glass-subtle rounded-xl px-3.5 py-2.5 text-sm text-slate-900 dark:text-white outline-none focus:border-emerald-500">
+                </div>
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Nominal Tagihan (Rp)</label>
+                    <input id="customerAmount" required type="number" min="0" placeholder="20000" class="w-full glass-subtle rounded-xl px-3.5 py-2.5 text-sm font-mono text-slate-900 dark:text-white outline-none focus:border-emerald-500">
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 items-center bg-emerald-500/10 border border-emerald-500/25 rounded-xl p-3">
+                <div>
+                    <p class="text-[10px] font-mono text-emerald-700 dark:text-emerald-400 uppercase tracking-wider font-bold">Jatuh Tempo Aktif</p>
+                    <p id="dueDatePreview" class="text-xs font-extrabold text-emerald-800 dark:text-emerald-300 mt-0.5 font-mono">-</p>
+                </div>
+                <div>
+                    <label class="block text-[10px] font-mono text-slate-600 dark:text-slate-400 uppercase mb-1">Atur Jatuh Tempo</label>
+                    <input type="date" id="customerDueDate" required class="w-full bg-white dark:bg-slate-900 border border-emerald-500/30 rounded-lg px-2.5 py-1.5 text-xs font-mono text-slate-900 dark:text-white outline-none">
+                </div>
+            </div>
 
             <div class="bg-slate-900 text-slate-200 rounded-xl p-3.5 border border-slate-800">
-                <div class="flex items-center justify-between mb-2">
-                    <p class="text-[11px] font-mono uppercase tracking-wider text-emerald-400 font-semibold">Preview Output WhatsApp</p>
+                <div class="flex items-center justify-between mb-1.5">
+                    <p class="text-[10px] font-mono uppercase tracking-wider text-emerald-400 font-bold">Preview Output WhatsApp</p>
                     <span class="text-[10px] font-mono text-slate-500">Auto-Generated</span>
                 </div>
-                <div id="messagePreview" class="text-xs text-slate-300 font-mono leading-relaxed whitespace-pre-line max-h-36 overflow-y-auto pr-1">
-                    Pesan akan dibuat otomatis berdasarkan data customer.
-                </div>
+                <div id="messagePreview" class="text-xs text-slate-300 font-mono leading-relaxed whitespace-pre-line max-h-32 overflow-y-auto pr-1"></div>
             </div>
 
-            <div class="flex gap-2.5 pt-2">
-                <button type="button" onclick="closeModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 py-3 rounded-xl font-bold text-xs sm:text-sm transition">Batal</button>
-                <button type="submit" class="flex-[1.5] bg-emerald-500 hover:bg-emerald-600 text-slate-950 py-3 rounded-xl font-bold text-xs sm:text-sm transition">Simpan Customer</button>
+            <div class="flex gap-2.5 pt-1">
+                <button type="button" onclick="closeModal()" class="flex-1 glass-subtle text-slate-700 dark:text-slate-300 py-2.5 rounded-xl font-bold text-xs transition">Batal</button>
+                <button type="submit" class="flex-[1.5] bg-emerald-500 hover:bg-emerald-600 text-slate-950 py-2.5 rounded-xl font-extrabold text-xs transition">Simpan Customer</button>
             </div>
         </form>
     </div>
 </div>
 
 <div id="detailModal" class="modal hidden fixed inset-0 z-50 bg-slate-950/60 px-0 sm:px-4 flex items-end sm:items-center justify-center">
-    <div class="modal-content bg-white w-full max-w-lg rounded-t-3xl sm:rounded-2xl border border-slate-200 p-5 sm:p-6 max-h-[92dvh] overflow-y-auto">
-        <div class="flex items-center justify-between pb-4 mb-4 border-b border-slate-100">
+    <div class="modal-content w-full max-w-lg rounded-t-3xl sm:rounded-2xl p-5 sm:p-6 max-h-[92dvh] overflow-y-auto">
+        <div class="flex items-center justify-between pb-3.5 mb-4 border-b border-slate-200/70 dark:border-slate-800">
             <div>
-                <h2 class="font-bold text-lg text-slate-900">Detail & Riwayat Pelanggan</h2>
-                <p class="text-xs text-slate-500">Log transaksi & generator pesan</p>
+                <h2 class="font-extrabold text-base sm:text-lg text-slate-900 dark:text-white">Detail & Riwayat Pelanggan</h2>
+                <p class="text-xs text-slate-500 dark:text-slate-400">Informasi periode aktif, log transaksi & generator WA</p>
             </div>
-            <button onclick="closeDetail()" class="w-9 h-9 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 flex items-center justify-center transition">
-                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <button onclick="closeDetail()" class="w-8 h-8 rounded-xl glass-subtle text-slate-600 dark:text-slate-300 flex items-center justify-center transition">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
                 </svg>
             </button>
@@ -340,43 +455,40 @@
 </div>
 
 <div id="historyModal" class="modal hidden fixed inset-0 z-[70] bg-slate-950/60 px-4 flex items-center justify-center">
-    <div class="modal-content bg-white w-full max-w-sm rounded-2xl border border-slate-200 p-5">
-        <h3 id="historyModalTitle" class="font-bold text-base text-slate-900 mb-4 text-center">Form Riwayat Pembayaran</h3>
+    <div class="modal-content w-full max-w-sm rounded-2xl p-5">
+        <h3 id="historyModalTitle" class="font-extrabold text-base text-slate-900 dark:text-white mb-4 text-center">Form Riwayat Pembayaran</h3>
         <form id="historyForm" onsubmit="saveHistoryData(event)" class="space-y-3">
             <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1">Tanggal Bayar</label>
-                <input id="historyDate" required type="date" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-mono outline-none focus:bg-white focus:border-emerald-500">
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Tanggal Bayar</label>
+                <input id="historyDate" required type="date" class="w-full glass-subtle rounded-xl px-3 py-2 text-sm font-mono text-slate-900 dark:text-white outline-none focus:border-emerald-500">
             </div>
             <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1">Bulan Tagihan (Jatuh Tempo)</label>
-                <input id="historyDueDate" required type="date" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-mono outline-none focus:bg-white focus:border-emerald-500">
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Bulan Tagihan (Jatuh Tempo)</label>
+                <input id="historyDueDate" required type="date" class="w-full glass-subtle rounded-xl px-3 py-2 text-sm font-mono text-slate-900 dark:text-white outline-none focus:border-emerald-500">
             </div>
             <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1">Nominal (Rp)</label>
-                <input id="historyAmount" required type="text" oninput="this.value = formatInputRupiah(this.value)" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-mono outline-none focus:bg-white focus:border-emerald-500">
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Nominal (Rp)</label>
+                <input id="historyAmount" required type="text" oninput="this.value = formatInputRupiah(this.value)" class="w-full glass-subtle rounded-xl px-3 py-2 text-sm font-mono text-slate-900 dark:text-white outline-none focus:border-emerald-500">
             </div>
             <div>
-                <label class="block text-xs font-bold text-slate-700 mb-1">Metode</label>
-                <select id="historyMethod" required class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm outline-none focus:bg-white focus:border-emerald-500">
-                    <option value="CASH">CASH</option>
-                    <option value="Transfer">Transfer</option>
-                </select>
+                <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Metode</label>
+                <select id="historyMethod" required class="w-full glass-subtle rounded-xl px-3 py-2 text-sm text-slate-900 dark:text-white outline-none focus:border-emerald-500"></select>
             </div>
             <div class="flex gap-2 pt-2">
-                <button type="button" onclick="closeHistoryModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 py-2.5 rounded-xl font-bold text-xs transition">Batal</button>
-                <button type="submit" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-slate-950 py-2.5 rounded-xl font-bold text-xs transition">Simpan</button>
+                <button type="button" onclick="closeHistoryModal()" class="flex-1 glass-subtle text-slate-700 dark:text-slate-300 py-2.5 rounded-xl font-bold text-xs transition">Batal</button>
+                <button type="submit" class="flex-1 bg-emerald-500 hover:bg-emerald-600 text-slate-950 py-2.5 rounded-xl font-extrabold text-xs transition">Simpan</button>
             </div>
         </form>
     </div>
 </div>
 
 <div id="paymentModal" class="modal hidden fixed inset-0 z-50 bg-slate-950/60 px-4 flex items-center justify-center">
-    <div class="modal-content bg-white w-full max-w-sm rounded-2xl border border-slate-200 p-5">
-        <h3 class="font-bold text-base text-slate-900 mb-1 text-center">Konfirmasi Pembayaran</h3>
-        <p class="text-xs text-slate-500 mb-4 text-center">Pilih durasi bulan & metode transaksi</p>
+    <div class="modal-content w-full max-w-sm rounded-2xl p-5">
+        <h3 class="font-extrabold text-base text-slate-900 dark:text-white mb-1 text-center">Konfirmasi Pembayaran</h3>
+        <p class="text-xs text-slate-500 dark:text-slate-400 mb-4 text-center">Pilih durasi bulan & metode pembayaran</p>
         <div class="mb-4">
-            <label class="block text-xs font-bold text-slate-700 mb-1.5">Jumlah Bulan Bayar</label>
-            <select id="paymentMonths" onchange="updatePaymentPreview()" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2.5 text-sm font-semibold outline-none focus:bg-white focus:border-emerald-500">
+            <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1.5">Jumlah Bulan Bayar</label>
+            <select id="paymentMonths" onchange="updatePaymentPreview()" class="w-full glass-subtle rounded-xl px-3 py-2.5 text-sm font-semibold text-slate-900 dark:text-white outline-none focus:border-emerald-500">
                 <option value="1">1 Bulan</option>
                 <option value="2">2 Bulan</option>
                 <option value="3">3 Bulan</option>
@@ -385,32 +497,216 @@
                 <option value="6">6 Bulan</option>
                 <option value="12">12 Bulan (1 Tahun)</option>
             </select>
-            <div class="mt-3 bg-slate-900 text-white rounded-xl p-3.5 space-y-1.5">
+            <div class="mt-3 bg-slate-900 text-white rounded-xl p-3.5 space-y-2 border border-slate-800">
                 <div class="flex justify-between items-center text-xs">
                     <span class="text-slate-400">Total Tagihan:</span>
-                    <span id="paymentTotalPreview" class="font-bold font-mono text-emerald-400">Rp 0</span>
+                    <span id="paymentTotalPreview" class="font-extrabold font-mono text-emerald-400">Rp 0</span>
                 </div>
                 <div class="flex justify-between items-center text-xs">
-                    <span class="text-slate-400">Jatuh Tempo Baru:</span>
+                    <span class="text-slate-400">Jatuh Tempo:</span>
                     <span id="paymentDuePreview" class="font-bold font-mono text-slate-200">-</span>
                 </div>
             </div>
         </div>
-        <div class="grid grid-cols-2 gap-2">
-            <button onclick="confirmPayment('CASH')" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 py-3 rounded-xl font-bold text-xs transition">CASH / TUNAI</button>
-            <button onclick="confirmPayment('Transfer')" class="bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-bold text-xs transition">TRANSFER</button>
-        </div>
-        <button onclick="closePaymentModal()" class="w-full bg-slate-100 hover:bg-slate-200 text-slate-600 py-2.5 rounded-xl font-bold text-xs mt-2 transition">Batal</button>
+        <div id="paymentMethodButtons" class="grid grid-cols-2 gap-2"></div>
+        <button onclick="closePaymentModal()" class="w-full glass-subtle text-slate-600 dark:text-slate-300 py-2.5 rounded-xl font-bold text-xs mt-2.5 transition">Batal</button>
     </div>
 </div>
 
-<div id="confirmModal" class="modal hidden fixed inset-0 z-[60] bg-slate-950/60 px-4 flex items-center justify-center">
-    <div class="modal-content bg-white w-full max-w-xs rounded-2xl border border-slate-200 p-5">
-        <h3 id="confirmTitle" class="font-bold text-base text-slate-900 mb-1 text-center"></h3>
-        <p id="confirmMessage" class="text-xs text-slate-500 mb-5 text-center leading-relaxed"></p>
+<div id="adminModal" class="modal hidden fixed inset-0 z-50 bg-slate-950/60 px-0 sm:px-4 flex items-end sm:items-center justify-center">
+    <div class="modal-content w-full max-w-3xl rounded-t-3xl sm:rounded-2xl p-5 sm:p-6 max-h-[92dvh] flex flex-col">
+        <div class="flex items-center justify-between pb-3.5 mb-3 border-b border-slate-200/70 dark:border-slate-800 flex-shrink-0">
+            <div>
+                <h2 class="font-extrabold text-base sm:text-lg text-slate-900 dark:text-white">Panel Admin & Master Data</h2>
+                <p class="text-xs text-slate-500 dark:text-slate-400">Kelola tampilan GUI, paket Wi-Fi, metode pembayaran, template WA & akun</p>
+            </div>
+            <button onclick="closeAdminModal()" class="w-8 h-8 rounded-xl glass-subtle text-slate-600 dark:text-slate-300 flex items-center justify-center transition">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+
+        <div class="grid grid-cols-4 gap-1 glass-subtle p-1 rounded-xl mb-4 flex-shrink-0">
+            <button onclick="switchAdminTab('gui')" id="tabBtnGui" class="admin-tab-btn bg-slate-900 dark:bg-emerald-500 text-white dark:text-slate-950 py-2 rounded-lg text-[11px] font-bold transition">GUI & Web</button>
+            <button onclick="switchAdminTab('plans')" id="tabBtnPlans" class="admin-tab-btn text-slate-600 dark:text-slate-300 py-2 rounded-lg text-[11px] font-bold transition">Paket Wi-Fi</button>
+            <button onclick="switchAdminTab('payments')" id="tabBtnPayments" class="admin-tab-btn text-slate-600 dark:text-slate-300 py-2 rounded-lg text-[11px] font-bold transition">Metode & WA</button>
+            <button onclick="switchAdminTab('account')" id="tabBtnAccount" class="admin-tab-btn text-slate-600 dark:text-slate-300 py-2 rounded-lg text-[11px] font-bold transition">Akun & Data</button>
+        </div>
+
+        <div class="overflow-y-auto flex-1 pr-1 space-y-4">
+            <div id="adminTabGui" class="space-y-3.5">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Judul Website / Header</label>
+                        <input id="cfgAppTitle" type="text" class="w-full glass-subtle rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Subjudul / Kontak Header</label>
+                        <input id="cfgAppSubtitle" type="text" class="w-full glass-subtle rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Teks Badge Status</label>
+                        <input id="cfgStatusBadge" type="text" class="w-full glass-subtle rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Batas Hari "Segera" (Warning)</label>
+                        <input id="cfgWarningDays" type="number" min="1" max="30" class="w-full glass-subtle rounded-xl px-3 py-2 text-xs font-mono text-slate-900 dark:text-white outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">URL Favicon</label>
+                    <input id="cfgFaviconUrl" type="text" class="w-full glass-subtle rounded-xl px-3 py-2 text-xs font-mono text-slate-900 dark:text-white outline-none">
+                </div>
+
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2.5">
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1">Label Total</label>
+                        <input id="cfgStatTotal" type="text" class="w-full glass-subtle rounded-xl px-2.5 py-1.5 text-xs text-slate-900 dark:text-white outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1">Label Lunas</label>
+                        <input id="cfgStatPaid" type="text" class="w-full glass-subtle rounded-xl px-2.5 py-1.5 text-xs text-slate-900 dark:text-white outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1">Label Segera</label>
+                        <input id="cfgStatSoon" type="text" class="w-full glass-subtle rounded-xl px-2.5 py-1.5 text-xs text-slate-900 dark:text-white outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-[11px] font-bold text-slate-700 dark:text-slate-300 mb-1">Label Terlambat</label>
+                        <input id="cfgStatExpired" type="text" class="w-full glass-subtle rounded-xl px-2.5 py-1.5 text-xs text-slate-900 dark:text-white outline-none">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Judul Kartu Sidebar</label>
+                        <input id="cfgSidebarTitle" type="text" class="w-full glass-subtle rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Versi Sidebar</label>
+                        <input id="cfgSidebarVersion" type="text" class="w-full glass-subtle rounded-xl px-3 py-2 text-xs font-mono text-slate-900 dark:text-white outline-none">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Deskripsi Sidebar</label>
+                    <textarea id="cfgSidebarDesc" rows="2" class="w-full glass-subtle rounded-xl px-3 py-2 text-xs text-slate-900 dark:text-white outline-none"></textarea>
+                </div>
+
+                <button onclick="saveGuiConfig()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-extrabold py-2.5 rounded-xl text-xs transition">Simpan Pengaturan GUI</button>
+            </div>
+
+            <div id="adminTabPlans" class="hidden space-y-4">
+                <form id="planForm" onsubmit="savePlanItem(event)" class="glass-subtle rounded-xl p-3.5 space-y-3">
+                    <input type="hidden" id="editPlanIndex" value="-1">
+                    <p id="planFormTitle" class="text-xs font-bold text-slate-800 dark:text-slate-200">Tambah Paket Wi-Fi Baru</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-600 dark:text-slate-400 mb-1">Label Dropdown Paket</label>
+                            <input id="planLabelInput" required type="text" placeholder="1 Perangkat (20k/bulan)" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 dark:text-white outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-600 dark:text-slate-400 mb-1">Nama Layanan (WA)</label>
+                            <input id="planServiceInput" required type="text" placeholder="WiFi - 1 Perangkat" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 dark:text-white outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-600 dark:text-slate-400 mb-1">Harga (Rp)</label>
+                            <input id="planAmountInput" required type="number" min="0" placeholder="20000" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-1.5 text-xs font-mono text-slate-900 dark:text-white outline-none">
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <button type="button" id="cancelPlanEditBtn" onclick="resetPlanForm()" class="hidden bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 px-3 py-1.5 rounded-lg text-xs font-bold">Batal</button>
+                        <button type="submit" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 px-4 py-1.5 rounded-lg text-xs font-extrabold">Simpan Paket</button>
+                    </div>
+                </form>
+                <div id="adminPlansList" class="space-y-2"></div>
+            </div>
+
+            <div id="adminTabPayments" class="hidden space-y-4">
+                <div class="glass-subtle rounded-xl p-3.5 space-y-3">
+                    <p class="text-xs font-bold text-slate-800 dark:text-slate-200">CRUD Metode Pembayaran</p>
+                    <form onsubmit="savePaymentMethodItem(event)" class="flex gap-2">
+                        <input type="hidden" id="editMethodIndex" value="-1">
+                        <input id="methodNameInput" required type="text" placeholder="Contoh: CASH, Transfer, QRIS, DANA" class="flex-1 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-1.5 text-xs text-slate-900 dark:text-white outline-none">
+                        <button type="button" id="cancelMethodEditBtn" onclick="resetMethodForm()" class="hidden bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 px-3 py-1.5 rounded-lg text-xs font-bold">Batal</button>
+                        <button type="submit" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 px-3.5 py-1.5 rounded-lg text-xs font-extrabold">Simpan</button>
+                    </form>
+                    <div id="adminMethodsList" class="grid grid-cols-2 sm:grid-cols-3 gap-2"></div>
+                </div>
+
+                <div class="space-y-3">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 dark:text-slate-300 mb-1">Info Rekening / Tujuan Pembayaran (Tampil di WA Pengingat)</label>
+                        <textarea id="cfgPaymentInfoText" rows="3" class="w-full glass-subtle rounded-xl px-3 py-2 text-xs font-mono text-slate-900 dark:text-white outline-none"></textarea>
+                    </div>
+                    <div>
+                        <div class="flex items-center justify-between mb-1">
+                            <label class="text-xs font-bold text-slate-700 dark:text-slate-300">Template WA Pengingat</label>
+                            <span class="text-[10px] font-mono text-slate-400">Variabel: {name} {reminderText} {service} {amount} {dueDate} {paymentInfo}</span>
+                        </div>
+                        <textarea id="cfgReminderTemplate" rows="5" class="w-full glass-subtle rounded-xl px-3 py-2 text-xs font-mono text-slate-900 dark:text-white outline-none"></textarea>
+                    </div>
+                    <div>
+                        <div class="flex items-center justify-between mb-1">
+                            <label class="text-xs font-bold text-slate-700 dark:text-slate-300">Template WA Resi Lunas</label>
+                            <span class="text-[10px] font-mono text-slate-400">Variabel: {name} {method} {service} {duration} {amount} {periodStart} {dueDate} {paidDate}</span>
+                        </div>
+                        <textarea id="cfgReceiptTemplate" rows="5" class="w-full glass-subtle rounded-xl px-3 py-2 text-xs font-mono text-slate-900 dark:text-white outline-none"></textarea>
+                    </div>
+                    <button onclick="saveWaTemplatesConfig()" class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-extrabold py-2.5 rounded-xl text-xs transition">Simpan Info Pembayaran & Template WA</button>
+                </div>
+            </div>
+
+            <div id="adminTabAccount" class="hidden space-y-4">
+                <div class="glass-subtle rounded-xl p-3.5 space-y-3">
+                    <p class="text-xs font-bold text-slate-800 dark:text-slate-200">Ubah Username & Password Admin</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-600 dark:text-slate-400 mb-1">Username Baru</label>
+                            <input id="cfgAdminUsername" type="text" required class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-900 dark:text-white outline-none">
+                        </div>
+                        <div>
+                            <label class="block text-[11px] font-semibold text-slate-600 dark:text-slate-400 mb-1">Password Baru</label>
+                            <input id="cfgAdminPassword" type="text" required class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs text-slate-900 dark:text-white outline-none">
+                        </div>
+                    </div>
+                    <button onclick="saveAdminCredentials()" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 font-extrabold px-4 py-2 rounded-xl text-xs transition">Simpan Kredensial Login</button>
+                </div>
+
+                <div class="glass-subtle rounded-xl p-3.5 space-y-2.5">
+                    <label class="block text-xs font-bold text-slate-800 dark:text-slate-200">Endpoint Google Apps Script (Web App URL)</label>
+                    <input id="cfgScriptUrl" type="url" class="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-3 py-2 text-xs font-mono text-slate-900 dark:text-white outline-none">
+                    <div class="flex flex-wrap gap-2 pt-1">
+                        <button onclick="saveScriptUrlConfig()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold px-3.5 py-2 rounded-xl text-xs transition">Simpan URL Server</button>
+                        <button onclick="loadData()" class="bg-slate-200 hover:bg-slate-300 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-800 dark:text-slate-200 font-bold px-3.5 py-2 rounded-xl text-xs transition">Muat Ulang dari Server</button>
+                    </div>
+                </div>
+
+                <div class="glass-subtle rounded-xl p-3.5 space-y-2.5">
+                    <p class="text-xs font-bold text-slate-800 dark:text-slate-200">Manajemen Database Lengkap (Backup / Restore / Reset)</p>
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                        <button onclick="exportAllData()" class="bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 border border-emerald-500/25 font-bold py-2.5 rounded-xl text-xs transition">Export JSON (Backup)</button>
+                        <label class="bg-blue-500/10 hover:bg-blue-500/20 text-blue-700 dark:text-blue-400 border border-blue-500/25 font-bold py-2.5 rounded-xl text-xs text-center cursor-pointer transition">
+                            Import JSON (Restore)
+                            <input type="file" accept=".json" onchange="importAllData(event)" class="hidden">
+                        </label>
+                        <button onclick="resetDefaultConfig()" class="bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 border border-red-500/25 font-bold py-2.5 rounded-xl text-xs transition">Reset Pengaturan GUI</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="confirmModal" class="modal hidden fixed inset-0 z-[80] bg-slate-950/60 px-4 flex items-center justify-center">
+    <div class="modal-content w-full max-w-xs rounded-2xl p-5">
+        <h3 id="confirmTitle" class="font-extrabold text-base text-slate-900 dark:text-white mb-1 text-center"></h3>
+        <p id="confirmMessage" class="text-xs text-slate-500 dark:text-slate-400 mb-5 text-center leading-relaxed"></p>
         <div class="flex gap-2">
-            <button onclick="closeConfirmModal()" class="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 py-2.5 rounded-xl font-bold text-xs transition">Batal</button>
-            <button id="confirmActionBtn" onclick="executeConfirm()" class="flex-1 bg-emerald-500 text-white py-2.5 rounded-xl font-bold text-xs transition">Yakin</button>
+            <button onclick="closeConfirmModal()" class="flex-1 glass-subtle text-slate-700 dark:text-slate-300 py-2.5 rounded-xl font-bold text-xs transition">Batal</button>
+            <button id="confirmActionBtn" onclick="executeConfirm()" class="flex-1 bg-emerald-500 text-white py-2.5 rounded-xl font-extrabold text-xs transition">Yakin</button>
         </div>
     </div>
 </div>
@@ -418,9 +714,236 @@
 <div id="toastContainer" class="fixed bottom-5 right-4 left-4 sm:left-auto sm:w-80 z-[100] space-y-2 pointer-events-none"></div>
 
 <script>
+    const DEFAULT_GAS_URL = "https://script.google.com/macros/s/AKfycbzaHGK-3KuGhB87hhVUH1VVAWPU9TB_2JM6SAngFCUYDlkpPKN3Ny91CRTtvwrr9_QA/exec";
+    const LOCAL_CONFIG_KEY = "tewe_wifi_app_config_v2";
+    const SESSION_AUTH_KEY = "tewe_wifi_auth_session_v2";
+    const THEME_STORAGE_KEY = "tewe_wifi_theme_v2";
+
+    const DEFAULT_CONFIG = {
+        auth: {
+            username: "A",
+            password: "A"
+        },
+        gui: {
+            appTitle: "Tagihan Wi-Fi Pelanggan",
+            appSubtitle: "Join Wi-Fi Tewe Tech - 082323624177",
+            statusBadge: "System Active",
+            faviconUrl: "https://raw.githubusercontent.com/tewetech/aset/main/Full%20Aset%20(Final)/Gambar/Favicon/Tagihan.png",
+            statTotal: "Customer",
+            statPaid: "Lunas",
+            statSoon: "Segera",
+            statExpired: "Terlambat",
+            sidebarTitle: "Network Billing Hub",
+            sidebarVersion: "v2.0",
+            sidebarDesc: "Kelola jatuh tempo tagihan bulanan, kirim pengingat otomatis, dan cetak resi pembayaran WhatsApp secara instan.",
+            warningDays: 3
+        },
+        plans: [
+            { label: "1 Perangkat (20k/bulan)", amount: 20000, service: "WiFi - 1 Perangkat" },
+            { label: "2 Perangkat (30k/bulan)", amount: 30000, service: "WiFi - 2 Perangkat" },
+            { label: "3 Perangkat (40k/bulan)", amount: 40000, service: "WiFi - 3 Perangkat" },
+            { label: "4-8 Perangkat (50k/bulan)", amount: 50000, service: "WiFi - 4-8 Perangkat" }
+        ],
+        paymentMethods: ["CASH", "Transfer"],
+        paymentInfoText: "DANA/SHOPEEPAY/GOPAY/CASH\n082323624177\nTRI WANTORO",
+        reminderTemplate: "Halo, Kak {name}\n\nKami ingin {reminderText}\n\nDetail pembayaran :\nLayanan : {service}\nNominal : {amount}\nJatuh tempo : {dueDate}\n\n*UNTUK PEMBAYARAN, BISA MELALUI :*\n{paymentInfo}\n\n_Mohon melakukan pembayaran sebelum atau pada tanggal jatuh tempo agar layanan tetap dapat digunakan dengan normal._\n\n_Abaikan pesan ini jika sudah melakukan pembayaran._\n_Terima kasih._",
+        receiptTemplate: "Halo, Kak {name}\n\nTerima kasih, pembayaran Wi-Fi melalui *{method}* telah kami terima.\n\n*Detail layanan Wi-Fi :*\nLayanan : {service}{duration}\nNominal : {amount}\nPeriode : {periodStart} - {dueDate}\n\n*Detail pembayaran :*\nTanggal : {paidDate}\nStatus : *LUNAS*\n\n_Terima kasih telah menggunakan layanan kami._",
+        scriptUrl: DEFAULT_GAS_URL
+    };
+
+    let appConfig = loadLocalConfig();
+    let SCRIPT_GAS_URL = appConfig.scriptUrl || DEFAULT_GAS_URL;
+    let wifiPlans = {};
     let customers = [];
     let saveQueue = Promise.resolve();
     let lastBillingCheckDate = '';
+    let currentFilter = 'all';
+    let countdownTimer = null;
+    let currentPaymentId = null;
+    let confirmCallback = null;
+    let currentHistoryIndex = -1;
+    let currentHistoryCustomerId = null;
+
+    function cloneDefaultConfig() {
+        return JSON.parse(JSON.stringify(DEFAULT_CONFIG));
+    }
+
+    function mergeConfig(raw) {
+        const base = cloneDefaultConfig();
+        if (!raw || typeof raw !== 'object') return base;
+        if (raw.auth && typeof raw.auth === 'object') {
+            base.auth.username = String(raw.auth.username || base.auth.username);
+            base.auth.password = String(raw.auth.password || base.auth.password);
+        }
+        if (raw.gui && typeof raw.gui === 'object') {
+            Object.keys(base.gui).forEach(k => {
+                if (raw.gui[k] !== undefined && raw.gui[k] !== null && raw.gui[k] !== '') {
+                    base.gui[k] = k === 'warningDays' ? Math.max(1, Number(raw.gui[k]) || 3) : String(raw.gui[k]);
+                }
+            });
+        }
+        if (Array.isArray(raw.plans) && raw.plans.length > 0) {
+            base.plans = raw.plans.map(p => ({
+                label: String(p.label || 'Paket WiFi'),
+                amount: Number(p.amount || 0),
+                service: String(p.service || 'WiFi')
+            }));
+        }
+        if (Array.isArray(raw.paymentMethods) && raw.paymentMethods.length > 0) {
+            base.paymentMethods = raw.paymentMethods.map(m => String(m).trim()).filter(Boolean);
+        }
+        if (typeof raw.paymentInfoText === 'string' && raw.paymentInfoText.trim()) {
+            base.paymentInfoText = raw.paymentInfoText;
+        }
+        if (typeof raw.reminderTemplate === 'string' && raw.reminderTemplate.trim()) {
+            base.reminderTemplate = raw.reminderTemplate;
+        }
+        if (typeof raw.receiptTemplate === 'string' && raw.receiptTemplate.trim()) {
+            base.receiptTemplate = raw.receiptTemplate;
+        }
+        if (typeof raw.scriptUrl === 'string' && raw.scriptUrl.trim()) {
+            base.scriptUrl = raw.scriptUrl.trim();
+        }
+        return base;
+    }
+
+    function loadLocalConfig() {
+        try {
+            const raw = localStorage.getItem(LOCAL_CONFIG_KEY);
+            if (!raw) return cloneDefaultConfig();
+            return mergeConfig(JSON.parse(raw));
+        } catch (e) {
+            return cloneDefaultConfig();
+        }
+    }
+
+    function saveLocalConfig() {
+        try {
+            localStorage.setItem(LOCAL_CONFIG_KEY, JSON.stringify(appConfig));
+        } catch (e) {}
+    }
+
+    function rebuildWifiPlansMap() {
+        wifiPlans = {};
+        appConfig.plans.forEach(p => {
+            wifiPlans[p.label] = { amount: Number(p.amount), service: p.service };
+        });
+    }
+
+    function applyTheme(theme) {
+        const html = document.documentElement;
+        const meta = document.getElementById('themeColorMeta');
+        const sun = document.getElementById('themeIconSun');
+        const moon = document.getElementById('themeIconMoon');
+        if (theme === 'dark') {
+            html.classList.add('dark');
+            html.classList.remove('light');
+            if (meta) meta.setAttribute('content', '#090d16');
+            if (sun) sun.classList.remove('hidden');
+            if (moon) moon.classList.add('hidden');
+        } else {
+            html.classList.remove('dark');
+            html.classList.add('light');
+            if (meta) meta.setAttribute('content', '#f1f5f9');
+            if (sun) sun.classList.add('hidden');
+            if (moon) moon.classList.remove('hidden');
+        }
+        try {
+            localStorage.setItem(THEME_STORAGE_KEY, theme);
+        } catch (e) {}
+    }
+
+    function toggleTheme() {
+        const isDark = document.documentElement.classList.contains('dark');
+        applyTheme(isDark ? 'light' : 'dark');
+    }
+
+    function initTheme() {
+        let saved = null;
+        try {
+            saved = localStorage.getItem(THEME_STORAGE_KEY);
+        } catch (e) {}
+        if (saved === 'dark' || saved === 'light') {
+            applyTheme(saved);
+        } else {
+            applyTheme('light');
+        }
+    }
+
+    function checkAuthSession() {
+        const overlay = document.getElementById('loginOverlay');
+        try {
+            const session = sessionStorage.getItem(SESSION_AUTH_KEY);
+            if (session === 'authenticated') {
+                overlay.classList.add('hidden');
+                return;
+            }
+        } catch (e) {}
+        overlay.classList.remove('hidden');
+    }
+
+    function handleLogin(event) {
+        event.preventDefault();
+        const u = document.getElementById('loginUsername').value.trim();
+        const p = document.getElementById('loginPassword').value.trim();
+        if (u === appConfig.auth.username && p === appConfig.auth.password) {
+            try {
+                sessionStorage.setItem(SESSION_AUTH_KEY, 'authenticated');
+            } catch (e) {}
+            document.getElementById('loginOverlay').classList.add('hidden');
+            document.getElementById('loginForm').reset();
+            showToast('Login berhasil.');
+        } else {
+            showToast('Username atau password salah.', 'error');
+        }
+    }
+
+    function handleLogout() {
+        try {
+            sessionStorage.removeItem(SESSION_AUTH_KEY);
+        } catch (e) {}
+        document.getElementById('loginOverlay').classList.remove('hidden');
+        showToast('Anda telah keluar.');
+    }
+
+    function applyGuiSettings() {
+        rebuildWifiPlansMap();
+        SCRIPT_GAS_URL = appConfig.scriptUrl || DEFAULT_GAS_URL;
+        const g = appConfig.gui;
+        document.getElementById('pageTitle').textContent = g.appTitle;
+        document.getElementById('loginAppTitle').textContent = g.appTitle;
+        document.getElementById('guiAppTitle').textContent = g.appTitle;
+        document.getElementById('guiAppSubtitle').textContent = g.appSubtitle;
+        document.getElementById('guiStatusBadge').innerHTML = `<span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>${escapeHtml(g.statusBadge)}`;
+        document.getElementById('pageFavicon').setAttribute('href', g.faviconUrl);
+        document.getElementById('guiStatLabelTotal').textContent = g.statTotal;
+        document.getElementById('guiStatLabelPaid').textContent = g.statPaid;
+        document.getElementById('guiStatLabelSoon').textContent = g.statSoon;
+        document.getElementById('guiStatLabelExpired').textContent = g.statExpired;
+        document.getElementById('guiSidebarTitle').textContent = g.sidebarTitle;
+        document.getElementById('guiSidebarVersion').textContent = g.sidebarVersion;
+        document.getElementById('guiSidebarDesc').textContent = g.sidebarDesc;
+
+        const planSelect = document.getElementById('customerPlan');
+        const currentPlanVal = planSelect.value;
+        planSelect.innerHTML = appConfig.plans.map(p => `<option value="${escapeHtml(p.label)}">${escapeHtml(p.label)} - ${formatCurrency(p.amount)}</option>`).join('') + `<option value="__custom__">Paket Kustom (Input Manual)</option>`;
+        if (currentPlanVal && (wifiPlans[currentPlanVal] || currentPlanVal === '__custom__')) {
+            planSelect.value = currentPlanVal;
+        } else if (appConfig.plans.length > 0) {
+            planSelect.value = appConfig.plans[0].label;
+        }
+
+        const historyMethodSelect = document.getElementById('historyMethod');
+        historyMethodSelect.innerHTML = appConfig.paymentMethods.map(m => `<option value="${escapeHtml(m)}">${escapeHtml(m)}</option>`).join('');
+
+        const payBtnsContainer = document.getElementById('paymentMethodButtons');
+        payBtnsContainer.innerHTML = appConfig.paymentMethods.map((m, idx) => {
+            const colorClass = idx % 2 === 0
+                ? 'bg-emerald-500 hover:bg-emerald-600 text-slate-950'
+                : 'bg-blue-600 hover:bg-blue-700 text-white';
+            return `<button type="button" onclick="confirmPayment('${escapeHtml(m.replace(/'/g, "\\'"))}')" class="${colorClass} py-2.5 px-3 rounded-xl font-extrabold text-xs transition truncate">${escapeHtml(m)}</button>`;
+        }).join('');
+    }
 
     function formatInputRupiah(value) {
         let val = String(value).toLowerCase();
@@ -429,14 +952,6 @@
         if (!val) return '';
         return new Intl.NumberFormat('id-ID').format(val);
     }
-    const SCRIPT_GAS_URL = "https://script.google.com/macros/s/AKfycbx75dnWoYMWJOB5slDuP7PCXOyj_-6WsOCI529Ke2JGeMeqHfPY0m5vD37_KqMtGqar/exec";
-
-    let currentFilter = 'all';
-    let countdownTimer = null;
-    let currentPaymentId = null;
-    let confirmCallback = null;
-    let currentHistoryIndex = -1;
-    let currentHistoryCustomerId = null;
 
     const todayString = () => {
         const d = new Date();
@@ -459,6 +974,19 @@
         return `${nextYear}-${String(nextMonth).padStart(2, '0')}-${String(finalDay).padStart(2, '0')}`;
     }
 
+    function getPrevMonthDate(dateString) {
+        if (!dateString) return '';
+        const parts = dateString.split('-').map(Number);
+        const year = parts[0];
+        const month = parts[1];
+        const day = parts[2];
+        const prevMonth = month === 1 ? 12 : month - 1;
+        const prevYear = month === 1 ? year - 1 : year;
+        const lastDay = new Date(prevYear, prevMonth, 0).getDate();
+        const finalDay = Math.min(day, lastDay);
+        return `${prevYear}-${String(prevMonth).padStart(2, '0')}-${String(finalDay).padStart(2, '0')}`;
+    }
+
     function addMonthsToDate(dateString, count = 1) {
         let result = dateString;
         const total = Math.max(1, Number(count) || 1);
@@ -468,43 +996,77 @@
         return result;
     }
 
+    function subtractMonthsFromDate(dateString, count = 1) {
+        let result = dateString;
+        const total = Math.max(1, Number(count) || 1);
+        for (let i = 0; i < total; i++) {
+            result = getPrevMonthDate(result);
+        }
+        return result;
+    }
+
     function saveData() {
-        const payload = JSON.stringify(customers);
+        saveLocalConfig();
+        const fullPayload = JSON.stringify({
+            customers: customers,
+            config: appConfig
+        });
         saveQueue = saveQueue.catch(() => false).then(async () => {
             const response = await fetch(SCRIPT_GAS_URL, {
                 method: 'POST',
-                body: payload,
+                body: fullPayload,
                 headers: {
                     'Content-Type': 'text/plain;charset=utf-8'
                 }
             });
             const result = await response.json();
             if (!response.ok || !result || result.status !== 'success') {
-                throw new Error(result && result.message ? result.message : 'Sinkronisasi gagal');
+                const fallbackResponse = await fetch(SCRIPT_GAS_URL, {
+                    method: 'POST',
+                    body: JSON.stringify(customers),
+                    headers: {
+                        'Content-Type': 'text/plain;charset=utf-8'
+                    }
+                });
+                const fallbackResult = await fallbackResponse.json();
+                if (!fallbackResponse.ok || !fallbackResult || fallbackResult.status !== 'success') {
+                    throw new Error(result && result.message ? result.message : 'Sinkronisasi gagal');
+                }
             }
             return true;
         }).catch(() => {
-            showToast('Terjadi kesalahan sinkronisasi', 'error');
+            showToast('Tersimpan lokal, gagal sinkron ke server', 'error');
             return false;
         });
         return saveQueue;
     }
 
     async function loadData() {
-        document.getElementById('customerList').innerHTML = '<div class="col-span-full card rounded-2xl text-center py-12 text-slate-500 font-mono text-xs">MEMUAT DATA DARI SERVER...</div>';
+        document.getElementById('customerList').innerHTML = '<div class="col-span-full card rounded-2xl text-center py-12 text-slate-500 dark:text-slate-400 font-mono text-xs">MEMUAT DATA DARI SERVER...</div>';
         try {
             const response = await fetch(SCRIPT_GAS_URL, { cache: 'no-store' });
             const data = await response.json();
-            if (!response.ok || !Array.isArray(data)) {
+            if (!response.ok) {
                 throw new Error(data && data.message ? data.message : 'Format database tidak valid');
             }
-            customers = data;
+            if (Array.isArray(data)) {
+                customers = data;
+            } else if (data && typeof data === 'object' && Array.isArray(data.customers)) {
+                customers = data.customers;
+                if (data.config && typeof data.config === 'object') {
+                    appConfig = mergeConfig(data.config);
+                    saveLocalConfig();
+                    applyGuiSettings();
+                }
+            } else {
+                throw new Error('Format database tidak valid');
+            }
             normalizeExistingCustomers();
             lastBillingCheckDate = todayString();
             if (refreshPaidCycles()) saveData();
             renderCustomers();
         } catch (error) {
-            showToast('Gagal memuat data', 'error');
+            showToast('Gagal memuat data dari server', 'error');
             document.getElementById('customerList').innerHTML = '';
             document.getElementById('emptyState').classList.remove('hidden');
         }
@@ -524,26 +1086,51 @@
                 changed = true;
             }
             if (!updated.registerDate && updated.dueDate) {
-                const due = new Date(updated.dueDate + 'T00:00:00');
-                due.setMonth(due.getMonth() - 1);
-                const year = due.getFullYear();
-                const month = String(due.getMonth() + 1).padStart(2, '0');
-                const day = String(due.getDate()).padStart(2, '0');
-                updated.registerDate = `${year}-${month}-${day}`;
+                updated.registerDate = getPrevMonthDate(updated.dueDate);
                 changed = true;
             }
             if (!updated.dueDate && updated.registerDate) {
                 updated.dueDate = getNextMonthDate(updated.registerDate);
                 changed = true;
             }
-            if (updated.isPaid && updated.history.length > 0) {
-                const lastHistory = updated.history[updated.history.length - 1];
-                if (lastHistory.dueDate && lastHistory.dueDate === updated.dueDate) {
-                    if (!lastHistory.periodStart) lastHistory.periodStart = updated.registerDate || updated.dueDate;
-                    const paidDueDate = updated.dueDate;
-                    updated.registerDate = paidDueDate;
-                    updated.dueDate = getNextMonthDate(paidDueDate);
-                    changed = true;
+            if (updated.dueDate && updated.registerDate && updated.registerDate >= updated.dueDate) {
+                updated.registerDate = getPrevMonthDate(updated.dueDate);
+                changed = true;
+            }
+            if (updated.history.length > 0 && updated.dueDate) {
+                const lastIdx = updated.history.length - 1;
+                const lastHistory = { ...updated.history[lastIdx] };
+                const expectedStart = updated.registerDate && updated.registerDate < updated.dueDate
+                    ? updated.registerDate
+                    : getPrevMonthDate(updated.dueDate);
+
+                if (updated.isPaid) {
+                    if (lastHistory.batchId) {
+                        const batchIndices = [];
+                        updated.history.forEach((h, i) => {
+                            if (h.batchId === lastHistory.batchId) batchIndices.push(i);
+                        });
+                        const lastBatchItem = updated.history[batchIndices[batchIndices.length - 1]];
+                        if (lastBatchItem && lastBatchItem.dueDate !== updated.dueDate) {
+                            let cursorDue = updated.dueDate;
+                            for (let b = batchIndices.length - 1; b >= 0; b--) {
+                                const idx = batchIndices[b];
+                                const itemStart = getPrevMonthDate(cursorDue);
+                                updated.history[idx] = {
+                                    ...updated.history[idx],
+                                    dueDate: cursorDue,
+                                    periodStart: itemStart
+                                };
+                                cursorDue = itemStart;
+                            }
+                            changed = true;
+                        }
+                    } else if (lastHistory.dueDate !== updated.dueDate || lastHistory.periodStart !== expectedStart) {
+                        lastHistory.dueDate = updated.dueDate;
+                        lastHistory.periodStart = expectedStart;
+                        updated.history[lastIdx] = lastHistory;
+                        changed = true;
+                    }
                 }
             }
             return updated;
@@ -555,10 +1142,15 @@
         const today = todayString();
         let changed = false;
         customers.forEach(customer => {
-            if (customer.isPaid && customer.dueDate && customer.dueDate <= today) {
-                customer.isPaid = false;
-                customer.paymentMethod = null;
-                changed = true;
+            if (customer.isPaid && customer.dueDate && customer.dueDate < today) {
+                const lastPaidDate = (customer.history && customer.history.length > 0)
+                    ? customer.history[customer.history.length - 1].date
+                    : '';
+                if (!lastPaidDate || lastPaidDate < customer.dueDate) {
+                    customer.isPaid = false;
+                    customer.paymentMethod = null;
+                    changed = true;
+                }
             }
         });
         return changed;
@@ -599,6 +1191,7 @@
         const dueDay = new Date(customer.dueDate + 'T00:00:00');
         const diff = dueDay.getTime() - today.getTime();
         const days = Math.round(diff / 86400000);
+        const warnLimit = Math.max(1, Number(appConfig.gui.warningDays) || 3);
 
         if (days < 0) {
             return { type: 'expired', days, label: `Terlambat ${Math.abs(days)} hari`, className: 'expired' };
@@ -606,7 +1199,7 @@
         if (days === 0) {
             return { type: 'danger', days, label: 'Jatuh tempo hari ini', className: 'danger' };
         }
-        if (days <= 3) {
+        if (days <= warnLimit) {
             return { type: 'warning', days, label: `${days} hari lagi`, className: 'warning' };
         }
         return { type: 'safe', days, label: `${days} hari lagi`, className: 'safe' };
@@ -617,7 +1210,7 @@
         const target = new Date(dateString + 'T23:59:59');
         const diff = target.getTime() - now.getTime();
         if (diff <= 0) {
-            return { expired: true, text: 'Sudah melewati jatuh tempo' };
+            return { expired: true, text: 'Melewati jatuh tempo' };
         }
         const totalSeconds = Math.floor(diff / 1000);
         const days = Math.floor(totalSeconds / 86400);
@@ -631,37 +1224,52 @@
         };
     }
 
+    function getReceiptPeriod(customer) {
+        let pDate = todayString();
+        let pMethod = customer.paymentMethod || 'Transfer';
+        let pAmount = Number(customer.amount || 0);
+        let pMonths = 1;
+        const pDueDate = customer.dueDate || todayString();
+        let pRegisterDate = (customer.registerDate && customer.registerDate < pDueDate)
+            ? customer.registerDate
+            : getPrevMonthDate(pDueDate);
+
+        if (customer.history && customer.history.length > 0) {
+            const lastHistory = customer.history[customer.history.length - 1];
+            pDate = lastHistory.date || pDate;
+            pMethod = lastHistory.method || pMethod;
+            if (lastHistory.batchId) {
+                const batchItems = customer.history.filter(h => h.batchId === lastHistory.batchId);
+                pMonths = Math.max(1, batchItems.length);
+                pAmount = batchItems.reduce((sum, item) => sum + Number(item.amount || 0), 0);
+                pRegisterDate = subtractMonthsFromDate(pDueDate, pMonths);
+            } else {
+                pMonths = Math.max(1, Number(lastHistory.monthsPaid) || 1);
+                pAmount = Number(lastHistory.amount || customer.amount || 0);
+                pRegisterDate = pMonths > 1
+                    ? subtractMonthsFromDate(pDueDate, pMonths)
+                    : ((customer.registerDate && customer.registerDate < pDueDate) ? customer.registerDate : getPrevMonthDate(pDueDate));
+            }
+        }
+
+        return { pDate, pMethod, pAmount, pMonths, pRegisterDate, pDueDate };
+    }
+
     function createMessage(customer, type = 'reminder') {
         if (customer.isPaid && type !== 'reminder') {
-            let pDate = todayString();
-            let pMethod = customer.paymentMethod || 'Transfer';
-            let pAmount = customer.amount;
-            let pDueDate = customer.dueDate;
-            let pRegisterDate = customer.registerDate;
-            let pMonths = 1;
-
-            if (customer.history && customer.history.length > 0) {
-                const lastHistory = customer.history[customer.history.length - 1];
-                pDate = lastHistory.date || pDate;
-                pMethod = lastHistory.method || pMethod;
-                pDueDate = lastHistory.dueDate || pDueDate;
-                pRegisterDate = lastHistory.periodStart || pRegisterDate;
-                if (lastHistory.batchId) {
-                    const batchItems = customer.history.filter(h => h.batchId === lastHistory.batchId);
-                    pMonths = batchItems.length;
-                    pAmount = batchItems.reduce((sum, item) => sum + Number(item.amount || 0), 0);
-                    pRegisterDate = batchItems[0].periodStart || pRegisterDate;
-                    pDueDate = batchItems[batchItems.length - 1].dueDate || pDueDate;
-                } else {
-                    pAmount = lastHistory.amount || pAmount;
-                    pMonths = lastHistory.monthsPaid || 1;
-                }
-            }
-
+            const { pDate, pMethod, pAmount, pMonths, pRegisterDate, pDueDate } = getReceiptPeriod(customer);
             const paymentMethodLabel = pMethod === 'CASH' ? 'CASH/TUNAI' : pMethod;
             const durationText = pMonths > 1 ? ` (${pMonths} Bulan)` : '';
 
-            return `Halo, Kak ${customer.name}\n\nTerima kasih, pembayaran Wi-Fi melalui *${paymentMethodLabel}* telah kami terima.\n\n*Detail layanan Wi-Fi :*\nLayanan : ${customer.service || 'WiFi'}${durationText}\nNominal : ${formatCurrency(pAmount)}\nPeriode : ${formatDate(pRegisterDate)} - ${formatDate(pDueDate)}\nJatuh Tempo Berikutnya : ${formatDate(customer.dueDate)}\n\n*Detail pembayaran :*\nTanggal : ${formatDate(pDate)}\nStatus : *LUNAS*\n\n_Terima kasih telah menggunakan layanan kami._`;
+            return appConfig.receiptTemplate
+                .replace(/\{name\}/g, customer.name)
+                .replace(/\{method\}/g, paymentMethodLabel)
+                .replace(/\{service\}/g, customer.service || 'WiFi')
+                .replace(/\{duration\}/g, durationText)
+                .replace(/\{amount\}/g, formatCurrency(pAmount))
+                .replace(/\{periodStart\}/g, formatDate(pRegisterDate))
+                .replace(/\{dueDate\}/g, formatDate(pDueDate))
+                .replace(/\{paidDate\}/g, formatDate(pDate));
         }
 
         const targetDueDate = customer.dueDate;
@@ -675,7 +1283,13 @@
             reminderText = `mengingatkan bahwa pembayaran Wi-Fi Anda akan jatuh tempo pada *${formatDate(targetDueDate)}.*`;
         }
 
-        return `Halo, Kak ${customer.name}\n\nKami ingin ${reminderText}\n\nDetail pembayaran :\nLayanan : ${customer.service || 'WiFi'}\nNominal : ${formatCurrency(customer.amount)}\nJatuh tempo : ${formatDate(targetDueDate)}\n\n*UNTUK PEMBAYARAN, BISA MELALUI :*\nDANA/SHOPEEPAY/GOPAY/CASH\n082323624177\nTRI WANTORO\n\n_Mohon melakukan pembayaran sebelum atau pada tanggal jatuh tempo agar layanan tetap dapat digunakan dengan normal._\n\n_Abaikan pesan ini jika sudah melakukan pembayaran._\n_Terima kasih._`;
+        return appConfig.reminderTemplate
+            .replace(/\{name\}/g, customer.name)
+            .replace(/\{reminderText\}/g, reminderText)
+            .replace(/\{service\}/g, customer.service || 'WiFi')
+            .replace(/\{amount\}/g, formatCurrency(customer.amount))
+            .replace(/\{dueDate\}/g, formatDate(targetDueDate))
+            .replace(/\{paymentInfo\}/g, appConfig.paymentInfoText);
     }
 
     function renderCustomers() {
@@ -697,13 +1311,14 @@
                 matchesFilter = !customer.isPaid && status.type === 'expired';
             }
 
-            const matchesSearch = customer.name.toLowerCase().includes(search) || customer.phone.includes(search);
+            const sName = String(customer.name || '').toLowerCase();
+            const sPhone = String(customer.phone || '').toLowerCase();
+            const sService = String(customer.service || '').toLowerCase();
+            const matchesSearch = sName.includes(search) || sPhone.includes(search) || sService.includes(search);
             return matchesFilter && matchesSearch;
         });
 
-        filtered.sort((a, b) => {
-            return new Date(a.dueDate) - new Date(b.dueDate);
-        });
+        filtered.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
 
         list.innerHTML = '';
 
@@ -724,114 +1339,131 @@
         const status = getStatus(customer);
         const countdown = getCountdown(customer.dueDate);
         const card = document.createElement('div');
-        card.className = 'card rounded-2xl p-4 flex flex-col justify-between';
+        card.className = 'card rounded-2xl p-4 sm:p-5 flex flex-col justify-between transition hover:border-emerald-500/35';
 
-        let iconClass = 'bg-emerald-500/10 text-emerald-600 border border-emerald-500/20';
+        const periodStart = (customer.registerDate && customer.registerDate < customer.dueDate)
+            ? customer.registerDate
+            : getPrevMonthDate(customer.dueDate);
+
+        let iconClass = 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25';
         let statusHtml = '';
         let countdownHtml = '';
         let actionButtonsHtml = '';
 
         if (customer.isPaid) {
-            iconClass = 'bg-blue-500/10 text-blue-600 border border-blue-500/20';
-            statusHtml = `<span onclick="showDetail('${customer.id}')" class="cursor-pointer bg-blue-50 text-blue-600 border border-blue-200 px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold whitespace-nowrap">LUNAS • ${escapeHtml(customer.paymentMethod)}</span>`;
+            iconClass = 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/25';
+            statusHtml = `<span onclick="showDetail('${customer.id}')" class="cursor-pointer bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/25 px-2.5 py-1 rounded-full text-[10px] font-mono font-extrabold whitespace-nowrap flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-blue-500"></span>LUNAS • ${escapeHtml(customer.paymentMethod || 'CASH')}</span>`;
             countdownHtml = `
-                <div class="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between gap-2 text-xs">
-                    <span class="text-blue-600 font-semibold text-[11px]">Siklus Aktif</span>
-                    <div class="flex items-center gap-1.5">
-                        <span class="pulse-dot w-1.5 h-1.5 rounded-full bg-blue-500"></span>
-                        <span class="font-mono font-bold text-slate-700 text-[11px] countdown-${customer.id}">${countdown.text}</span>
-                    </div>
+                <div class="mt-3 pt-2.5 border-t border-slate-200/60 dark:border-slate-800/80 flex items-center justify-between gap-2 text-xs">
+                    <span class="text-slate-500 dark:text-slate-400 font-medium text-[11px] truncate">Periode: <strong class="text-slate-700 dark:text-slate-200">${formatDate(periodStart)} - ${formatDate(customer.dueDate)}</strong></span>
+                    <span class="font-mono font-bold text-blue-600 dark:text-blue-400 text-[11px] flex-shrink-0 countdown-${customer.id}">${countdown.text}</span>
                 </div>
             `;
             actionButtonsHtml = `
-                <div class="mt-3 pt-2 space-y-1.5">
-                    <div class="grid grid-cols-2 gap-1.5">
-                        <button onclick="sendWhatsApp('${customer.id}', 'reminder')" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 rounded-xl py-2 text-xs font-bold flex items-center justify-center gap-1.5 active:scale-[.98] transition">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21l1.7-4.8A8.9 8.9 0 1112 21a8.9 8.9 0 01-3.9-.9L3 21z"/><path stroke-linecap="round" stroke-linejoin="round" d="M8.5 8.5c.2-.4.4-.4.7-.4h.5c.2 0 .4.1.5.4l.8 1.7c.1.2.1.4 0 .6l-.5.7c-.1.1-.1.4 0 .6.4.7 1.2 1.5 2 1.9.2.1.4.1.6-.1l.7-.6c.2-.1.4-.1.6 0l1.6.8c.3.1.4.3.4.6v.5c0 .3-.1.5-.4.7-.5.4-1.2.6-1.9.5-1.2-.2-2.5-.9-3.7-2.1-1.2-1.1-2-2.4-2.2-3.5-.2-.7 0-1.5.3-2.3z"/></svg>
-                            WA
-                        </button>
-                        <button onclick="sendWhatsApp('${customer.id}', 'receipt')" class="bg-blue-600 hover:bg-blue-700 text-white rounded-xl py-2 text-xs font-bold flex items-center justify-center gap-1.5 active:scale-[.98] transition">
+                <div class="mt-3.5 pt-3 border-t border-slate-200/60 dark:border-slate-800/80 space-y-2">
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="sendWhatsApp('${customer.id}', 'receipt')" class="h-9 bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-3 text-xs font-extrabold flex items-center justify-center gap-1.5 active:scale-[.98] transition">
                             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                            Resi
+                            Kirim Resi WA
+                        </button>
+                        <button onclick="sendWhatsApp('${customer.id}', 'reminder')" class="h-9 bg-emerald-500/15 hover:bg-emerald-500/25 text-emerald-700 dark:text-emerald-300 border border-emerald-500/30 rounded-xl px-3 text-xs font-extrabold flex items-center justify-center gap-1.5 active:scale-[.98] transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21l1.7-4.8A8.9 8.9 0 1112 21a8.9 8.9 0 01-3.9-.9L3 21z"/></svg>
+                            Pengingat WA
                         </button>
                     </div>
                     <div class="grid grid-cols-4 gap-1.5">
-                        <button onclick="openPaymentModal('${customer.id}')" title="Tambah Bulan Berikutnya" class="bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200/70 rounded-xl py-2 flex items-center justify-center gap-1 text-[11px] font-bold transition">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-                            Bulan
+                        <button onclick="openPaymentModal('${customer.id}')" title="Tambah Bulan Berikutnya" class="h-8 glass-subtle hover:border-emerald-500/40 text-emerald-700 dark:text-emerald-400 rounded-lg flex items-center justify-center gap-1 text-[11px] font-extrabold transition">
+                            + Bulan
                         </button>
-                        <button onclick="undoPayment('${customer.id}')" title="Batal Lunas" class="bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl py-2 flex items-center justify-center transition">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
+                        <button onclick="undoPayment('${customer.id}')" title="Batal Lunas" class="h-8 glass-subtle hover:border-amber-500/40 text-slate-600 dark:text-slate-300 rounded-lg flex items-center justify-center gap-1 text-[11px] font-semibold transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 10h10a8 8 0 018 8v2M3 10l6 6m-6-6l6-6"/></svg>
+                            <span>Batal</span>
                         </button>
-                        <button onclick="editCustomer('${customer.id}')" title="Edit Data" class="bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl py-2 flex items-center justify-center transition">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 20h9"/><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 3.5a2.12 2.12 0 013 3L8 18l-4 1 1-4 11.5-11.5z"/></svg>
+                        <button onclick="editCustomer('${customer.id}')" title="Edit Data" class="h-8 glass-subtle hover:border-blue-500/40 text-slate-600 dark:text-slate-300 rounded-lg flex items-center justify-center gap-1 text-[11px] font-semibold transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 20h9"/><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 3.5a2.12 2.12 0 013 3L8 18l-4 1 1-4 11.5-11.5z"/></svg>
+                            <span>Edit</span>
                         </button>
-                        <button onclick="deleteCustomer('${customer.id}')" title="Hapus Customer" class="bg-red-50 hover:bg-red-100 text-red-500 rounded-xl py-2 flex items-center justify-center transition">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M8 6V4h8v2m-9 0l1 14h8l1-14M10 11v6M14 11v6"/></svg>
+                        <button onclick="deleteCustomer('${customer.id}')" title="Hapus Customer" class="h-8 bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 border border-red-500/20 rounded-lg flex items-center justify-center gap-1 text-[11px] font-semibold transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M8 6V4h8v2m-9 0l1 14h8l1-14M10 11v6M14 11v6"/></svg>
+                            <span>Hapus</span>
                         </button>
                     </div>
                 </div>
             `;
         } else {
-            if (status.type === 'warning') iconClass = 'bg-amber-500/10 text-amber-600 border border-amber-500/20';
-            if (status.type === 'danger') iconClass = 'bg-red-500/10 text-red-600 border border-red-500/20';
-            if (status.type === 'expired') iconClass = 'bg-slate-100 text-slate-500 border border-slate-200';
+            if (status.type === 'warning') iconClass = 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/25';
+            if (status.type === 'danger') iconClass = 'bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/25';
+            if (status.type === 'expired') iconClass = 'glass-subtle text-slate-500 dark:text-slate-400';
 
-            statusHtml = `<span onclick="showDetail('${customer.id}')" class="cursor-pointer ${status.className} px-2.5 py-1 rounded-lg text-[10px] font-mono font-bold whitespace-nowrap">${status.label}</span>`;
+            statusHtml = `<span onclick="showDetail('${customer.id}')" class="cursor-pointer ${status.className} px-2.5 py-1 rounded-full text-[10px] font-mono font-extrabold whitespace-nowrap">${status.label}</span>`;
             countdownHtml = `
-                <div class="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between gap-2 text-xs">
+                <div class="mt-3 pt-2.5 border-t border-slate-200/60 dark:border-slate-800/80 flex items-center justify-between gap-2 text-xs">
                     <div class="flex items-center gap-1.5">
-                        <span class="pulse-dot w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
-                        <span class="text-slate-500 text-[11px]">Countdown:</span>
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+                        <span class="text-slate-500 dark:text-slate-400 text-[11px]">Sisa Waktu:</span>
                     </div>
-                    <span class="font-mono font-bold text-slate-800 text-[11px] countdown-${customer.id}">${countdown.text}</span>
+                    <span class="font-mono font-bold text-slate-800 dark:text-slate-200 text-[11px] countdown-${customer.id}">${countdown.text}</span>
                 </div>
             `;
             actionButtonsHtml = `
-                <div class="grid grid-cols-5 gap-1.5 mt-3 pt-2">
-                    <button onclick="sendWhatsApp('${customer.id}', 'reminder')" class="col-span-2 bg-emerald-500 hover:bg-emerald-600 text-slate-950 rounded-xl py-2.5 text-xs font-bold flex items-center justify-center gap-1.5 active:scale-[.98] transition">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21l1.7-4.8A8.9 8.9 0 1112 21a8.9 8.9 0 01-3.9-.9L3 21z"/><path stroke-linecap="round" stroke-linejoin="round" d="M8.5 8.5c.2-.4.4-.4.7-.4h.5c.2 0 .4.1.5.4l.8 1.7c.1.2.1.4 0 .6l-.5.7c-.1.1-.1.4 0 .6.4.7 1.2 1.5 2 1.9.2.1.4.1.6-.1l.7-.6c.2-.1.4-.1.6 0l1.6.8c.3.1.4.3.4.6v.5c0 .3-.1.5-.4.7-.5.4-1.2.6-1.9.5-1.2-.2-2.5-.9-3.7-2.1-1.2-1.1-2-2.4-2.2-3.5-.2-.7 0-1.5.3-2.3z"/></svg>
-                        WA
-                    </button>
-                    <button onclick="openPaymentModal('${customer.id}')" title="Konfirmasi Lunas" class="bg-blue-50 hover:bg-blue-100 text-blue-600 border border-blue-200/60 rounded-xl flex items-center justify-center transition">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                    </button>
-                    <button onclick="editCustomer('${customer.id}')" title="Edit Customer" class="bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl flex items-center justify-center transition">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 20h9"/><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 3.5a2.12 2.12 0 013 3L8 18l-4 1 1-4 11.5-11.5z"/></svg>
-                    </button>
-                    <button onclick="deleteCustomer('${customer.id}')" title="Hapus Customer" class="bg-red-50 hover:bg-red-100 text-red-500 rounded-xl flex items-center justify-center transition">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M8 6V4h8v2m-9 0l1 14h8l1-14M10 11v6M14 11v6"/></svg>
-                    </button>
+                <div class="mt-3.5 pt-3 border-t border-slate-200/60 dark:border-slate-800/80 space-y-2">
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="sendWhatsApp('${customer.id}', 'reminder')" class="h-9 bg-emerald-500 hover:bg-emerald-600 text-slate-950 rounded-xl px-3 text-xs font-extrabold flex items-center justify-center gap-1.5 active:scale-[.98] transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21l1.7-4.8A8.9 8.9 0 1112 21a8.9 8.9 0 01-3.9-.9L3 21z"/></svg>
+                            Tagih via WA
+                        </button>
+                        <button onclick="openPaymentModal('${customer.id}')" class="h-9 bg-blue-600 hover:bg-blue-700 text-white rounded-xl px-3 text-xs font-extrabold flex items-center justify-center gap-1.5 active:scale-[.98] transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                            Set Lunas
+                        </button>
+                    </div>
+                    <div class="grid grid-cols-3 gap-1.5">
+                        <button onclick="showDetail('${customer.id}')" title="Detail & Riwayat" class="h-8 glass-subtle hover:border-emerald-500/40 text-slate-600 dark:text-slate-300 rounded-lg flex items-center justify-center gap-1 text-[11px] font-semibold transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                            <span>Detail</span>
+                        </button>
+                        <button onclick="editCustomer('${customer.id}')" title="Edit Customer" class="h-8 glass-subtle hover:border-blue-500/40 text-slate-600 dark:text-slate-300 rounded-lg flex items-center justify-center gap-1 text-[11px] font-semibold transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 20h9"/><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 3.5a2.12 2.12 0 013 3L8 18l-4 1 1-4 11.5-11.5z"/></svg>
+                            <span>Edit</span>
+                        </button>
+                        <button onclick="deleteCustomer('${customer.id}')" title="Hapus Customer" class="h-8 bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 border border-red-500/20 rounded-lg flex items-center justify-center gap-1 text-[11px] font-semibold transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 6h18M8 6V4h8v2m-9 0l1 14h8l1-14M10 11v6M14 11v6"/></svg>
+                            <span>Hapus</span>
+                        </button>
+                    </div>
                 </div>
             `;
         }
 
         card.innerHTML = `
             <div>
-                <div class="flex items-start gap-3">
-                    <div onclick="showDetail('${customer.id}')" class="cursor-pointer w-10 h-10 rounded-xl ${iconClass} flex items-center justify-center flex-shrink-0 transition active:scale-95">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="19" height="19" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M16 11a4 4 0 10-8 0 4 4 0 008 0zM4 21a8 8 0 0116 0"/>
-                        </svg>
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <div class="flex items-start justify-between gap-2">
-                            <div onclick="showDetail('${customer.id}')" class="min-w-0 cursor-pointer">
-                                <h3 class="font-bold text-sm text-slate-900 truncate hover:text-emerald-600 transition">${escapeHtml(customer.name)}</h3>
-                                <p class="text-xs font-mono text-slate-500 mt-0.5">${escapeHtml(customer.phone)}</p>
+                <div class="flex items-start justify-between gap-2.5">
+                    <div class="flex items-center gap-3 min-w-0">
+                        <div onclick="showDetail('${customer.id}')" class="cursor-pointer w-10 h-10 rounded-xl ${iconClass} flex items-center justify-center flex-shrink-0 transition active:scale-95">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M16 11a4 4 0 10-8 0 4 4 0 008 0zM4 21a8 8 0 0116 0"/>
+                            </svg>
+                        </div>
+                        <div onclick="showDetail('${customer.id}')" class="min-w-0 cursor-pointer">
+                            <h3 class="font-extrabold text-sm sm:text-[15px] text-slate-900 dark:text-white truncate hover:text-emerald-500 transition">${escapeHtml(customer.name)}</h3>
+                            <div class="flex items-center gap-1.5 mt-0.5 text-[11px] font-mono text-slate-500 dark:text-slate-400 truncate">
+                                <span>${escapeHtml(customer.phone)}</span>
+                                <span>•</span>
+                                <span class="text-slate-600 dark:text-slate-300 font-semibold">${escapeHtml(customer.service || 'WiFi')}</span>
                             </div>
-                            ${statusHtml}
                         </div>
                     </div>
+                    ${statusHtml}
                 </div>
-                <div class="mt-3.5 grid grid-cols-2 gap-2">
-                    <div class="bg-slate-50 border border-slate-100 rounded-xl p-2.5">
-                        <p class="text-[9px] font-mono text-slate-400 uppercase tracking-wider">Jatuh Tempo</p>
-                        <p class="text-xs font-bold text-slate-800 mt-0.5 truncate">${formatDate(customer.dueDate)}</p>
+
+                <div class="mt-3.5 grid grid-cols-2 gap-2.5">
+                    <div class="glass-subtle rounded-xl p-2.5">
+                        <p class="text-[9px] font-mono font-bold text-slate-400 uppercase tracking-wider">Jatuh Tempo</p>
+                        <p class="text-xs font-extrabold text-slate-900 dark:text-white mt-0.5 truncate">${formatDate(customer.dueDate)}</p>
                     </div>
-                    <div class="bg-slate-50 border border-slate-100 rounded-xl p-2.5">
-                        <p class="text-[9px] font-mono text-slate-400 uppercase tracking-wider">Tagihan</p>
-                        <p class="text-xs font-bold font-mono text-slate-800 mt-0.5">${formatCurrency(customer.amount)}</p>
+                    <div class="glass-subtle rounded-xl p-2.5">
+                        <p class="text-[9px] font-mono font-bold text-slate-400 uppercase tracking-wider">Nominal Tagihan</p>
+                        <p class="text-xs font-extrabold font-mono text-emerald-600 dark:text-emerald-400 mt-0.5">${formatCurrency(customer.amount)}</p>
                     </div>
                 </div>
                 ${countdownHtml}
@@ -877,34 +1509,28 @@
     function setFilter(filter) {
         currentFilter = filter;
         document.querySelectorAll('.filter-btn').forEach(button => {
-            button.classList.remove('bg-slate-900', 'text-white');
-            button.classList.add('bg-white', 'text-slate-600');
+            button.className = 'filter-btn bg-transparent text-slate-600 dark:text-slate-300 px-2.5 py-2 rounded-lg text-[11px] font-bold flex items-center justify-center transition';
         });
-        const active = {
+        const activeId = {
             all: 'filterAll',
             lunas: 'filterLunas',
             soon: 'filterSoon',
             expired: 'filterExpired'
         }[filter];
-        document.getElementById(active).classList.remove('bg-white', 'text-slate-600');
-        document.getElementById(active).classList.add('bg-slate-900', 'text-white');
+        const activeBtn = document.getElementById(activeId);
+        if (activeBtn) {
+            activeBtn.className = 'filter-btn bg-slate-900 dark:bg-emerald-500 text-white dark:text-slate-950 px-2.5 py-2 rounded-lg text-[11px] font-extrabold flex items-center justify-center transition';
+        }
         renderCustomers();
     }
-
-    const wifiPlans = {
-        '1 Perangkat (20k/bulan)': { amount: 20000, service: 'WiFi - 1 Perangkat' },
-        '2 Perangkat (30k/bulan)': { amount: 30000, service: 'WiFi - 2 Perangkat' },
-        '3 Perangkat (40k/bulan)': { amount: 40000, service: 'WiFi - 3 Perangkat' },
-        '4-8 Perangkat (50k/bulan)': { amount: 50000, service: 'WiFi - 4-8 Perangkat' }
-    };
 
     function updatePlanFields() {
         const plan = document.getElementById('customerPlan').value;
         const data = wifiPlans[plan];
-        if (!data) return;
-        document.getElementById('customerAmount').value = data.amount;
-        document.getElementById('customerService').value = data.service;
-        updateDueDate();
+        if (data) {
+            document.getElementById('customerAmount').value = data.amount;
+            document.getElementById('customerService').value = data.service;
+        }
         updateMessagePreview();
     }
 
@@ -931,9 +1557,10 @@
         const form = document.getElementById('customerForm');
         form.reset();
         document.getElementById('customerId').value = '';
-        document.getElementById('customerPlan').value = '1 Perangkat (20k/bulan)';
-        document.getElementById('customerAmount').value = '20000';
-        document.getElementById('customerService').value = 'WiFi - 1 Perangkat';
+        const defaultPlan = appConfig.plans[0] || { label: '1 Perangkat (20k/bulan)', amount: 20000, service: 'WiFi - 1 Perangkat' };
+        document.getElementById('customerPlan').value = defaultPlan.label;
+        document.getElementById('customerAmount').value = defaultPlan.amount;
+        document.getElementById('customerService').value = defaultPlan.service;
         document.getElementById('customerRegisterDate').value = todayString();
         document.getElementById('modalTitle').textContent = 'Tambah Customer';
         updateDueDate();
@@ -944,22 +1571,20 @@
                 document.getElementById('customerId').value = customer.id;
                 document.getElementById('customerName').value = customer.name;
                 document.getElementById('customerPhone').value = customer.phone;
-                document.getElementById('customerRegisterDate').value = customer.registerDate || '';
-                const matchingPlan = getPlanByAmount(customer.amount);
-                document.getElementById('customerPlan').value = matchingPlan ? matchingPlan.value : '1 Perangkat (20k/bulan)';
-                if (matchingPlan) {
-                    document.getElementById('customerAmount').value = matchingPlan.amount;
-                    document.getElementById('customerService').value = matchingPlan.service;
-                } else {
-                    document.getElementById('customerAmount').value = customer.amount || 20000;
-                    document.getElementById('customerService').value = customer.service || 'WiFi';
-                }
-                updateDueDate();
+                const dueVal = customer.dueDate || getNextMonthDate(customer.registerDate || todayString());
+                const regVal = (customer.registerDate && customer.registerDate < dueVal) ? customer.registerDate : getPrevMonthDate(dueVal);
+                document.getElementById('customerRegisterDate').value = regVal;
+                document.getElementById('customerDueDate').value = dueVal;
+                document.getElementById('dueDatePreview').textContent = formatDate(dueVal);
+                const matchingPlan = wifiPlans[customer.plan] ? { value: customer.plan, ...wifiPlans[customer.plan] } : getPlanByAmount(customer.amount);
+                document.getElementById('customerPlan').value = matchingPlan ? matchingPlan.value : '__custom__';
+                document.getElementById('customerAmount').value = customer.amount || defaultPlan.amount;
+                document.getElementById('customerService').value = customer.service || defaultPlan.service;
                 document.getElementById('modalTitle').textContent = 'Edit Customer';
             }
         }
         modal.classList.remove('hidden');
-        setTimeout(() => { updateMessagePreview(); }, 50);
+        updateMessagePreview();
     }
 
     function closeModal() {
@@ -970,7 +1595,7 @@
         document.getElementById('confirmTitle').textContent = title;
         document.getElementById('confirmMessage').textContent = message;
         const btn = document.getElementById('confirmActionBtn');
-        btn.className = `flex-1 ${actionColor} text-white py-2.5 rounded-xl font-bold text-xs transition ${actionShadow}`;
+        btn.className = `flex-1 ${actionColor} text-white py-2.5 rounded-xl font-extrabold text-xs transition ${actionShadow}`;
         confirmCallback = callback;
         document.getElementById('confirmModal').classList.remove('hidden');
     }
@@ -1018,21 +1643,26 @@
             const payDate = todayString();
             const batchId = Date.now().toString();
 
+            const prevRegisterDate = customer.registerDate || getPrevMonthDate(customer.dueDate);
+            const prevDueDate = customer.dueDate;
+
             let currentStart = customer.registerDate;
             let currentDue = customer.dueDate;
 
             for (let i = 0; i < months; i++) {
+                currentStart = currentDue;
+                currentDue = getNextMonthDate(currentDue);
                 customer.history.push({
                     date: payDate,
                     method: method,
                     amount: customer.amount,
                     dueDate: currentDue,
                     periodStart: currentStart,
+                    prevRegisterDate: prevRegisterDate,
+                    prevDueDate: prevDueDate,
                     monthsPaid: months,
                     batchId: batchId
                 });
-                currentStart = currentDue;
-                currentDue = getNextMonthDate(currentDue);
             }
 
             customer.registerDate = currentStart;
@@ -1044,7 +1674,7 @@
             if (!document.getElementById('detailModal').classList.contains('hidden')) {
                 showDetail(customer.id);
             }
-            showToast(`Pembayaran ${months} bulan (${method}) dikonfirmasi. Jatuh tempo: ${formatDate(customer.dueDate)}.`);
+            showToast(`Pembayaran ${months} bulan (${method}) dikonfirmasi.`);
         }
         closePaymentModal();
     }
@@ -1062,12 +1692,16 @@
                             firstRemoved = customer.history.pop();
                         }
                         if (firstRemoved) {
-                            if (firstRemoved.dueDate) customer.dueDate = firstRemoved.dueDate;
-                            if (firstRemoved.periodStart) customer.registerDate = firstRemoved.periodStart;
+                            const restoredDue = firstRemoved.prevDueDate || firstRemoved.periodStart || getPrevMonthDate(firstRemoved.dueDate);
+                            const restoredStart = firstRemoved.prevRegisterDate || getPrevMonthDate(restoredDue);
+                            customer.dueDate = restoredDue;
+                            customer.registerDate = restoredStart;
                         }
                     } else {
-                        if (lastHistory.dueDate) customer.dueDate = lastHistory.dueDate;
-                        if (lastHistory.periodStart) customer.registerDate = lastHistory.periodStart;
+                        const restoredDue = lastHistory.prevDueDate || lastHistory.periodStart || getPrevMonthDate(lastHistory.dueDate);
+                        const restoredStart = lastHistory.prevRegisterDate || getPrevMonthDate(restoredDue);
+                        customer.dueDate = restoredDue;
+                        customer.registerDate = restoredStart;
                         customer.history.pop();
                     }
                 }
@@ -1094,25 +1728,38 @@
     function saveCustomer(event) {
         event.preventDefault();
         const id = document.getElementById('customerId').value;
-        const registerDate = document.getElementById('customerRegisterDate').value;
-        const dueDate = getNextMonthDate(registerDate);
+        const dueDateInput = document.getElementById('customerDueDate').value;
+        const registerDateInput = document.getElementById('customerRegisterDate').value;
+        const dueDate = dueDateInput || getNextMonthDate(registerDateInput);
+        const registerDate = (registerDateInput && registerDateInput < dueDate) ? registerDateInput : getPrevMonthDate(dueDate);
         const plan = document.getElementById('customerPlan').value;
-        const planData = wifiPlans[plan];
+        const amountVal = Number(document.getElementById('customerAmount').value || 0);
+        const serviceVal = document.getElementById('customerService').value.trim() || 'WiFi';
 
         const existingCustomer = customers.find(c => c.id === id);
+        const updatedHistory = existingCustomer && Array.isArray(existingCustomer.history) ? [...existingCustomer.history] : [];
+
+        if (existingCustomer && existingCustomer.isPaid && updatedHistory.length > 0) {
+            const lastIdx = updatedHistory.length - 1;
+            updatedHistory[lastIdx] = {
+                ...updatedHistory[lastIdx],
+                dueDate: dueDate,
+                periodStart: registerDate
+            };
+        }
 
         const data = {
             id: id || crypto.randomUUID(),
             name: document.getElementById('customerName').value.trim(),
             phone: document.getElementById('customerPhone').value.trim(),
-            amount: planData ? planData.amount : Number(document.getElementById('customerAmount').value),
+            amount: amountVal,
             dueDate,
             registerDate,
-            service: planData ? planData.service : document.getElementById('customerService').value.trim() || 'WiFi',
-            plan,
+            service: serviceVal,
+            plan: plan === '__custom__' ? serviceVal : plan,
             isPaid: existingCustomer ? existingCustomer.isPaid : false,
             paymentMethod: existingCustomer ? existingCustomer.paymentMethod : null,
-            history: existingCustomer ? existingCustomer.history : []
+            history: updatedHistory
         };
 
         if (!data.name || !data.phone || !data.registerDate || !data.dueDate) {
@@ -1156,13 +1803,13 @@
         currentHistoryCustomerId = id;
         currentHistoryIndex = -1;
         document.getElementById('historyModalTitle').textContent = 'Tambah Riwayat';
-        
+
         const customer = customers.find(c => c.id === id);
         document.getElementById('historyDate').value = todayString();
         document.getElementById('historyDueDate').value = customer.dueDate || todayString();
         document.getElementById('historyAmount').value = formatInputRupiah(String(customer.amount || 0));
-        document.getElementById('historyMethod').value = 'CASH';
-        
+        document.getElementById('historyMethod').value = appConfig.paymentMethods[0] || 'CASH';
+
         document.getElementById('historyModal').classList.remove('hidden');
     }
 
@@ -1170,15 +1817,15 @@
         currentHistoryCustomerId = id;
         currentHistoryIndex = index;
         document.getElementById('historyModalTitle').textContent = 'Edit Riwayat';
-        
+
         const customer = customers.find(c => c.id === id);
         const h = customer.history[index];
-        
+
         document.getElementById('historyDate').value = h.date;
         document.getElementById('historyDueDate').value = h.dueDate;
         document.getElementById('historyAmount').value = formatInputRupiah(String(h.amount));
-        document.getElementById('historyMethod').value = h.method || 'CASH';
-        
+        document.getElementById('historyMethod').value = h.method || appConfig.paymentMethods[0] || 'CASH';
+
         document.getElementById('historyModal').classList.remove('hidden');
     }
 
@@ -1190,29 +1837,35 @@
         event.preventDefault();
         const customer = customers.find(c => c.id === currentHistoryCustomerId);
         if (!customer) return;
-        
+
         if (!customer.history) customer.history = [];
-        
+
+        const targetDue = document.getElementById('historyDueDate').value;
+        const targetStart = getPrevMonthDate(targetDue);
+
         const newData = {
             date: document.getElementById('historyDate').value,
-            dueDate: document.getElementById('historyDueDate').value,
+            dueDate: targetDue,
             amount: Number(document.getElementById('historyAmount').value.replace(/\./g, '')),
             method: document.getElementById('historyMethod').value,
-            periodStart: currentHistoryIndex === -1 ? customer.registerDate : customer.history[currentHistoryIndex].periodStart
+            periodStart: targetStart
         };
-        
+
         if (currentHistoryIndex === -1) {
             customer.history.push(newData);
-            if (newData.dueDate >= customer.dueDate) {
-                customer.registerDate = newData.dueDate;
-                customer.dueDate = getNextMonthDate(newData.dueDate);
-                customer.isPaid = true;
-                customer.paymentMethod = newData.method;
-            }
+            customer.registerDate = targetStart;
+            customer.dueDate = targetDue;
+            customer.isPaid = true;
+            customer.paymentMethod = newData.method;
         } else {
             customer.history[currentHistoryIndex] = newData;
+            if (currentHistoryIndex === customer.history.length - 1) {
+                customer.registerDate = targetStart;
+                customer.dueDate = targetDue;
+                customer.paymentMethod = newData.method;
+            }
         }
-        
+
         saveData();
         closeHistoryModal();
         showDetail(currentHistoryCustomerId);
@@ -1238,13 +1891,16 @@
         if (!customer) return;
 
         const targetDueDate = customer.dueDate;
+        const periodStart = (customer.registerDate && customer.registerDate < targetDueDate)
+            ? customer.registerDate
+            : getPrevMonthDate(targetDueDate);
         const status = getStatus({ ...customer, dueDate: targetDueDate });
-        
+
         let badgeHtml = '';
         if (customer.isPaid) {
-            badgeHtml = `<span class="bg-blue-50 text-blue-600 border border-blue-200 px-3 py-1 rounded-lg text-xs font-mono font-bold">LUNAS</span>`;
+            badgeHtml = `<span class="bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/25 px-3 py-1 rounded-full text-xs font-mono font-extrabold">LUNAS</span>`;
         } else {
-            badgeHtml = `<span class="${status.className} px-3 py-1 rounded-lg text-xs font-mono font-bold">${status.label}</span>`;
+            badgeHtml = `<span class="${status.className} px-3 py-1 rounded-full text-xs font-mono font-extrabold">${status.label}</span>`;
         }
 
         let waButtonsHtml = '';
@@ -1254,18 +1910,15 @@
             messageText = createMessage(customer, 'receipt');
             waButtonsHtml = `
                 <div class="space-y-2">
-                    <button onclick="openPaymentModal('${customer.id}')" class="w-full bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
-                        Lanjut Bayar Bulan Berikutnya
+                    <button onclick="openPaymentModal('${customer.id}')" class="w-full bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-700 dark:text-emerald-400 border border-emerald-500/25 py-2.5 rounded-xl font-extrabold text-xs flex items-center justify-center gap-1.5 transition">
+                        + Lanjut Bayar Bulan Berikutnya
                     </button>
                     <div class="grid grid-cols-2 gap-2">
-                        <button onclick="sendWhatsApp('${customer.id}', 'reminder')" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 py-3 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21l1.7-4.8A8.9 8.9 0 1112 21a8.9 8.9 0 01-3.9-.9L3 21z"/><path stroke-linecap="round" stroke-linejoin="round" d="M8.5 8.5c.2-.4.4-.4.7-.4h.5c.2 0 .4.1.5.4l.8 1.7c.1.2.1.4 0 .6l-.5.7c-.1.1-.1.4 0 .6.4.7 1.2 1.5 2 1.9.2.1.4.1.6-.1l.7-.6c.2-.1.4-.1.6 0l1.6.8c.3.1.4.3.4.6v.5c0 .3-.1.5-.4.7-.5.4-1.2.6-1.9.5-1.2-.2-2.5-.9-3.7-2.1-1.2-1.1-2-2.4-2.2-3.5-.2-.7 0-1.5.3-2.3z"/></svg>
+                        <button onclick="sendWhatsApp('${customer.id}', 'reminder')" class="bg-emerald-500 hover:bg-emerald-600 text-slate-950 py-2.5 rounded-xl font-extrabold text-xs flex items-center justify-center gap-2 transition">
                             WA Pengingat
                         </button>
-                        <button onclick="sendWhatsApp('${customer.id}', 'receipt')" class="bg-blue-600 hover:bg-blue-700 text-white py-3 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="17" height="17" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
-                            Resi WA
+                        <button onclick="sendWhatsApp('${customer.id}', 'receipt')" class="bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-xl font-extrabold text-xs flex items-center justify-center gap-2 transition">
+                            Kirim Resi WA
                         </button>
                     </div>
                 </div>
@@ -1273,8 +1926,7 @@
         } else {
             messageText = createMessage(customer, 'reminder');
             waButtonsHtml = `
-                <button onclick="sendWhatsApp('${customer.id}', 'reminder')" class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 py-3 rounded-xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 21l1.7-4.8A8.9 8.9 0 1112 21a8.9 8.9 0 01-3.9-.9L3 21z"/><path stroke-linecap="round" stroke-linejoin="round" d="M8.5 8.5c.2-.4.4-.4.7-.4h.5c.2 0 .4.1.5.4l.8 1.7c.1.2.1.4 0 .6l-.5.7c-.1.1-.1.4 0 .6.4.7 1.2 1.5 2 1.9.2.1.4.1.6-.1l.7-.6c.2-.1.4-.1.6 0l1.6.8c.3.1.4.3.4.6v.5c0 .3-.1.5-.4.7-.5.4-1.2.6-1.9.5-1.2-.2-2.5-.9-3.7-2.1-1.2-1.1-2-2.4-2.2-3.5-.2-.7 0-1.5.3-2.3z"/></svg>
+                <button onclick="sendWhatsApp('${customer.id}', 'reminder')" class="w-full bg-emerald-500 hover:bg-emerald-600 text-slate-950 py-2.5 rounded-xl font-extrabold text-xs flex items-center justify-center gap-2 transition">
                     Kirim Pengingat ke WhatsApp
                 </button>
             `;
@@ -1282,31 +1934,33 @@
 
         let historyHtml = '';
         if (customer.history && customer.history.length > 0) {
-            let historyList = customer.history.map((h, index) => `
-                <div class="flex flex-col bg-white p-3 rounded-xl border border-slate-200/80 mb-2">
+            let historyList = customer.history.map((h, index) => {
+                const hPeriodStart = h.periodStart || getPrevMonthDate(h.dueDate);
+                return `
+                <div class="flex flex-col bg-white dark:bg-slate-900 p-3 rounded-xl border border-slate-200/80 dark:border-slate-700 mb-2">
                     <div class="flex justify-between items-center mb-2">
                         <div>
-                            <p class="text-xs font-bold text-slate-800">${formatDate(h.date)}</p>
-                            <p class="text-[10px] font-mono text-slate-500">Tagihan: ${formatDate(h.dueDate)}</p>
+                            <p class="text-xs font-extrabold text-slate-800 dark:text-slate-200">Bayar: ${formatDate(h.date)}</p>
+                            <p class="text-[10px] font-mono text-slate-500 dark:text-slate-400">Periode: ${formatDate(hPeriodStart)} - ${formatDate(h.dueDate)}</p>
                         </div>
                         <div class="text-right">
-                            <p class="text-xs font-bold font-mono text-emerald-600">${formatCurrency(h.amount)}</p>
-                            <p class="text-[10px] font-mono text-slate-500">${h.method}</p>
+                            <p class="text-xs font-extrabold font-mono text-emerald-600 dark:text-emerald-400">${formatCurrency(h.amount)}</p>
+                            <p class="text-[10px] font-mono text-slate-500 dark:text-slate-400">${escapeHtml(h.method)}</p>
                         </div>
                     </div>
-                    <div class="flex justify-end gap-1.5 border-t border-slate-100 pt-2">
-                        <button onclick="openEditHistory('${customer.id}', ${index})" class="text-blue-600 text-[10px] font-bold px-2.5 py-1 bg-blue-50 hover:bg-blue-100 rounded-md transition">Edit</button>
-                        <button onclick="deleteHistoryData('${customer.id}', ${index})" class="text-red-600 text-[10px] font-bold px-2.5 py-1 bg-red-50 hover:bg-red-100 rounded-md transition">Hapus</button>
+                    <div class="flex justify-end gap-1.5 border-t border-slate-100 dark:border-slate-800 pt-2">
+                        <button onclick="openEditHistory('${customer.id}', ${index})" class="text-blue-600 dark:text-blue-400 text-[10px] font-bold px-2.5 py-1 bg-blue-50 dark:bg-blue-500/10 rounded-md transition">Edit</button>
+                        <button onclick="deleteHistoryData('${customer.id}', ${index})" class="text-red-600 dark:text-red-400 text-[10px] font-bold px-2.5 py-1 bg-red-50 dark:bg-red-500/10 rounded-md transition">Hapus</button>
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
             historyHtml = `
                 <div class="mb-4">
                     <div class="flex items-center justify-between mb-2">
-                        <p class="font-bold text-xs uppercase font-mono tracking-wider text-slate-600">Riwayat Pembayaran</p>
-                        <button onclick="openAddHistory('${customer.id}')" class="text-emerald-600 text-xs font-bold">+ Tambah</button>
+                        <p class="font-bold text-xs uppercase font-mono tracking-wider text-slate-600 dark:text-slate-400">Riwayat Pembayaran</p>
+                        <button onclick="openAddHistory('${customer.id}')" class="text-emerald-600 dark:text-emerald-400 text-xs font-extrabold">+ Tambah</button>
                     </div>
-                    <div class="bg-slate-50 border border-slate-200/70 rounded-xl p-2.5 max-h-44 overflow-y-auto">
+                    <div class="glass-subtle rounded-xl p-2.5 max-h-44 overflow-y-auto">
                         ${historyList}
                     </div>
                 </div>
@@ -1315,10 +1969,10 @@
             historyHtml = `
                 <div class="mb-4">
                     <div class="flex items-center justify-between mb-2">
-                        <p class="font-bold text-xs uppercase font-mono tracking-wider text-slate-600">Riwayat Pembayaran</p>
-                        <button onclick="openAddHistory('${customer.id}')" class="text-emerald-600 text-xs font-bold">+ Tambah</button>
+                        <p class="font-bold text-xs uppercase font-mono tracking-wider text-slate-600 dark:text-slate-400">Riwayat Pembayaran</p>
+                        <button onclick="openAddHistory('${customer.id}')" class="text-emerald-600 dark:text-emerald-400 text-xs font-extrabold">+ Tambah</button>
                     </div>
-                    <div class="bg-slate-50 border border-slate-200/70 rounded-xl p-4 text-center">
+                    <div class="glass-subtle rounded-xl p-4 text-center">
                         <p class="text-xs text-slate-400">Belum ada riwayat pembayaran</p>
                     </div>
                 </div>
@@ -1326,34 +1980,34 @@
         }
 
         document.getElementById('detailContent').innerHTML = `
-            <div class="bg-slate-50 border border-slate-200/70 rounded-xl p-3.5 mb-4">
+            <div class="glass-subtle rounded-xl p-3.5 mb-4">
                 <div class="flex items-center justify-between">
                     <div>
                         <p class="text-[10px] font-mono uppercase tracking-wider text-slate-400">Customer</p>
-                        <p class="font-bold text-slate-900 mt-0.5">${escapeHtml(customer.name)}</p>
+                        <p class="font-extrabold text-slate-900 dark:text-white mt-0.5">${escapeHtml(customer.name)}</p>
                     </div>
                     ${badgeHtml}
                 </div>
                 <div class="grid grid-cols-2 gap-2 mt-3">
-                    <div class="bg-white border border-slate-200/60 rounded-lg p-2.5">
-                        <p class="text-[10px] font-mono text-slate-400 uppercase">Tanggal Daftar</p>
-                        <p class="font-bold text-xs text-slate-800 mt-1">${formatDate(customer.registerDate)}</p>
+                    <div class="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-700 rounded-lg p-2.5">
+                        <p class="text-[10px] font-mono text-slate-400 uppercase">Awal Periode</p>
+                        <p class="font-bold text-xs text-slate-800 dark:text-slate-200 mt-1">${formatDate(periodStart)}</p>
                     </div>
-                    <div class="bg-white border border-slate-200/60 rounded-lg p-2.5">
+                    <div class="bg-white dark:bg-slate-900 border border-slate-200/60 dark:border-slate-700 rounded-lg p-2.5">
                         <p class="text-[10px] font-mono text-slate-400 uppercase">Jatuh Tempo</p>
-                        <p class="font-bold text-xs text-slate-800 mt-1">${formatDate(customer.dueDate)}</p>
+                        <p class="font-bold text-xs text-slate-800 dark:text-slate-200 mt-1">${formatDate(customer.dueDate)}</p>
                     </div>
                 </div>
             </div>
             ${historyHtml}
             <div class="mb-4">
                 <div class="flex items-center justify-between mb-2">
-                    <p class="font-bold text-xs uppercase font-mono tracking-wider text-slate-600">Pesan WhatsApp</p>
+                    <p class="font-bold text-xs uppercase font-mono tracking-wider text-slate-600 dark:text-slate-400">Pesan WhatsApp</p>
                     <div class="space-x-2">
-                        ${customer.isPaid ? `<button onclick="copyMessage('${customer.id}', 'reminder')" class="text-emerald-600 text-xs font-bold">Salin WA</button><button onclick="copyMessage('${customer.id}', 'receipt')" class="text-blue-600 text-xs font-bold">Salin Resi</button>` : `<button onclick="copyMessage('${customer.id}', 'reminder')" class="text-emerald-600 text-xs font-bold">Salin Pesan</button>`}
+                        ${customer.isPaid ? `<button onclick="copyMessage('${customer.id}', 'reminder')" class="text-emerald-600 dark:text-emerald-400 text-xs font-extrabold">Salin WA</button><button onclick="copyMessage('${customer.id}', 'receipt')" class="text-blue-600 dark:text-blue-400 text-xs font-extrabold">Salin Resi</button>` : `<button onclick="copyMessage('${customer.id}', 'reminder')" class="text-emerald-600 dark:text-emerald-400 text-xs font-extrabold">Salin Pesan</button>`}
                     </div>
                 </div>
-                <div class="bg-slate-900 text-slate-200 rounded-xl p-3.5 border border-slate-800 max-h-48 overflow-y-auto">
+                <div class="bg-slate-900 text-slate-200 rounded-xl p-3.5 border border-slate-800 max-h-44 overflow-y-auto">
                     <p id="detailMessage" class="text-xs font-mono text-slate-300 whitespace-pre-line leading-relaxed">${escapeHtml(messageText)}</p>
                 </div>
             </div>
@@ -1376,13 +2030,293 @@
         const name = document.getElementById('customerName').value.trim() || 'Nama Customer';
         const amount = Number(document.getElementById('customerAmount').value || 0);
         const dueDate = document.getElementById('customerDueDate').value || todayString();
+        const registerDate = document.getElementById('customerRegisterDate').value || getPrevMonthDate(dueDate);
         const service = document.getElementById('customerService').value.trim() || 'WiFi';
-        const temporaryCustomer = { name, amount, dueDate, service, isPaid: false };
+        const temporaryCustomer = { name, amount, dueDate, registerDate, service, isPaid: false };
         document.getElementById('messagePreview').textContent = createMessage(temporaryCustomer);
     }
 
+    function openAdminModal() {
+        populateAdminModalFields();
+        document.getElementById('adminModal').classList.remove('hidden');
+    }
+
+    function closeAdminModal() {
+        document.getElementById('adminModal').classList.add('hidden');
+    }
+
+    function switchAdminTab(tab) {
+        ['gui', 'plans', 'payments', 'account'].forEach(t => {
+            const panel = document.getElementById('adminTab' + t.charAt(0).toUpperCase() + t.slice(1));
+            const btn = document.getElementById('tabBtn' + t.charAt(0).toUpperCase() + t.slice(1));
+            if (t === tab) {
+                panel.classList.remove('hidden');
+                btn.className = 'admin-tab-btn bg-slate-900 dark:bg-emerald-500 text-white dark:text-slate-950 py-2 rounded-lg text-[11px] font-bold transition';
+            } else {
+                panel.classList.add('hidden');
+                btn.className = 'admin-tab-btn text-slate-600 dark:text-slate-300 py-2 rounded-lg text-[11px] font-bold transition';
+            }
+        });
+    }
+
+    function populateAdminModalFields() {
+        const g = appConfig.gui;
+        document.getElementById('cfgAppTitle').value = g.appTitle;
+        document.getElementById('cfgAppSubtitle').value = g.appSubtitle;
+        document.getElementById('cfgStatusBadge').value = g.statusBadge;
+        document.getElementById('cfgWarningDays').value = g.warningDays;
+        document.getElementById('cfgFaviconUrl').value = g.faviconUrl;
+        document.getElementById('cfgStatTotal').value = g.statTotal;
+        document.getElementById('cfgStatPaid').value = g.statPaid;
+        document.getElementById('cfgStatSoon').value = g.statSoon;
+        document.getElementById('cfgStatExpired').value = g.statExpired;
+        document.getElementById('cfgSidebarTitle').value = g.sidebarTitle;
+        document.getElementById('cfgSidebarVersion').value = g.sidebarVersion;
+        document.getElementById('cfgSidebarDesc').value = g.sidebarDesc;
+
+        document.getElementById('cfgPaymentInfoText').value = appConfig.paymentInfoText;
+        document.getElementById('cfgReminderTemplate').value = appConfig.reminderTemplate;
+        document.getElementById('cfgReceiptTemplate').value = appConfig.receiptTemplate;
+
+        document.getElementById('cfgAdminUsername').value = appConfig.auth.username;
+        document.getElementById('cfgAdminPassword').value = appConfig.auth.password;
+        document.getElementById('cfgScriptUrl').value = appConfig.scriptUrl;
+
+        renderAdminPlansList();
+        renderAdminMethodsList();
+    }
+
+    function saveGuiConfig() {
+        appConfig.gui = {
+            appTitle: document.getElementById('cfgAppTitle').value.trim() || DEFAULT_CONFIG.gui.appTitle,
+            appSubtitle: document.getElementById('cfgAppSubtitle').value.trim() || DEFAULT_CONFIG.gui.appSubtitle,
+            statusBadge: document.getElementById('cfgStatusBadge').value.trim() || DEFAULT_CONFIG.gui.statusBadge,
+            warningDays: Math.max(1, Number(document.getElementById('cfgWarningDays').value) || 3),
+            faviconUrl: document.getElementById('cfgFaviconUrl').value.trim() || DEFAULT_CONFIG.gui.faviconUrl,
+            statTotal: document.getElementById('cfgStatTotal').value.trim() || 'Customer',
+            statPaid: document.getElementById('cfgStatPaid').value.trim() || 'Lunas',
+            statSoon: document.getElementById('cfgStatSoon').value.trim() || 'Segera',
+            statExpired: document.getElementById('cfgStatExpired').value.trim() || 'Terlambat',
+            sidebarTitle: document.getElementById('cfgSidebarTitle').value.trim() || DEFAULT_CONFIG.gui.sidebarTitle,
+            sidebarVersion: document.getElementById('cfgSidebarVersion').value.trim() || DEFAULT_CONFIG.gui.sidebarVersion,
+            sidebarDesc: document.getElementById('cfgSidebarDesc').value.trim() || DEFAULT_CONFIG.gui.sidebarDesc
+        };
+        applyGuiSettings();
+        renderCustomers();
+        saveData();
+        showToast('Pengaturan GUI berhasil disimpan.');
+    }
+
+    function renderAdminPlansList() {
+        const container = document.getElementById('adminPlansList');
+        container.innerHTML = appConfig.plans.map((p, idx) => `
+            <div class="flex items-center justify-between gap-2 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl p-3">
+                <div class="min-w-0">
+                    <p class="text-xs font-bold text-slate-800 dark:text-slate-100 truncate">${escapeHtml(p.label)}</p>
+                    <p class="text-[11px] font-mono text-slate-500 dark:text-slate-400">${escapeHtml(p.service)} • ${formatCurrency(p.amount)}</p>
+                </div>
+                <div class="flex items-center gap-1.5 flex-shrink-0">
+                    <button onclick="editPlanItem(${idx})" class="px-2.5 py-1 rounded-lg bg-blue-50 dark:bg-blue-500/10 text-blue-600 dark:text-blue-400 text-[11px] font-bold">Edit</button>
+                    <button onclick="deletePlanItem(${idx})" class="px-2.5 py-1 rounded-lg bg-red-50 dark:bg-red-500/10 text-red-600 dark:text-red-400 text-[11px] font-bold">Hapus</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function savePlanItem(event) {
+        event.preventDefault();
+        const idx = Number(document.getElementById('editPlanIndex').value);
+        const item = {
+            label: document.getElementById('planLabelInput').value.trim(),
+            service: document.getElementById('planServiceInput').value.trim(),
+            amount: Number(document.getElementById('planAmountInput').value || 0)
+        };
+        if (idx >= 0 && idx < appConfig.plans.length) {
+            appConfig.plans[idx] = item;
+        } else {
+            appConfig.plans.push(item);
+        }
+        resetPlanForm();
+        applyGuiSettings();
+        renderAdminPlansList();
+        saveData();
+        showToast('Paket Wi-Fi berhasil disimpan.');
+    }
+
+    function editPlanItem(idx) {
+        const p = appConfig.plans[idx];
+        if (!p) return;
+        document.getElementById('editPlanIndex').value = idx;
+        document.getElementById('planFormTitle').textContent = 'Edit Paket Wi-Fi';
+        document.getElementById('planLabelInput').value = p.label;
+        document.getElementById('planServiceInput').value = p.service;
+        document.getElementById('planAmountInput').value = p.amount;
+        document.getElementById('cancelPlanEditBtn').classList.remove('hidden');
+    }
+
+    function resetPlanForm() {
+        document.getElementById('editPlanIndex').value = -1;
+        document.getElementById('planFormTitle').textContent = 'Tambah Paket Wi-Fi Baru';
+        document.getElementById('planLabelInput').value = '';
+        document.getElementById('planServiceInput').value = '';
+        document.getElementById('planAmountInput').value = '';
+        document.getElementById('cancelPlanEditBtn').classList.add('hidden');
+    }
+
+    function deletePlanItem(idx) {
+        if (appConfig.plans.length <= 1) {
+            showToast('Minimal harus ada 1 paket Wi-Fi.', 'error');
+            return;
+        }
+        appConfig.plans.splice(idx, 1);
+        applyGuiSettings();
+        renderAdminPlansList();
+        saveData();
+        showToast('Paket Wi-Fi dihapus.');
+    }
+
+    function renderAdminMethodsList() {
+        const container = document.getElementById('adminMethodsList');
+        container.innerHTML = appConfig.paymentMethods.map((m, idx) => `
+            <div class="flex items-center justify-between gap-1.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-lg px-2.5 py-2">
+                <span class="text-xs font-bold text-slate-800 dark:text-slate-200 truncate">${escapeHtml(m)}</span>
+                <div class="flex items-center gap-1 flex-shrink-0">
+                    <button onclick="editMethodItem(${idx})" class="text-blue-600 dark:text-blue-400 text-[10px] font-bold px-1.5 py-0.5">Edit</button>
+                    <button onclick="deleteMethodItem(${idx})" class="text-red-500 text-[10px] font-bold px-1.5 py-0.5">×</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function savePaymentMethodItem(event) {
+        event.preventDefault();
+        const idx = Number(document.getElementById('editMethodIndex').value);
+        const val = document.getElementById('methodNameInput').value.trim();
+        if (!val) return;
+        if (idx >= 0 && idx < appConfig.paymentMethods.length) {
+            appConfig.paymentMethods[idx] = val;
+        } else {
+            appConfig.paymentMethods.push(val);
+        }
+        resetMethodForm();
+        applyGuiSettings();
+        renderAdminMethodsList();
+        saveData();
+        showToast('Metode pembayaran disimpan.');
+    }
+
+    function editMethodItem(idx) {
+        document.getElementById('editMethodIndex').value = idx;
+        document.getElementById('methodNameInput').value = appConfig.paymentMethods[idx] || '';
+        document.getElementById('cancelMethodEditBtn').classList.remove('hidden');
+    }
+
+    function resetMethodForm() {
+        document.getElementById('editMethodIndex').value = -1;
+        document.getElementById('methodNameInput').value = '';
+        document.getElementById('cancelMethodEditBtn').classList.add('hidden');
+    }
+
+    function deleteMethodItem(idx) {
+        if (appConfig.paymentMethods.length <= 1) {
+            showToast('Minimal harus ada 1 metode pembayaran.', 'error');
+            return;
+        }
+        appConfig.paymentMethods.splice(idx, 1);
+        applyGuiSettings();
+        renderAdminMethodsList();
+        saveData();
+        showToast('Metode pembayaran dihapus.');
+    }
+
+    function saveWaTemplatesConfig() {
+        appConfig.paymentInfoText = document.getElementById('cfgPaymentInfoText').value.trim() || DEFAULT_CONFIG.paymentInfoText;
+        appConfig.reminderTemplate = document.getElementById('cfgReminderTemplate').value.trim() || DEFAULT_CONFIG.reminderTemplate;
+        appConfig.receiptTemplate = document.getElementById('cfgReceiptTemplate').value.trim() || DEFAULT_CONFIG.receiptTemplate;
+        saveData();
+        showToast('Template WA & info pembayaran disimpan.');
+    }
+
+    function saveAdminCredentials() {
+        const u = document.getElementById('cfgAdminUsername').value.trim();
+        const p = document.getElementById('cfgAdminPassword').value.trim();
+        if (!u || !p) {
+            showToast('Username dan password tidak boleh kosong.', 'error');
+            return;
+        }
+        appConfig.auth = { username: u, password: p };
+        saveData();
+        showToast('Username & password admin berhasil diperbarui.');
+    }
+
+    function saveScriptUrlConfig() {
+        const url = document.getElementById('cfgScriptUrl').value.trim();
+        if (!url) return;
+        appConfig.scriptUrl = url;
+        SCRIPT_GAS_URL = url;
+        saveLocalConfig();
+        loadData();
+        showToast('URL Server diperbarui.');
+    }
+
+    function exportAllData() {
+        const backup = {
+            exportedAt: new Date().toISOString(),
+            config: appConfig,
+            customers: customers
+        };
+        const blob = new Blob([JSON.stringify(backup, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `backup-tagihan-wifi-${todayString()}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+        showToast('Backup JSON berhasil diunduh.');
+    }
+
+    function importAllData(event) {
+        const file = event.target.files && event.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            try {
+                const parsed = JSON.parse(e.target.result);
+                if (Array.isArray(parsed)) {
+                    customers = parsed;
+                } else if (parsed && typeof parsed === 'object') {
+                    if (Array.isArray(parsed.customers)) customers = parsed.customers;
+                    if (parsed.config) appConfig = mergeConfig(parsed.config);
+                }
+                normalizeExistingCustomers();
+                applyGuiSettings();
+                populateAdminModalFields();
+                renderCustomers();
+                saveData();
+                showToast('Data berhasil diimpor & disinkronkan.');
+            } catch (err) {
+                showToast('File JSON tidak valid.', 'error');
+            }
+        };
+        reader.readAsText(file);
+        event.target.value = '';
+    }
+
+    function resetDefaultConfig() {
+        openConfirmModal('Reset Pengaturan GUI', 'Kembalikan seluruh pengaturan GUI, paket, dan template ke bawaan (data customer tetap aman)?', () => {
+            const currentAuth = { ...appConfig.auth };
+            appConfig = cloneDefaultConfig();
+            appConfig.auth = currentAuth;
+            applyGuiSettings();
+            populateAdminModalFields();
+            renderCustomers();
+            saveData();
+            showToast('Pengaturan dikembalikan ke standar.');
+        }, 'bg-red-500', '');
+    }
+
     function escapeHtml(value) {
-        return String(value).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+        return String(value ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#039;');
     }
 
     function showToast(message, type = 'success') {
@@ -1390,43 +2324,45 @@
         const toast = document.createElement('div');
         toast.className = `toast pointer-events-auto rounded-xl px-4 py-3 border flex items-center gap-3 ${type === 'error' ? 'bg-red-600 border-red-500 text-white' : 'bg-[#090d16] border-slate-800 text-white'}`;
         toast.innerHTML = `
-            <div class="w-7 h-7 rounded-lg ${type === 'error' ? 'bg-white/20 text-white' : 'bg-emerald-500/20 text-emerald-400'} flex items-center justify-center flex-shrink-0">
-                ${type === 'error' ? '<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>' : '<svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>'}
+            <div class="w-6 h-6 rounded-lg ${type === 'error' ? 'bg-white/20 text-white' : 'bg-emerald-500/20 text-emerald-400'} flex items-center justify-center flex-shrink-0">
+                ${type === 'error' ? '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>' : '<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>'}
             </div>
             <p class="text-xs font-semibold leading-snug">${escapeHtml(message)}</p>
         `;
         container.appendChild(toast);
-        setTimeout(() => { toast.remove(); }, 3000);
+        setTimeout(() => { toast.remove(); }, 2800);
     }
 
     document.getElementById('customerName').addEventListener('input', updateMessagePreview);
-    document.getElementById('customerRegisterDate').addEventListener('input', updateDueDate);
+    document.getElementById('customerService').addEventListener('input', updateMessagePreview);
+    document.getElementById('customerAmount').addEventListener('input', updateMessagePreview);
+    document.getElementById('customerRegisterDate').addEventListener('change', updateDueDate);
+    document.getElementById('customerDueDate').addEventListener('change', function() {
+        if (this.value) {
+            document.getElementById('customerRegisterDate').value = getPrevMonthDate(this.value);
+        }
+        document.getElementById('dueDatePreview').textContent = formatDate(this.value);
+        updateMessagePreview();
+    });
     document.getElementById('customerPlan').addEventListener('change', updatePlanFields);
 
-    document.getElementById('modal').addEventListener('click', function(event) {
-        if (event.target === this) closeModal();
+    ['modal', 'detailModal', 'historyModal', 'paymentModal', 'confirmModal', 'adminModal'].forEach(modalId => {
+        const el = document.getElementById(modalId);
+        if (el) {
+            el.addEventListener('click', function(event) {
+                if (event.target === this) this.classList.add('hidden');
+            }, { passive: true });
+        }
     });
 
-    document.getElementById('detailModal').addEventListener('click', function(event) {
-        if (event.target === this) closeDetail();
-    });
-    
-    document.getElementById('historyModal').addEventListener('click', function(event) {
-        if (event.target === this) closeHistoryModal();
-    });
-
-    document.getElementById('paymentModal').addEventListener('click', function(event) {
-        if (event.target === this) closePaymentModal();
-    });
-
-    document.getElementById('confirmModal').addEventListener('click', function(event) {
-        if (event.target === this) closeConfirmModal();
-    });
-
+    initTheme();
+    applyGuiSettings();
+    checkAuthSession();
     updatePlanFields();
     loadData();
 
     countdownTimer = setInterval(() => {
+        if (document.hidden) return;
         requestAnimationFrame(() => {
             updateCountdowns();
             const currentDate = todayString();
